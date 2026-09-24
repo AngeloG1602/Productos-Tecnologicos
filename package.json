@@ -8,7 +8,8 @@
     "start": "next start",
     "lint": "eslint",
     "typecheck": "next typegen && tsc --noEmit",
-    "test": "node --test \"lib/**/*.test.ts\""
+    "test": "node --test \"lib/**/*.test.ts\"",
+    "test:bd": "bash scripts/probar-bd.sh"
   },
   "dependencies": {
     "@supabase/ssr": "^0.12.7",

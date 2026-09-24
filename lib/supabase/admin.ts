@@ -1,6 +1,7 @@
 import "server-only";
 import { createClient } from "@supabase/supabase-js";
 import { envPublico } from "@/lib/env";
+import type { Database } from "@/lib/supabase/tipos";
 
 /**
  * Cliente con la llave service_role: IGNORA RLS.
@@ -12,7 +13,7 @@ export function crearClienteAdmin() {
   if (!llaveServicio) {
     throw new Error("Falta SUPABASE_SERVICE_ROLE_KEY (solo en el servidor).");
   }
-  return createClient(url, llaveServicio, {
+  return createClient<Database>(url, llaveServicio, {
     auth: { persistSession: false, autoRefreshToken: false },
   });
 }

@@ -2,6 +2,7 @@ import "server-only";
 import { cookies } from "next/headers";
 import { createServerClient } from "@supabase/ssr";
 import { envPublico } from "@/lib/env";
+import type { Database } from "@/lib/supabase/tipos";
 
 /**
  * Cliente de Supabase para Server Components, Server Actions y Route Handlers.
@@ -12,7 +13,7 @@ export async function crearClienteServidor() {
   const { url, llaveAnonima } = envPublico();
   const almacenCookies = await cookies();
 
-  return createServerClient(url, llaveAnonima, {
+  return createServerClient<Database>(url, llaveAnonima, {
     cookies: {
       getAll() {
         return almacenCookies.getAll();

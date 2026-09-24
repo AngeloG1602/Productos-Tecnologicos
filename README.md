@@ -38,8 +38,48 @@ La llave `service_role` ignora RLS: nunca se le pone prefijo `NEXT_PUBLIC_` ni s
 | `npm run lint` | ESLint |
 | `npm run typecheck` | Genera tipos de rutas y corre `tsc` |
 | `npm test` | Pruebas unitarias de `/lib` (`node:test`) |
+| `npm run test:bd` | Pruebas de migraciones, RLS y funciones en un Postgres local |
 
 > En `/lib`, los imports relativos entre archivos usan extensión `.ts` (por ejemplo `./formato.ts`) para que las pruebas corran directo con Node.
+
+## Base de datos (Supabase)
+
+### Aplicar migraciones y datos de prueba
+Opción simple, desde el panel de Supabase → **SQL Editor**, ejecutar en este orden:
+1. Cada archivo de `supabase/migrations/` (en orden de nombre).
+2. `supabase/seed.sql` (datos de prueba; se puede correr varias veces sin duplicar).
+
+(Con la CLI de Supabase: `supabase link` y luego `supabase db push`.)
+
+### Crear los administradores
+No hay registro público. Para cada uno de los 2 admins:
+1. **Authentication → Users → Add user** (correo y contraseña, marcar "Auto Confirm User").
+2. En el SQL Editor:
+   ```sql
+   insert into public.administradores (user_id, nombre)
+   select id, 'Nombre del admin' from auth.users where email = 'correo@ejemplo.com';
+   ```
+3. En **Authentication → Sign In / Providers**, desactivar **"Allow new users to sign up"**.
+   Aunque alguien lograra registrarse, no tendría permisos: solo cuenta quien esté en `administradores`.
+
+### Verificar la seguridad
+- **En Supabase:** pegar `supabase/tests/01_rls_anonimo.sql` en el SQL Editor. Debe terminar sin error
+  (muestra "OK …" por cada comprobación y deshace todo al final; solo consume un número de pedido).
+- **En local:** `npm run test:bd` crea una base desechable en un Postgres local, aplica migraciones y seed,
+  y corre todas las pruebas de `supabase/tests/` (incluido el flujo completo de pedidos, stock y reparto).
+  Usa las variables de `psql` (`PGHOST`, `PGPORT`, `PGUSER`) y necesita un usuario que pueda crear bases y roles.
+
+### Cómo está protegida
+| Tabla | Anónimo | Admin |
+|---|---|---|
+| `categorias`, `productos` | lee (solo productos activos) | todo |
+| `producto_costos`, `socios` | ✗ | todo |
+| `pedidos`, `pedido_items`, `pedido_reparto` | ✗ | solo lectura |
+| `configuracion` | solo vía `configuracion_publica()` (sin margen ni redondeo) | lee y edita |
+
+Funciones (RPC):
+- `crear_pedido(p_items, p_cliente)` — pública. Toma precios, costos y stock de la BD. Si algo no coincide con lo que vio el cliente, **no** crea el pedido y devuelve los cambios para ajustar el carrito.
+- `confirmar_pedido(id)`, `cancelar_pedido(id)`, `entregar_pedido(id)` — solo admins; mueven stock y reparto en una transacción.
 
 ## Despliegue en Vercel
 1. En Vercel: **Add New → Project** e importar este repositorio (framework: Next.js, sin cambios de build).
@@ -51,5 +91,8 @@ La llave `service_role` ignora RLS: nunca se le pone prefijo `NEXT_PUBLIC_` ni s
 app/                 rutas (App Router)
 lib/                 utilidades (formato, precios, WhatsApp) y clientes de Supabase
 supabase/migrations  migraciones SQL numeradas
+supabase/seed.sql    datos de prueba
+supabase/tests       pruebas SQL (RLS y flujo de pedidos)
+scripts/             utilidades (probar-bd.sh)
 docs/                especificación y plan
 ```

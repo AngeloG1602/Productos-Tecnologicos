@@ -6,7 +6,7 @@ Estado: ⬜ pendiente · 🟨 en curso · ✅ terminado
 
 ---
 
-## B0 — Base del proyecto 🟨
+## B0 — Base del proyecto ✅ (falta publicar en Vercel)
 **Listo cuando:** una página de prueba está publicada en Vercel.
 
 - [x] Next.js (App Router) + TypeScript estricto + Tailwind + ESLint
@@ -19,20 +19,16 @@ Estado: ⬜ pendiente · 🟨 en curso · ✅ terminado
 - [ ] **(Tú)** Crear proyecto en Supabase y copiar URL + llaves
 - [ ] **(Tú)** Conectar el repo en Vercel, cargar variables de entorno y publicar
 
-## B1 — Base de datos ⬜
+## B1 — Base de datos ✅ (falta aplicar en el proyecto de Supabase)
 **Listo cuando:** un usuario anónimo puede leer productos pero no costos ni pedidos.
 
-- Migraciones numeradas en `supabase/migrations`:
-  1. Tablas: `categorias`, `productos`, `producto_costos`, `socios`, `pedidos` (+ enum de estado), `pedido_items`, `pedido_reparto`, `configuracion` (1 fila)
-  2. Restricciones: `stock >= 0`, montos `int`, slugs únicos, `updated_at` automático, código consecutivo `PED-0001` (secuencia)
-  3. Tabla/función `es_admin()` para las políticas (admins = usuarios listados, creados a mano en Supabase)
-  4. RLS en **todas** las tablas con políticas explícitas (anónimo: solo categorías, productos activos y los campos públicos de configuración)
-  5. RPC `crear_pedido(items, cliente)` (security definer, precios/costos desde la BD, devuelve ítems ajustados)
-  6. RPC `confirmar_pedido(id)` y `cancelar_pedido(id)` en transacción; stock nunca negativo; congela reparto
-  7. Validación de socios activos que sumen 100 %
-- `supabase/seed.sql` con datos de prueba (categorías, ~10 productos, 2 socios 50/50, configuración)
-- Script SQL de verificación de RLS (consultas como `anon`)
-- Tipos TypeScript de la BD (`lib/supabase/tipos.ts`)
+- [x] `20260924000100_esquema.sql`: tablas, enum de estado, restricciones (`stock >= 0`, montos `int`, máx. 4 imágenes, slugs), `updated_at`, código `PED-0001`, tabla `administradores`, validación diferida de socios = 100 %
+- [x] `20260924000200_seguridad.sql`: `es_admin()`, RLS en todas las tablas, GRANT mínimos, `configuracion_publica()`, EXECUTE revocado por defecto
+- [x] `20260924000300_funciones_pedidos.sql`: `crear_pedido`, `confirmar_pedido`, `cancelar_pedido` y `entregar_pedido`
+- [x] `supabase/seed.sql`: 6 categorías, 12 productos (stock alto, bajo, agotado, inactivo), 2 socios 50/50, WhatsApp de prueba
+- [x] `supabase/tests/01_rls_anonimo.sql` (criterio del bloque; sirve en el SQL Editor) y `02_flujo_pedidos.sql` (flujo completo)
+- [x] `npm run test:bd` y tipos en `lib/supabase/tipos.ts`
+- [ ] **(Tú)** Aplicar migraciones + seed en Supabase, crear los 2 admins y desactivar el registro público
 
 ## B2 — Catálogo público ⬜
 **Listo cuando:** se navega el catálogo en el celular con datos de prueba.

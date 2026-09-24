@@ -51,8 +51,11 @@ No agregues librerías nuevas sin preguntar primero y explicar por qué.
 - `npm run lint` — ESLint
 - `npm run typecheck` — genera tipos de rutas de Next y corre `tsc`
 - `npm test` — pruebas unitarias de `/lib` con `node:test` (Node ≥ 22.18, sin librerías extra)
+- `npm run test:bd` — aplica migraciones + seed en un Postgres local desechable y corre `supabase/tests/*.sql`
 
 Notas:
 - Esta versión de Next.js (16) tiene cambios respecto a versiones anteriores (ej. `middleware` ahora es `proxy.ts`). Ver `AGENTS.md` y la documentación en `node_modules/next/dist/docs/`.
 - En `/lib`, los imports relativos usan extensión `.ts` para que `node --test` los resuelva.
 - El plan por bloques y su estado está en `docs/PLAN.md`.
+- Tipos de la BD en `lib/supabase/tipos.ts`: actualizarlos junto con cada migración.
+- El estado de los pedidos solo cambia vía RPC (`confirmar_pedido`, `cancelar_pedido`, `entregar_pedido`); no hay UPDATE directo.

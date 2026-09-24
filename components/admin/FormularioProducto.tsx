@@ -6,6 +6,7 @@ import type { CategoriaAdmin, ProductoAdmin } from "@/lib/admin/datos";
 import { formatearCOP } from "@/lib/formato";
 import { margenReal, precioPorDebajoDelCosto, precioSugerido } from "@/lib/precio";
 import { generarSlug } from "@/lib/slug";
+import { BotonCopiarEnlace } from "@/components/admin/BotonCopiarEnlace";
 import { SubidaImagenes } from "@/components/admin/SubidaImagenes";
 import { duplicarProducto, eliminarProducto, guardarProducto } from "@/app/admin/(panel)/productos/acciones";
 
@@ -130,6 +131,15 @@ export function FormularioProducto({ categorias, producto, margenDefault, redond
 
   return (
     <form onSubmit={guardar} className="flex flex-col gap-5 pb-10">
+      {producto && (
+        <div className="flex flex-col gap-1 rounded-xl border border-neutral-200 p-3">
+          <BotonCopiarEnlace slug={producto.slug} />
+          <p className="text-xs text-neutral-500">
+            Para Instagram o Facebook: quien toca el anuncio llega a este producto con él ya en el carrito.
+            {!producto.activo && " Actívalo antes de anunciarlo."}
+          </p>
+        </div>
+      )}
       <div className="flex flex-col gap-1">
         <span className="text-sm font-medium">Fotos (hasta 4)</span>
         <SubidaImagenes productoId={productoId} imagenes={imagenes} onCambiar={setImagenes} />

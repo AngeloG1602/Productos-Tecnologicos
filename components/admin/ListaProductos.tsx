@@ -7,6 +7,7 @@ import type { CategoriaAdmin, ProductoAdmin } from "@/lib/admin/datos";
 import { formatearCOP } from "@/lib/formato";
 import { margenReal, precioPorDebajoDelCosto } from "@/lib/precio";
 import { coincideBusqueda } from "@/lib/texto";
+import { BotonCopiarEnlace } from "@/components/admin/BotonCopiarEnlace";
 import { ImagenProducto } from "@/components/tienda/ImagenProducto";
 import { actualizarStock, alternarActivo, duplicarProducto, eliminarProducto } from "@/app/admin/(panel)/productos/acciones";
 
@@ -221,6 +222,7 @@ function FilaProducto({
           Activo
         </label>
 
+        <BotonCopiarEnlace slug={producto.slug} compacto />
         <button type="button" onClick={duplicar} disabled={pendiente} className="rounded-lg border border-neutral-300 px-2 py-1.5 text-xs font-medium">
           Duplicar
         </button>

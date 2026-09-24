@@ -68,18 +68,24 @@ Estado: ⬜ pendiente · 🟨 en curso · ✅ terminado
 - [x] `lib/precio.ts` (RN-01) y `lib/slug.ts`, con pruebas (37 en total)
 - [x] Probado de punta a punta: login, no-admin, categorías, producto con foto y precio ajustado, stock rápido, activar/desactivar (se refleja en la tienda), duplicar, eliminar — 38 pasos
 
-## B5 — Admin: pedidos, socios, dashboard, configuración ⬜
+## B5 — Admin: pedidos, socios, dashboard, configuración ✅
 **Listo cuando:** confirmar/cancelar pedidos mueve el stock bien y el reparto cuadra.
 
-- Pedidos: lista filtrable por estado, marca de "vencido" (> 7 días pendiente), detalle con botones de estado
-- Socios con validación de 100 %
-- Dashboard: ventas, costo, ganancia y reparto por socio en rango de fechas; stock bajo; pendientes
-- Configuración: WhatsApp, margen por defecto, redondeo, umbral de stock, texto de envío
+- [x] `20260924000500_ventas_socios.sql`: `guardar_socios` (lista completa en una transacción; los activos deben sumar 100 %; los que salen se desactivan, no se borran) y `resumen_ventas` (rango de fechas en hora de Colombia)
+- [x] Pedidos: lista con filtros por estado y marca de "Vencido" (> 7 días pendiente, RN-05); detalle con cliente, productos, venta/costo/ganancia, reparto congelado y fechas; botones según el estado (confirmar → descuenta stock; entregar; cancelar → devuelve stock si estaba confirmado); errores claros (p. ej. stock insuficiente)
+- [x] Inicio (dashboard): alertas de pedidos pendientes/vencidos y stock bajo; ventas, costo, ganancia y pedidos vendidos por rango de fechas (atajos Hoy / 7 días / Este mes); reparto por socio
+- [x] Socios: editar nombres y porcentajes, agregar, desactivar; suma en vivo; cambiar socios no altera pedidos ya confirmados (RN-07)
+- [x] Configuración: WhatsApp (se normaliza a solo dígitos), margen por defecto, redondeo, umbral de stock bajo, texto de envío; la tienda lo usa al instante
+- [x] **Enlace para anuncios** (pedido del cliente): botón "Copiar enlace para anuncio"; `/producto/<slug>?agregar=1` agrega el producto una sola vez, conserva `utm_source`/`fbclid` y no agrega agotados
+- [x] Ficha de producto: fila "Más productos" y metadatos Open Graph (foto, nombre y precio al compartir el enlace; adelantado de B6)
+- [x] Iniciar/cerrar sesión recargan la página completa (evita reutilizar una redirección de otra cuenta)
+- [x] `lib/fechas.ts`, `lib/anuncio.ts`, `lib/configuracion.ts`, `lib/relacionados.ts` y `pedidoVencido` con pruebas (54 en total)
+- [x] Probado de punta a punta: 45 pasos del bloque + regresión de B2, B3 y B4 (26 + 31 + 40)
 
 ## B6 — Pulido y salida ⬜
 **Listo cuando:** Lighthouse móvil ≥ 85 y prueba completa de punta a punta.
 
-- Open Graph por producto (RNF-07)
+- Open Graph de la página de inicio (las fichas ya lo tienen desde B5)
 - Revisar/completar el texto de la política de datos (la página ya existe desde B3)
 - Límite de pedidos anónimos seguidos (anti-spam de `crear_pedido`)
 - `/api/health` que consulta la BD + guía de monitoreo (UptimeRobot)

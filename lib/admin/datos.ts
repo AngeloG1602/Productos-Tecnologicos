@@ -102,3 +102,86 @@ export async function obtenerNombreAdminActual(): Promise<string | null> {
   const { data } = await supabase.from("administradores").select("nombre").eq("user_id", user.id).maybeSingle();
   return data?.nombre || user.email || null;
 }
+
+// ─────────────────────────────────────────────────────────────
+// Pedidos, socios y dashboard (Bloque 5)
+// ─────────────────────────────────────────────────────────────
+
+export type PedidoResumen = Pick<
+  Fila<"pedidos">,
+  "id" | "codigo" | "estado" | "cliente_nombre" | "cliente_ciudad" | "total_venta" | "created_at"
+>;
+
+export type PedidoDetalle = Fila<"pedidos"> & {
+  items: Fila<"pedido_items">[];
+  reparto: Fila<"pedido_reparto">[];
+};
+
+/** Pedidos más recientes primero (máx. 200), opcionalmente filtrados por estado. */
+export async function obtenerPedidos(estado?: Fila<"pedidos">["estado"]): Promise<PedidoResumen[]> {
+  const supabase = await crearClienteServidor();
+  let consulta = supabase
+    .from("pedidos")
+    .select("id, codigo, estado, cliente_nombre, cliente_ciudad, total_venta, created_at")
+    .order("created_at", { ascending: false })
+    .limit(200);
+  if (estado) consulta = consulta.eq("estado", estado);
+  const { data, error } = await consulta;
+  if (error) throw new Error(`No se pudieron cargar los pedidos: ${error.message}`);
+  return data;
+}
+
+export async function obtenerPedido(id: string): Promise<PedidoDetalle | null> {
+  const supabase = await crearClienteServidor();
+  const [pedido, items, reparto] = await Promise.all([
+    supabase.from("pedidos").select("*").eq("id", id).maybeSingle(),
+    supabase.from("pedido_items").select("*").eq("pedido_id", id).order("nombre_snapshot"),
+    supabase.from("pedido_reparto").select("*").eq("pedido_id", id).order("monto", { ascending: false }),
+  ]);
+  if (pedido.error || items.error || reparto.error) {
+    throw new Error("No se pudo cargar el pedido.");
+  }
+  if (!pedido.data) return null;
+  return { ...pedido.data, items: items.data, reparto: reparto.data };
+}
+
+export type SocioAdmin = Fila<"socios">;
+
+export async function obtenerSocios(): Promise<SocioAdmin[]> {
+  const supabase = await crearClienteServidor();
+  const { data, error } = await supabase
+    .from("socios")
+    .select("*")
+    .order("activo", { ascending: false })
+    .order("created_at");
+  if (error) throw new Error(`No se pudieron cargar los socios: ${error.message}`);
+  return data;
+}
+
+export type ResumenVentas = {
+  pedidos: number;
+  ventas: number;
+  costo: number;
+  ganancia: number;
+  reparto: { socio: string; monto: number }[];
+  pendientes: number;
+  vencidos: number;
+};
+
+export async function obtenerResumenVentas(desde: string, hasta: string): Promise<ResumenVentas> {
+  const supabase = await crearClienteServidor();
+  const { data, error } = await supabase.rpc("resumen_ventas", { p_desde: desde, p_hasta: hasta });
+  if (error) throw new Error(`No se pudo cargar el resumen de ventas: ${error.message}`);
+  const r = data as Record<string, unknown>;
+  return {
+    pedidos: Number(r.pedidos ?? 0),
+    ventas: Number(r.ventas ?? 0),
+    costo: Number(r.costo ?? 0),
+    ganancia: Number(r.ganancia ?? 0),
+    reparto: Array.isArray(r.reparto)
+      ? r.reparto.map((x) => ({ socio: String((x as { socio: unknown }).socio), monto: Number((x as { monto: unknown }).monto) }))
+      : [],
+    pendientes: Number(r.pendientes ?? 0),
+    vencidos: Number(r.vencidos ?? 0),
+  };
+}

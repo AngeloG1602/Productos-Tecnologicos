@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { leerParametroAgregar } from "@/lib/anuncio";
 import type { ProductoParaCarrito } from "@/lib/carrito";
 import { notificar } from "@/components/carrito/notificacion";
 import { useCarrito } from "@/components/carrito/useCarrito";
@@ -8,8 +9,17 @@ import { SelectorCantidad } from "./SelectorCantidad";
 
 /** Selector de cantidad + "Agregar al carrito", sin pasar del stock (RN-04). */
 export function CompraProducto({ producto }: { producto: ProductoParaCarrito }) {
-  const { items, agregar } = useCarrito();
+  const { items, agregar, agregarSiNoEsta } = useCarrito();
   const [cantidad, setCantidad] = useState(1);
+
+  // Enlace de anuncio (/producto/<slug>?agregar=1): agrega el producto una sola vez
+  // y quita el parámetro de la URL para que recargar no lo vuelva a agregar.
+  useEffect(() => {
+    const { agregar: desdeAnuncio, busquedaLimpia } = leerParametroAgregar(window.location.search);
+    if (!desdeAnuncio) return;
+    window.history.replaceState(null, "", `${window.location.pathname}${busquedaLimpia}${window.location.hash}`);
+    if (producto.stock > 0 && agregarSiNoEsta(producto)) notificar("Agregado al carrito", true);
+  }, [producto, agregarSiNoEsta]);
 
   const enCarrito = items.find((i) => i.productoId === producto.productoId)?.cantidad ?? 0;
   const disponible = Math.max(0, producto.stock - enCarrito);

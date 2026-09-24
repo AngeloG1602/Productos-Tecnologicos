@@ -308,6 +308,14 @@ export type Database = {
         Args: { p_producto_id: string };
         Returns: string;
       };
+      guardar_socios: {
+        Args: { p_socios: Json };
+        Returns: number;
+      };
+      resumen_ventas: {
+        Args: { p_desde: string; p_hasta: string };
+        Returns: Json;
+      };
     };
     Enums: {
       pedido_estado: PedidoEstado;

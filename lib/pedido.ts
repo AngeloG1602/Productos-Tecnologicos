@@ -84,3 +84,31 @@ export function interpretarRespuestaPedido(datos: unknown): RespuestaCrearPedido
   }
   throw new Error("Respuesta de pedido inválida.");
 }
+
+// ─────────────────────────────────────────────────────────────
+// Panel admin
+// ─────────────────────────────────────────────────────────────
+
+export type EstadoPedido = "pendiente" | "confirmado" | "entregado" | "cancelado";
+
+export const ESTADOS_PEDIDO: EstadoPedido[] = ["pendiente", "confirmado", "entregado", "cancelado"];
+
+export const ETIQUETA_ESTADO: Record<EstadoPedido, string> = {
+  pendiente: "Pendiente",
+  confirmado: "Confirmado",
+  entregado: "Entregado",
+  cancelado: "Cancelado",
+};
+
+/** Días tras los cuales un pedido pendiente se marca como "vencido" (RN-05; no se cancela solo). */
+export const DIAS_VENCIMIENTO = 7;
+
+export function pedidoVencido(pedido: { estado: EstadoPedido; created_at: string }, ahora: Date): boolean {
+  if (pedido.estado !== "pendiente") return false;
+  const edadMs = ahora.getTime() - new Date(pedido.created_at).getTime();
+  return edadMs > DIAS_VENCIMIENTO * 24 * 60 * 60 * 1000;
+}
+
+export function esEstadoPedido(valor: unknown): valor is EstadoPedido {
+  return typeof valor === "string" && (ESTADOS_PEDIDO as string[]).includes(valor);
+}

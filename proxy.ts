@@ -47,7 +47,7 @@ export async function proxy(request: NextRequest) {
     return NextResponse.redirect(new URL("/admin/no-autorizado", request.url));
   }
 
-  if (esLogin) return NextResponse.redirect(new URL("/admin/productos", request.url));
+  if (esLogin) return NextResponse.redirect(new URL("/admin", request.url));
 
   return respuesta;
 }

@@ -24,3 +24,23 @@ test("rechaza respuestas con forma inesperada", () => {
   assert.throws(() => interpretarRespuestaPedido({ ok: true, total: 1, items: [] }));
   assert.throws(() => interpretarRespuestaPedido({ ok: true, codigo: "X", total: 1, items: [{ nombre: 1 }] }));
 });
+
+import { esEstadoPedido, pedidoVencido } from "./pedido.ts";
+
+test("un pendiente con más de 7 días está vencido", () => {
+  const ahora = new Date("2026-09-24T12:00:00Z");
+  assert.equal(pedidoVencido({ estado: "pendiente", created_at: "2026-09-17T11:59:00Z" }, ahora), true);
+  assert.equal(pedidoVencido({ estado: "pendiente", created_at: "2026-09-17T12:01:00Z" }, ahora), false);
+});
+
+test("solo los pendientes se marcan como vencidos", () => {
+  const ahora = new Date("2026-09-24T12:00:00Z");
+  assert.equal(pedidoVencido({ estado: "confirmado", created_at: "2026-01-01T00:00:00Z" }, ahora), false);
+  assert.equal(pedidoVencido({ estado: "cancelado", created_at: "2026-01-01T00:00:00Z" }, ahora), false);
+});
+
+test("reconoce los estados válidos", () => {
+  assert.equal(esEstadoPedido("confirmado"), true);
+  assert.equal(esEstadoPedido("pagado"), false);
+  assert.equal(esEstadoPedido(undefined), false);
+});

@@ -1,13 +1,11 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
 import { crearClienteNavegador } from "@/lib/supabase/navegador";
 
 const MENSAJE_GENERICO = "No pudimos iniciar sesión. Verifica el correo y la contraseña.";
 
 export function FormularioLogin({ siguiente }: { siguiente: string }) {
-  const router = useRouter();
   const [cargando, setCargando] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -31,9 +29,9 @@ export function FormularioLogin({ siguiente }: { siguiente: string }) {
       return;
     }
 
-    // El proxy decide a dónde ir según si eres admin (también protege /admin/no-autorizado).
-    router.replace(siguiente);
-    router.refresh();
+    // Recarga completa (no navegación del router): así el servidor ve la sesión nueva y no se
+    // reutiliza una redirección guardada de otra cuenta (p. ej. "no autorizado").
+    window.location.assign(siguiente);
   }
 
   return (

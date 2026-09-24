@@ -69,6 +69,14 @@ const acciones = {
     if (r.agregadas > 0) guardar(r.items);
     return r.agregadas;
   },
+  /** Para los enlaces de anuncios: agrega 1 unidad solo si el producto aún no está en el carrito. */
+  agregarSiNoEsta(producto: ProductoParaCarrito): boolean {
+    cargar();
+    if (items.some((i) => i.productoId === producto.productoId)) return false;
+    const r = agregarAlCarrito(items, producto, 1);
+    if (r.agregadas > 0) guardar(r.items);
+    return r.agregadas > 0;
+  },
   cambiarCantidad(productoId: string, cantidad: number) {
     cargar();
     guardar(cambiarCantidad(items, productoId, cantidad));

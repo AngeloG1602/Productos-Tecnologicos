@@ -9,7 +9,7 @@ function esRutaAdminValida(ruta: string | string[] | undefined): ruta is string 
 
 export default async function EntrarAdmin({ searchParams }: PageProps<"/admin/entrar">) {
   const params = await searchParams;
-  const siguiente = esRutaAdminValida(params.siguiente) ? params.siguiente : "/admin/productos";
+  const siguiente = esRutaAdminValida(params.siguiente) ? params.siguiente : "/admin";
 
   return (
     <main className="flex min-h-dvh flex-col items-center justify-center gap-8 px-4 py-10">

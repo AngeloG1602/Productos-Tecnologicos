@@ -80,12 +80,21 @@ Funciones (RPC):
 - `crear_pedido(p_items, p_cliente)` — pública. Toma precios, costos y stock de la BD. Si algo no coincide con lo que vio el cliente, **no** crea el pedido y devuelve los cambios para ajustar el carrito.
 - `confirmar_pedido(id)`, `cancelar_pedido(id)`, `entregar_pedido(id)` — solo admins; mueven stock y reparto en una transacción.
 - `guardar_producto(...)`, `duplicar_producto(id)` — solo admins; crean/editan un producto y su costo en una sola transacción, o lo duplican como variante inactiva.
+- `guardar_socios(lista)`, `resumen_ventas(desde, hasta)` — solo admins; socios en una transacción (suma 100 %) y datos del dashboard.
 
 ### Panel admin (`/admin`)
 - `/admin/entrar`: correo y contraseña (las cuentas se crean a mano en Supabase, ver arriba). `proxy.ts` protege todo lo demás: exige sesión y estar en la tabla `administradores`; si no, redirige a `/admin/no-autorizado`.
-- Productos: lista con edición rápida de stock y de activo/inactivo, formulario con precio sugerido (RN-01) y precio anterior opcional (muestra el descuento en la tienda), duplicar y eliminar.
+- Inicio: alertas (pedidos pendientes/vencidos, stock bajo), ventas, costo, ganancia y reparto por socio en un rango de fechas.
+- Pedidos: lista filtrable y detalle con botones de estado (confirmar descuenta stock; cancelar un confirmado lo devuelve).
+- Productos: lista con edición rápida de stock y de activo/inactivo, formulario con precio sugerido (RN-01) y precio anterior opcional (muestra el descuento en la tienda), duplicar, eliminar y **copiar enlace para anuncio**.
 - Categorías: crear, renombrar, reordenar, eliminar.
+- Socios: porcentajes de reparto (los activos deben sumar 100 %).
+- Configuración: WhatsApp, margen por defecto, redondeo, umbral de stock bajo y texto de envío.
 - Guardar desde el admin actualiza la tienda pública al instante (`updateTag`).
+
+### Enlaces para anuncios
+`/producto/<slug>?agregar=1` abre la ficha con el producto ya en el carrito (una sola vez; no agrega agotados) y
+conserva los parámetros de campaña (`utm_source`, `fbclid`…). El botón "Copiar enlace para anuncio" del panel lo arma.
 
 ### Imágenes de productos
 Se guardan en Supabase Storage, bucket público `productos` (creado por la migración del Bloque 4).

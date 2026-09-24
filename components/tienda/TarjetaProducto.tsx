@@ -1,9 +1,10 @@
 import Link from "next/link";
 import type { ProductoResumen } from "@/lib/catalogo";
-import { formatearCOP } from "@/lib/formato";
+import { porcentajeDescuento } from "@/lib/precio";
 import { BotonAgregarRapido } from "./BotonAgregarRapido";
 import { EtiquetaStock } from "./EtiquetaStock";
 import { ImagenProducto } from "./ImagenProducto";
+import { PrecioProducto } from "./PrecioProducto";
 
 type Props = {
   producto: ProductoResumen;
@@ -19,19 +20,29 @@ export function TarjetaProducto({
   preload = false,
 }: Props) {
   const agotado = producto.stock <= 0;
+  const descuento = porcentajeDescuento(producto.precio_anterior, producto.precio_venta);
   return (
     <div className="relative flex w-full flex-col overflow-hidden rounded-xl border border-neutral-200 bg-white">
       <Link href={`/producto/${producto.slug}`} className="group flex flex-1 flex-col">
-        <ImagenProducto
-          ruta={producto.imagenes[0]}
-          alt={producto.nombre}
-          sizes={sizes}
-          preload={preload}
-          className={agotado ? "opacity-60" : ""}
-        />
+        <div className="relative">
+          <ImagenProducto
+            ruta={producto.imagenes[0]}
+            alt={producto.nombre}
+            sizes={sizes}
+            preload={preload}
+            className={agotado ? "opacity-60" : ""}
+          />
+          {descuento !== null && (
+            <span className="absolute top-2 left-2 rounded-md bg-red-600 px-1.5 py-0.5 text-xs font-bold text-white">
+              −{descuento}%
+            </span>
+          )}
+        </div>
         <div className="flex flex-1 flex-col gap-1 p-3">
           <h3 className="line-clamp-2 text-sm leading-snug group-hover:underline">{producto.nombre}</h3>
-          <p className="mt-auto pt-1 text-base font-semibold">{formatearCOP(producto.precio_venta)}</p>
+          <div className="mt-auto pt-1">
+            <PrecioProducto precio={producto.precio_venta} precioAnterior={producto.precio_anterior} />
+          </div>
           <EtiquetaStock stock={producto.stock} umbral={umbral} />
         </div>
       </Link>

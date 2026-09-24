@@ -49,6 +49,7 @@ export type Database = {
           descripcion: string;
           imagenes: string[];
           precio_venta: number;
+          precio_anterior: number | null;
           stock: number;
           activo: boolean;
           destacado: boolean;
@@ -63,6 +64,7 @@ export type Database = {
           descripcion?: string;
           imagenes?: string[];
           precio_venta: number;
+          precio_anterior?: number | null;
           stock?: number;
           activo?: boolean;
           destacado?: boolean;
@@ -77,6 +79,7 @@ export type Database = {
           descripcion?: string;
           imagenes?: string[];
           precio_venta?: number;
+          precio_anterior?: number | null;
           stock?: number;
           activo?: boolean;
           destacado?: boolean;
@@ -282,6 +285,28 @@ export type Database = {
       entregar_pedido: {
         Args: { p_pedido_id: string };
         Returns: Json;
+      };
+      guardar_producto: {
+        Args: {
+          p_id: string;
+          p_categoria_id: string | null;
+          p_nombre: string;
+          p_slug: string;
+          p_descripcion: string | null;
+          p_imagenes: string[] | null;
+          p_costo: number;
+          p_margen_pct: number;
+          p_precio_venta: number;
+          p_precio_anterior: number | null;
+          p_stock: number;
+          p_activo: boolean;
+          p_destacado: boolean;
+        };
+        Returns: string;
+      };
+      duplicar_producto: {
+        Args: { p_producto_id: string };
+        Returns: string;
       };
     };
     Enums: {

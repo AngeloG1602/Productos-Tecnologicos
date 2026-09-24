@@ -54,13 +54,19 @@ Estado: ⬜ pendiente · 🟨 en curso · ✅ terminado
 - [x] Página `/politica-de-datos` con texto base (Ley 1581) — **[COMPLETAR]** responsable, NIT/cédula, ciudad, correo y fecha; revisión legal recomendada
 - [x] `lib/whatsapp.ts`, `lib/carrito.ts`, `lib/pedido.ts` con pruebas (29 en total)
 
-## B4 — Admin: acceso + catálogo ⬜
+## B4 — Admin: acceso + catálogo ✅
 **Listo cuando:** los dos admins pueden crear un producto completo desde el celular.
 
-- Login correo/contraseña; `proxy.ts` protege `/admin`
-- CRUD de productos (activar/desactivar, destacado, stock) y categorías
-- Hasta 4 imágenes por producto en Storage (conversión a WebP ≤ 1200 px en el navegador)
-- `lib/precio.ts`: precio sugerido RN-01, margen real, alerta bajo costo (con pruebas)
+- [x] `20260924000400_admin_catalogo.sql`: columna `precio_anterior`, bucket `productos` en Storage con RLS (lectura pública, escritura solo admins), `guardar_producto` (upsert atómico producto + costo) y `duplicar_producto`
+- [x] `proxy.ts` protege todo `/admin`: exige sesión y estar en `administradores` (RN-10); `/admin/no-autorizado` para cuentas sin permiso
+- [x] Login en `/admin/entrar`, con `?siguiente=` para volver a donde se quería entrar
+- [x] Productos: lista con buscador y filtros, edición rápida de stock y de activo/inactivo en la misma lista, duplicar, eliminar (borra también las fotos del bucket)
+- [x] Formulario de producto: precio sugerido en vivo (RN-01), margen real y aviso si el precio queda bajo el costo, precio anterior opcional (para descuentos, valida que sea mayor al actual), hasta 4 fotos
+- [x] Fotos: se comprimen a WebP ≤ 1200 px en el navegador antes de subir (`lib/imagen-cliente.ts`, sin librerías nuevas)
+- [x] Categorías: crear, renombrar, reordenar (subir/bajar), eliminar
+- [x] Guardar en el admin actualiza la tienda pública al instante (`updateTag`)
+- [x] `lib/precio.ts` (RN-01) y `lib/slug.ts`, con pruebas (37 en total)
+- [x] Probado de punta a punta: login, no-admin, categorías, producto con foto y precio ajustado, stock rápido, activar/desactivar (se refleja en la tienda), duplicar, eliminar — 38 pasos
 
 ## B5 — Admin: pedidos, socios, dashboard, configuración ⬜
 **Listo cuando:** confirmar/cancelar pedidos mueve el stock bien y el reparto cuadra.
@@ -88,6 +94,7 @@ Estado: ⬜ pendiente · 🟨 en curso · ✅ terminado
 | Margen / redondeo | 40 % / múltiplos de $100 |
 | Socios | 2 socios 50/50 |
 | Envío, pago, IVA | Se acuerdan por WhatsApp; precio final sin desglose |
+| Precio "antes/ahora" | Campo opcional `precio_anterior`; solo se muestra si es un precio real ya cobrado (RN-01 ampliado, B4) |
 
 ## Notas
 - `docs/F0-vision-alcance.md` se menciona en `CLAUDE.md` pero aún no está en el repo.

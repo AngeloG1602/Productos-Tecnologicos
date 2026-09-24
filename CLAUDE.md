@@ -60,3 +60,4 @@ Notas:
 - Tipos de la BD en `lib/supabase/tipos.ts`: actualizarlos junto con cada migración.
 - Tras cambiar migraciones o seed, regenerar `supabase/instalar.sql` con `bash scripts/generar-instalar.sh` (lo verifica `npm run test:bd`).
 - El estado de los pedidos solo cambia vía RPC (`confirmar_pedido`, `cancelar_pedido`, `entregar_pedido`); no hay UPDATE directo.
+- `/admin` está protegido por `proxy.ts` (sesión + tabla `administradores`); las mutaciones del panel van en `app/admin/**/acciones.ts` (Server Actions), no en componentes de cliente.

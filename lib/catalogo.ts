@@ -8,7 +8,7 @@ export type Categoria = Pick<Fila<"categorias">, "id" | "nombre" | "slug">;
 
 export type ProductoResumen = Pick<
   Fila<"productos">,
-  "id" | "categoria_id" | "nombre" | "slug" | "imagenes" | "precio_venta" | "stock" | "destacado"
+  "id" | "categoria_id" | "nombre" | "slug" | "imagenes" | "precio_venta" | "precio_anterior" | "stock" | "destacado"
 >;
 
 export type ProductoDetalle = ProductoResumen &
@@ -36,7 +36,7 @@ export async function obtenerCategorias(): Promise<Categoria[]> {
 export async function obtenerProductos(): Promise<ProductoResumen[]> {
   const { data, error } = await crearClientePublico()
     .from("productos")
-    .select("id, categoria_id, nombre, slug, imagenes, precio_venta, stock, destacado")
+    .select("id, categoria_id, nombre, slug, imagenes, precio_venta, precio_anterior, stock, destacado")
     .eq("activo", true)
     .order("nombre");
   if (error) throw new Error(`No se pudieron cargar los productos: ${error.message}`);
@@ -47,7 +47,7 @@ export async function obtenerProductoPorSlug(slug: string): Promise<ProductoDeta
   const { data, error } = await crearClientePublico()
     .from("productos")
     .select(
-      "id, categoria_id, nombre, slug, descripcion, imagenes, precio_venta, stock, destacado, categoria:categorias(id, nombre, slug)",
+      "id, categoria_id, nombre, slug, descripcion, imagenes, precio_venta, precio_anterior, stock, destacado, categoria:categorias(id, nombre, slug)",
     )
     .eq("slug", slug)
     .eq("activo", true)

@@ -1,5 +1,12 @@
-/** Bucket de Supabase Storage donde viven las imágenes de productos (se crea en el Bloque 4). */
+/** Bucket de Supabase Storage donde viven las imágenes de productos. */
 export const BUCKET_PRODUCTOS = "productos";
+
+export const MAXIMO_IMAGENES_PRODUCTO = 4;
+
+/** Ruta dentro del bucket para la imagen N de un producto (empieza en 1): "<id>/1.webp". */
+export function rutaImagenProducto(productoId: string, indice: number): string {
+  return `${productoId}/${indice}.webp`;
+}
 
 /**
  * URL pública de una imagen de producto.

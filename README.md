@@ -74,15 +74,24 @@ No hay registro público. Para cada uno de los 2 admins:
 | `producto_costos`, `socios` | ✗ | todo |
 | `pedidos`, `pedido_items`, `pedido_reparto` | ✗ | solo lectura |
 | `configuracion` | solo vía `configuracion_publica()` (sin margen ni redondeo) | lee y edita |
+| Bucket `productos` (Storage) | lee | lee y escribe |
 
 Funciones (RPC):
 - `crear_pedido(p_items, p_cliente)` — pública. Toma precios, costos y stock de la BD. Si algo no coincide con lo que vio el cliente, **no** crea el pedido y devuelve los cambios para ajustar el carrito.
 - `confirmar_pedido(id)`, `cancelar_pedido(id)`, `entregar_pedido(id)` — solo admins; mueven stock y reparto en una transacción.
+- `guardar_producto(...)`, `duplicar_producto(id)` — solo admins; crean/editan un producto y su costo en una sola transacción, o lo duplican como variante inactiva.
+
+### Panel admin (`/admin`)
+- `/admin/entrar`: correo y contraseña (las cuentas se crean a mano en Supabase, ver arriba). `proxy.ts` protege todo lo demás: exige sesión y estar en la tabla `administradores`; si no, redirige a `/admin/no-autorizado`.
+- Productos: lista con edición rápida de stock y de activo/inactivo, formulario con precio sugerido (RN-01) y precio anterior opcional (muestra el descuento en la tienda), duplicar y eliminar.
+- Categorías: crear, renombrar, reordenar, eliminar.
+- Guardar desde el admin actualiza la tienda pública al instante (`updateTag`).
 
 ### Imágenes de productos
-Se guardan en Supabase Storage, bucket público `productos` (se crea en el Bloque 4).
-En `productos.imagenes` va la ruta dentro del bucket (ej. `<id-producto>/1.webp`); `lib/imagenes.ts` arma la URL pública
-y `next.config.ts` solo permite imágenes de ese bucket.
+Se guardan en Supabase Storage, bucket público `productos` (creado por la migración del Bloque 4).
+En `productos.imagenes` va la ruta dentro del bucket (ej. `<id-producto>/1.webp`); `lib/imagenes.ts` arma la URL pública,
+`next.config.ts` solo permite imágenes de ese bucket, y `lib/imagen-cliente.ts` las redimensiona y comprime a WebP
+(≤ 1200 px, RNF-02) en el navegador antes de subirlas.
 
 ## Despliegue en Vercel
 1. En Vercel: **Add New → Project** e importar este repositorio (framework: Next.js, sin cambios de build).

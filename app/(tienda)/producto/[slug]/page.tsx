@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import { CompraProducto } from "@/components/tienda/CompraProducto";
 import { EtiquetaStock } from "@/components/tienda/EtiquetaStock";
 import { Galeria } from "@/components/tienda/Galeria";
+import { PrecioProducto } from "@/components/tienda/PrecioProducto";
 import {
   obtenerConfiguracionPublica,
   obtenerProductoPorSlug,
@@ -63,7 +64,7 @@ export default async function FichaProducto({ params }: PageProps<"/producto/[sl
             </Link>
           )}
           <h1 className="text-xl leading-tight font-bold">{producto.nombre}</h1>
-          <p className="text-2xl font-bold">{formatearCOP(producto.precio_venta)}</p>
+          <PrecioProducto precio={producto.precio_venta} precioAnterior={producto.precio_anterior} tamano="grande" />
           <div>
             <EtiquetaStock stock={producto.stock} umbral={configuracion.umbralStockBajo} />
           </div>

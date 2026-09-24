@@ -30,13 +30,16 @@ Estado: ⬜ pendiente · 🟨 en curso · ✅ terminado
 - [x] `npm run test:bd` y tipos en `lib/supabase/tipos.ts`
 - [ ] **(Tú)** Aplicar migraciones + seed en Supabase, crear los 2 admins y desactivar el registro público
 
-## B2 — Catálogo público ⬜
+## B2 — Catálogo público ✅
 **Listo cuando:** se navega el catálogo en el celular con datos de prueba.
 
-- Inicio: chips de categorías, buscador, grilla, destacados
-- Ficha de producto `/producto/[slug]`: galería, precio, disponibilidad (RN-03), selector de cantidad
-- `lib/stock.ts`: texto de disponibilidad según umbral (con pruebas)
-- Imágenes con `next/image` desde Supabase Storage
+- [x] Inicio: buscador (sin importar tildes), chips de categorías (solo las que tienen productos), destacados, grilla de 2 columnas a 360 px
+- [x] Filtros en la URL (`?categoria=…&q=…`): se conservan al volver desde una ficha y se pueden compartir; se filtra en el navegador (catálogo < 50 productos)
+- [x] Ficha `/producto/[slug]`: galería deslizable con miniaturas, precio, disponibilidad (RN-03), selector de cantidad limitado al stock; botón "Agregar" se activa en B3
+- [x] Inactivos e inexistentes → 404; agotados al final de la grilla y sin poder comprarse
+- [x] `lib/stock.ts`, `lib/texto.ts`, `lib/imagenes.ts` con pruebas
+- [x] Caché: páginas regeneradas cada 60 s con etiqueta `catalogo` (el admin la invalidará en B4); fichas pregeneradas al compilar
+- [x] Imágenes con `next/image` desde Supabase Storage (en la BD se guarda la ruta dentro del bucket `productos`)
 
 ## B3 — Carrito + pedido + WhatsApp ⬜
 **Listo cuando:** un pedido de prueba queda registrado y abre WhatsApp con el mensaje correcto.

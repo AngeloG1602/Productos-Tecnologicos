@@ -81,6 +81,11 @@ Funciones (RPC):
 - `crear_pedido(p_items, p_cliente)` — pública. Toma precios, costos y stock de la BD. Si algo no coincide con lo que vio el cliente, **no** crea el pedido y devuelve los cambios para ajustar el carrito.
 - `confirmar_pedido(id)`, `cancelar_pedido(id)`, `entregar_pedido(id)` — solo admins; mueven stock y reparto en una transacción.
 
+### Imágenes de productos
+Se guardan en Supabase Storage, bucket público `productos` (se crea en el Bloque 4).
+En `productos.imagenes` va la ruta dentro del bucket (ej. `<id-producto>/1.webp`); `lib/imagenes.ts` arma la URL pública
+y `next.config.ts` solo permite imágenes de ese bucket.
+
 ## Despliegue en Vercel
 1. En Vercel: **Add New → Project** e importar este repositorio (framework: Next.js, sin cambios de build).
 2. En **Settings → Environment Variables** cargar las tres variables de arriba (Production y Preview).

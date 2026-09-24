@@ -81,3 +81,7 @@ dirección `/api/health` y un monitor gratuito que la visita cada pocos minutos 
 Cada bloque nuevo que toque la base traerá un archivo en `supabase/migrations/`. Te diré cuál es y se pega
 igual que en el paso 2 (SQL Editor → New query → pegar → Run). **No vuelvas a pegar `instalar.sql`** en un
 proyecto que ya lo tiene.
+
+**El orden importa:** primero pega la migración en Supabase y después se sube el código. Vercel publica solo
+cada cambio y, al hacerlo, consulta tu base; si la base todavía no tiene lo nuevo, el despliegue falla (la página
+sigue en la versión anterior). Si eso pasa: aplica la migración y en Vercel → Deployments → ⋯ → **Redeploy**.

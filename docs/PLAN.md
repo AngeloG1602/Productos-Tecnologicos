@@ -41,14 +41,18 @@ Estado: ⬜ pendiente · 🟨 en curso · ✅ terminado
 - [x] Caché: páginas regeneradas cada 60 s con etiqueta `catalogo` (el admin la invalidará en B4); fichas pregeneradas al compilar
 - [x] Imágenes con `next/image` desde Supabase Storage (en la BD se guarda la ruta dentro del bucket `productos`)
 
-## B3 — Carrito + pedido + WhatsApp ⬜
+## B3 — Carrito + pedido + WhatsApp ✅
 **Listo cuando:** un pedido de prueba queda registrado y abre WhatsApp con el mensaje correcto.
 
-- Carrito en cliente persistido en `localStorage` (límite por stock, RN-04)
-- Formulario: nombre, ciudad/barrio, notas, aceptación de política (RN-09)
-- Llamada a `crear_pedido`; si cambió stock/precio, se ajusta el carrito y se avisa antes de abrir WhatsApp
-- `lib/whatsapp.ts`: armado del mensaje (RN-08) y del enlace `wa.me` (con pruebas)
-- Botón flotante de WhatsApp (RF-08)
+- [x] Carrito en el navegador (`localStorage`, sincronizado entre pestañas), con tope por stock (RN-04)
+- [x] Ícono con contador en el encabezado; botón **+** de agregado rápido en cada tarjeta; "Agregar" en la ficha; aviso "Agregado al carrito · Ver carrito"
+- [x] Página `/carrito`: cantidades, quitar, total, formulario (nombre, ciudad/barrio, notas, aceptación de política)
+- [x] Envío vía `crear_pedido`; si cambió stock/precio se ajusta el carrito y se avisa sin abrir WhatsApp; el formulario conserva lo escrito
+- [x] Mensaje de WhatsApp (RN-08) **con el enlace de cada producto** (pedido del cliente); se abre en la misma pestaña (en el celular abre la app)
+- [x] Pantalla "pedido listo" con botón para reabrir WhatsApp si no se abrió o el cliente vuelve atrás (30 min)
+- [x] Botón flotante de WhatsApp para consultas (RF-08), oculto en el carrito
+- [x] Página `/politica-de-datos` con texto base (Ley 1581) — **[COMPLETAR]** responsable, NIT/cédula, ciudad, correo y fecha; revisión legal recomendada
+- [x] `lib/whatsapp.ts`, `lib/carrito.ts`, `lib/pedido.ts` con pruebas (29 en total)
 
 ## B4 — Admin: acceso + catálogo ⬜
 **Listo cuando:** los dos admins pueden crear un producto completo desde el celular.
@@ -70,7 +74,8 @@ Estado: ⬜ pendiente · 🟨 en curso · ✅ terminado
 **Listo cuando:** Lighthouse móvil ≥ 85 y prueba completa de punta a punta.
 
 - Open Graph por producto (RNF-07)
-- Página de política de tratamiento de datos (Ley 1581 de 2012)
+- Revisar/completar el texto de la política de datos (la página ya existe desde B3)
+- Límite de pedidos anónimos seguidos (anti-spam de `crear_pedido`)
 - `/api/health` que consulta la BD + guía de monitoreo (UptimeRobot)
 - Revisión de rendimiento, README final, guía de respaldo semanal, dominio
 

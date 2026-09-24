@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { BotonCarrito } from "@/components/carrito/BotonCarrito";
 
 export function Encabezado() {
   return (
@@ -7,7 +8,7 @@ export function Encabezado() {
         <Link href="/" className="text-lg font-bold tracking-tight">
           Tienda
         </Link>
-        {/* El botón del carrito llega en el Bloque 3 */}
+        <BotonCarrito />
       </div>
     </header>
   );

@@ -69,7 +69,16 @@ export default async function FichaProducto({ params }: PageProps<"/producto/[sl
           </div>
         </div>
 
-        <CompraProducto stock={producto.stock} />
+        <CompraProducto
+          producto={{
+            productoId: producto.id,
+            slug: producto.slug,
+            nombre: producto.nombre,
+            precio: producto.precio_venta,
+            imagen: producto.imagenes[0] ?? null,
+            stock: producto.stock,
+          }}
+        />
 
         {producto.descripcion && (
           <section className="flex flex-col gap-2 border-t border-neutral-200 pt-4">

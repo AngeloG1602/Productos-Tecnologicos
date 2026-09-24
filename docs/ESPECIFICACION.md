@@ -123,7 +123,9 @@ Enlace: `https://wa.me/<numero>?text=<mensaje codificado>` (número con indicati
 Pedido: PED-0042
 
 • 2 x Cargador USB-C 20W — $33.600
+  https://<dominio>/producto/cargador-usb-c-20w
 • 1 x Audífonos Bluetooth X — $45.000
+  https://<dominio>/producto/audifonos-bluetooth-x
 
 Total productos: $78.600
 Nombre: Laura Gómez
@@ -132,6 +134,8 @@ Notas: Entregar en la tarde
 
 (El costo de envío se confirma por este medio)
 ```
+- Debajo de cada producto va el enlace a su ficha, para identificar exactamente el producto (agregado a pedido del cliente, B3).
+- La última línea es el `texto_envio` de la configuración.
 
 ### RN-09 Datos personales
 Solo se guardan nombre, ciudad/barrio y notas del cliente. El teléfono llega por WhatsApp y no se guarda en la plataforma. Se requiere casilla de aceptación y una página de política de tratamiento de datos (Ley 1581 de 2012 en Colombia).

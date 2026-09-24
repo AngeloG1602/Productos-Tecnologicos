@@ -1,86 +1,58 @@
 "use client";
 
 import { useState } from "react";
+import type { ProductoParaCarrito } from "@/lib/carrito";
+import { notificar } from "@/components/carrito/notificacion";
+import { useCarrito } from "@/components/carrito/useCarrito";
+import { SelectorCantidad } from "./SelectorCantidad";
 
-/**
- * Selector de cantidad (limitado al stock, RN-04) y botón "Agregar".
- * El carrito se conecta en el Bloque 3; por ahora el botón está deshabilitado.
- */
-export function CompraProducto({ stock }: { stock: number }) {
+/** Selector de cantidad + "Agregar al carrito", sin pasar del stock (RN-04). */
+export function CompraProducto({ producto }: { producto: ProductoParaCarrito }) {
+  const { items, agregar } = useCarrito();
   const [cantidad, setCantidad] = useState(1);
-  const agotado = stock <= 0;
 
-  if (agotado) {
+  const enCarrito = items.find((i) => i.productoId === producto.productoId)?.cantidad ?? 0;
+  const disponible = Math.max(0, producto.stock - enCarrito);
+
+  if (producto.stock <= 0) {
     return (
-      <button
-        type="button"
-        disabled
-        className="h-12 w-full rounded-xl bg-neutral-200 text-base font-semibold text-neutral-500"
-      >
+      <button type="button" disabled className="h-12 w-full rounded-xl bg-neutral-200 text-base font-semibold text-neutral-500">
         Agotado
       </button>
     );
   }
 
+  const alAgregar = () => {
+    const agregadas = agregar(producto, Math.min(cantidad, disponible));
+    if (agregadas > 0) {
+      notificar(agregadas === 1 ? "Agregado al carrito" : `${agregadas} unidades agregadas al carrito`, true);
+      setCantidad(1);
+    }
+  };
+
   return (
     <div className="flex flex-col gap-3">
-      <div className="flex items-center gap-3">
-        <span id="etiqueta-cantidad" className="text-sm text-neutral-600">
-          Cantidad
-        </span>
-        <div className="flex items-center rounded-xl border border-neutral-300" role="group" aria-labelledby="etiqueta-cantidad">
-          <BotonCantidad
-            etiqueta="Quitar una unidad"
-            disabled={cantidad <= 1}
-            onClick={() => setCantidad((c) => Math.max(1, c - 1))}
-          >
-            −
-          </BotonCantidad>
-          <output className="w-10 text-center text-base font-semibold" aria-live="polite">
-            {cantidad}
-          </output>
-          <BotonCantidad
-            etiqueta="Agregar una unidad"
-            disabled={cantidad >= stock}
-            onClick={() => setCantidad((c) => Math.min(stock, c + 1))}
-          >
-            +
-          </BotonCantidad>
+      {disponible > 0 && (
+        <div className="flex items-center gap-3">
+          <span className="text-sm text-neutral-600">Cantidad</span>
+          <SelectorCantidad valor={Math.min(cantidad, disponible)} maximo={disponible} onCambiar={setCantidad} />
         </div>
-      </div>
+      )}
 
       <button
         type="button"
-        disabled
-        title="Disponible muy pronto"
-        className="h-12 w-full rounded-xl bg-marca text-base font-semibold text-white disabled:opacity-50"
+        onClick={alAgregar}
+        disabled={disponible === 0}
+        className="h-12 w-full rounded-xl bg-marca text-base font-semibold text-white active:opacity-90 disabled:bg-neutral-200 disabled:text-neutral-500"
       >
-        Agregar al carrito
+        {disponible === 0 ? "Ya tienes todas las unidades disponibles" : "Agregar al carrito"}
       </button>
-    </div>
-  );
-}
 
-function BotonCantidad({
-  etiqueta,
-  disabled,
-  onClick,
-  children,
-}: {
-  etiqueta: string;
-  disabled: boolean;
-  onClick: () => void;
-  children: React.ReactNode;
-}) {
-  return (
-    <button
-      type="button"
-      aria-label={etiqueta}
-      disabled={disabled}
-      onClick={onClick}
-      className="h-11 w-11 text-xl text-neutral-800 disabled:text-neutral-300"
-    >
-      {children}
-    </button>
+      {enCarrito > 0 && (
+        <p className="text-center text-sm text-neutral-600">
+          Tienes {enCarrito} en el carrito
+        </p>
+      )}
+    </div>
   );
 }

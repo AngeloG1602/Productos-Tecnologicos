@@ -44,21 +44,19 @@ La llave `service_role` ignora RLS: nunca se le pone prefijo `NEXT_PUBLIC_` ni s
 
 ## Base de datos (Supabase)
 
+> Paso a paso sin conocimientos técnicos: [`docs/GUIA-INSTALACION.md`](docs/GUIA-INSTALACION.md).
+
 ### Aplicar migraciones y datos de prueba
-Opción simple, desde el panel de Supabase → **SQL Editor**, ejecutar en este orden:
-1. Cada archivo de `supabase/migrations/` (en orden de nombre).
-2. `supabase/seed.sql` (datos de prueba; se puede correr varias veces sin duplicar).
+- **Proyecto nuevo:** pegar `supabase/instalar.sql` (todas las migraciones + seed) en **SQL Editor** → Run.
+  Se genera con `bash scripts/generar-instalar.sh`; `npm run test:bd` falla si quedó desactualizado.
+- **Cambios posteriores:** pegar solo el archivo nuevo de `supabase/migrations/`.
 
 (Con la CLI de Supabase: `supabase link` y luego `supabase db push`.)
 
 ### Crear los administradores
 No hay registro público. Para cada uno de los 2 admins:
 1. **Authentication → Users → Add user** (correo y contraseña, marcar "Auto Confirm User").
-2. En el SQL Editor:
-   ```sql
-   insert into public.administradores (user_id, nombre)
-   select id, 'Nombre del admin' from auth.users where email = 'correo@ejemplo.com';
-   ```
+2. En el SQL Editor, pegar `supabase/crear-admin.sql` con el correo y nombre de cada admin.
 3. En **Authentication → Sign In / Providers**, desactivar **"Allow new users to sign up"**.
    Aunque alguien lograra registrarse, no tendría permisos: solo cuenta quien esté en `administradores`.
 

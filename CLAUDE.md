@@ -58,4 +58,5 @@ Notas:
 - En `/lib`, los imports relativos usan extensión `.ts` para que `node --test` los resuelva.
 - El plan por bloques y su estado está en `docs/PLAN.md`.
 - Tipos de la BD en `lib/supabase/tipos.ts`: actualizarlos junto con cada migración.
+- Tras cambiar migraciones o seed, regenerar `supabase/instalar.sql` con `bash scripts/generar-instalar.sh` (lo verifica `npm run test:bd`).
 - El estado de los pedidos solo cambia vía RPC (`confirmar_pedido`, `cancelar_pedido`, `entregar_pedido`); no hay UPDATE directo.

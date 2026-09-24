@@ -19,9 +19,17 @@ correr() {
   psql -d "$BD" -X -q -v ON_ERROR_STOP=1 -f "$1" 2>&1 | sed -e 's/^psql:[^ ]* NOTICE:  /    /'
 }
 
+# instalar.sql debe estar al día con las migraciones
+cp supabase/instalar.sql "${TMPDIR:-/tmp}/instalar.previo.sql"
+bash scripts/generar-instalar.sh > /dev/null
+if ! cmp -s supabase/instalar.sql "${TMPDIR:-/tmp}/instalar.previo.sql"; then
+  echo "✘ supabase/instalar.sql estaba desactualizado; se regeneró. Inclúyelo en el commit."
+  exit 1
+fi
+
+# Se instala con el archivo único, igual que en Supabase
 correr supabase/tests/00_simular_supabase.sql
-for f in supabase/migrations/*.sql; do correr "$f"; done
-correr supabase/seed.sql
+correr supabase/instalar.sql
 for f in supabase/tests/0[1-9]*.sql; do correr "$f"; done
 
 echo "✔ Base de datos: todas las pruebas pasaron"

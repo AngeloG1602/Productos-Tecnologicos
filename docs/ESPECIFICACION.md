@@ -138,7 +138,7 @@ Notas: Entregar en la tarde
 - La última línea es el `texto_envio` de la configuración.
 
 ### RN-09 Datos personales
-Solo se guardan nombre, ciudad/barrio y notas del cliente. El teléfono llega por WhatsApp y no se guarda en la plataforma. Se requiere casilla de aceptación y una página de política de tratamiento de datos (Ley 1581 de 2012 en Colombia).
+Solo se guardan nombre, ciudad/barrio y notas del cliente. El teléfono llega por WhatsApp y no se guarda en la plataforma. Se requiere casilla de aceptación y una página de política de tratamiento de datos (Ley 1581 de 2012 en Colombia). Para limitar pedidos seguidos (B6) se guarda por un día solo un resumen de la IP, nunca la IP.
 
 ### RN-10 Administradores
 Ambos administradores tienen los mismos permisos. No hay registro público; las cuentas se crean manualmente en Supabase.
@@ -236,7 +236,7 @@ Montos en pesos enteros (`int`), sin decimales.
 | 5 | Envío: ¿se cobra?, ¿a qué ciudades?, ¿contraentrega? | Se acuerda por WhatsApp |
 | 6 | Métodos de pago (Nequi, transferencia, efectivo…) | Se acuerda por WhatsApp |
 | 7 | IVA y facturación | Precio final sin desglose |
-| 8 | Garantía y devoluciones de productos electrónicos | Texto informativo pendiente |
+| 8 | Garantía y devoluciones de productos electrónicos | Página `/terminos` (B6): garantía legal (12 meses por defecto, editable), retracto de 5 días hábiles y reversión del pago según Ley 1480 / Ley 2439 |
 | 9 | ¿Precios por volumen para clientes que compran varias unidades? | No en V1 |
 | 10 | Dominio propio | Subdominio de Vercel al inicio |
 

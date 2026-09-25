@@ -5,6 +5,13 @@ export function normalizarNumero(numero: string): string {
   return numero.replace(/\D/g, "");
 }
 
+/** Para mostrar: "573001234567" → "+57 300 123 4567" (otros países: "+" y los dígitos). */
+export function formatearTelefono(numero: string): string {
+  const d = normalizarNumero(numero);
+  const co = /^57(\d{3})(\d{3})(\d{4})$/.exec(d);
+  return co ? `+57 ${co[1]} ${co[2]} ${co[3]}` : `+${d}`;
+}
+
 /** Enlace wa.me con el mensaje prellenado (RN-08). */
 export function enlaceWhatsApp(numero: string, mensaje?: string): string {
   const base = `https://wa.me/${normalizarNumero(numero)}`;

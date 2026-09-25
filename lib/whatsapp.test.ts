@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { enlaceWhatsApp, mensajePedido, normalizarNumero } from "./whatsapp.ts";
+import { enlaceWhatsApp, formatearTelefono, mensajePedido, normalizarNumero } from "./whatsapp.ts";
 
 const n = (t: string) => t.replace(/ /g, " ");
 
@@ -54,4 +54,10 @@ test("sin notas ni texto de envío, esas líneas no aparecen", () => {
   });
   assert.ok(!mensaje.includes("Notas:"));
   assert.ok(n(mensaje).endsWith("Ciudad/Barrio: Cali"));
+});
+
+test("formatea el teléfono para mostrarlo", () => {
+  assert.equal(formatearTelefono("573001234567"), "+57 300 123 4567");
+  assert.equal(formatearTelefono("+57 300 123 4567"), "+57 300 123 4567");
+  assert.equal(formatearTelefono("5215512345678"), "+5215512345678");
 });

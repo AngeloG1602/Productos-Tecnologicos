@@ -69,10 +69,76 @@ Así nadie más puede crearse una cuenta. (Aunque lo lograra, no tendría permis
 
 ---
 
-## Parte 3 · Mantenerla despierta (opcional, recomendado)
+## Parte 3 · Mantenerla despierta y vigilada (≈ 5 min)
 
-El plan gratis de Supabase pausa los proyectos que pasan varios días sin uso. En el Bloque 6 dejaremos una
-dirección `/api/health` y un monitor gratuito que la visita cada pocos minutos para evitarlo.
+El plan gratis de Supabase **pausa el proyecto si pasa 7 días sin actividad**, y con la base pausada la tienda
+no carga. Hay dos protecciones:
+
+1. **Automática (ya incluida):** Vercel visita `/api/health` una vez al día (archivo `vercel.json`). Esa
+   dirección consulta la base, así que nunca pasan 7 días sin actividad. No tienes que hacer nada.
+2. **Monitor con aviso (recomendado):** si la tienda se cae por cualquier motivo, te llega un correo.
+   1. Crea una cuenta gratis en **uptimerobot.com**.
+   2. **New monitor** → tipo **HTTP(s)**.
+   3. URL: `https://productos-tecnologicos.vercel.app/api/health` (o tu dominio, si ya tienes uno).
+   4. Intervalo: **5 minutos**. En alertas deja tu correo → **Create monitor**.
+
+Para comprobarlo tú mismo abre esa dirección en el navegador: debe decir `"estado":"ok"`.
+
+---
+
+## Parte 4 · Datos legales de la tienda (≈ 5 min)
+
+La ley colombiana exige mostrar quién vende y cómo contactarlo (Ley 1480 de 2011, art. 50) y quién es el
+responsable de los datos personales (Decreto 1377 de 2013, art. 13).
+
+En el panel: **Configuración → Datos legales de la tienda** y completa nombre o razón social, cédula o NIT,
+dirección, ciudad, correo, garantía, medios de pago y tiempo de entrega. Se ven al instante en
+**Términos y condiciones** y en la **Política de datos** (enlaces en el pie de la tienda). Mientras falte algo,
+el Inicio del panel te lo recuerda.
+
+> Los textos de esas dos páginas son una base hecha con lo que dicen las leyes; lo ideal es que un abogado
+> les dé una revisada antes de invertir fuerte en anuncios.
+
+---
+
+## Parte 5 · Copia de seguridad semanal (1 min)
+
+El plan gratis de Supabase **no guarda copias**. Una vez por semana:
+
+**Panel → Configuración → Descargar copia de seguridad.** Se descarga un archivo `respaldo-tienda-FECHA.json`
+con productos, costos, pedidos, socios y configuración. Guárdalo en Google Drive o en tu computador.
+Las fotos no van en el archivo (siguen guardadas en Supabase). Si algún día hay que restaurar, ese archivo
+lo necesita quien te ayude con la parte técnica.
+
+---
+
+## Parte 6 · Dominio propio (opcional, ≈ 20 min + espera)
+
+Un dominio como `mitienda.com` se ve más confiable que `productos-tecnologicos.vercel.app`.
+
+1. Cómpralo en un registrador (por ejemplo Namecheap, GoDaddy o uno colombiano como mi.com.co). Como
+   referencia, en 2026 un `.com` cuesta entre $40.000 y $60.000 al año y un `.co` o `.com.co` entre
+   $75.000 y $150.000 (revisa el precio de **renovación**, no solo el del primer año).
+2. En Vercel: tu proyecto → **Settings → Domains → Add** → escribe el dominio (agrega también la versión con `www`).
+3. Vercel te muestra qué registros poner (normalmente un registro **A** para `mitienda.com` y un **CNAME**
+   para `www`). Cópialos en la sección **DNS** de donde compraste el dominio.
+4. Espera a que Vercel muestre **Valid Configuration** (minutos, a veces hasta 48 horas). El candado (HTTPS) es automático.
+5. Actualiza el monitor de UptimeRobot con el dominio nuevo. Los enlaces de productos en WhatsApp y los de
+   anuncios usan solos el dominio con el que entra el cliente.
+
+---
+
+## Parte 7 · Antes de anunciar
+
+- [ ] Datos legales completos (Parte 4).
+- [ ] Productos de prueba desactivados o eliminados y productos reales con fotos.
+- [ ] Tu socio creado como administrador (paso 4 de la Parte 1) y con acceso probado.
+- [ ] Monitor de UptimeRobot creado (Parte 3).
+- [ ] Una primera copia de seguridad descargada (Parte 5).
+- [ ] Un pedido de prueba de punta a punta desde otro celular.
+- [ ] **Plan de Vercel:** las condiciones de Vercel dicen que el plan gratis (Hobby) es para uso personal, no
+      comercial; para una tienda piden el plan Pro (desde US$20 al mes por persona que publica). Decide con tu socio si pasan a Pro o si
+      prefieren mover la página a un servicio gratuito que sí permita uso comercial.
 
 ---
 

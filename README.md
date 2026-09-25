@@ -82,6 +82,10 @@ Funciones (RPC):
 - `guardar_producto(...)`, `duplicar_producto(id)` — solo admins; crean/editan un producto y su costo en una sola transacción, o lo duplican como variante inactiva.
 - `guardar_socios(lista)`, `resumen_ventas(desde, hasta)` — solo admins; socios en una transacción (suma 100 %) y datos del dashboard.
 
+Límite de pedidos (anti-spam, trigger `limitar_pedidos` sobre `pedidos`): máximo 3 pedidos cada 10 minutos desde la
+misma IP y 30 por hora en total. La IP se toma de las cabeceras que Supabase pasa a Postgres (`cf-connecting-ip` o
+`x-forwarded-for`) y solo se guarda un resumen (`md5` de IP + fecha) en `pedidos_origen`, que se borra al día siguiente.
+
 ### Panel admin (`/admin`)
 - `/admin/entrar`: correo y contraseña (las cuentas se crean a mano en Supabase, ver arriba). `proxy.ts` protege todo lo demás: exige sesión y estar en la tabla `administradores`; si no, redirige a `/admin/no-autorizado`.
 - Inicio: alertas (pedidos pendientes/vencidos, stock bajo), ventas, costo, ganancia y reparto por socio en un rango de fechas.
@@ -89,8 +93,27 @@ Funciones (RPC):
 - Productos: lista con edición rápida de stock y de activo/inactivo, formulario con precio sugerido (RN-01) y precio anterior opcional (muestra el descuento en la tienda), duplicar, eliminar y **copiar enlace para anuncio**.
 - Categorías: crear, renombrar, reordenar, eliminar.
 - Socios: porcentajes de reparto (los activos deben sumar 100 %).
-- Configuración: WhatsApp, margen por defecto, redondeo, umbral de stock bajo y texto de envío.
+- Configuración: WhatsApp, margen por defecto, redondeo, umbral de stock bajo y texto de envío; **datos legales**
+  (responsable, cédula/NIT, dirección, ciudad, correo, garantía, medios de pago, tiempo de entrega) y
+  **copia de seguridad** (`/admin/respaldo` descarga todas las tablas en JSON, con la sesión del admin).
 - Guardar desde el admin actualiza la tienda pública al instante (`updateTag`).
+
+### Páginas legales
+- `/terminos`: quién vende, cómo funciona un pedido, pagos, entrega (máx. 30 días si no se acuerda otro plazo),
+  garantía, derecho de retracto (5 días hábiles; devolución en 15 días calendario), reversión del pago, quejas y enlace a la SIC
+  (Ley 1480 de 2011 y Ley 2439 de 2024).
+- `/politica-de-datos`: Ley 1581 de 2012 y Decreto 1377 de 2013.
+- Ambas toman los datos de Configuración. La fecha de revisión está en `lib/legal.ts` (`ACTUALIZACION_TEXTOS_LEGALES`).
+- Textos base: se recomienda revisión de un abogado.
+
+### Monitoreo y disponibilidad
+- `/api/health` consulta la base en cada llamada (sin caché) y responde `{"estado":"ok"}` o 503.
+- `vercel.json` programa una visita diaria (Vercel Cron) para que Supabase gratis no pause el proyecto por inactividad (7 días).
+- Monitor externo recomendado: UptimeRobot cada 5 min contra `/api/health` (ver la guía).
+
+### Identidad de la tienda
+Nombre, color y descripción en `lib/tienda.ts` (título de las páginas, pie, imagen al compartir `app/(tienda)/opengraph-image.tsx`
+y textos legales). El color de la interfaz está en `app/globals.css` (`--marca`).
 
 ### Enlaces para anuncios
 `/producto/<slug>?agregar=1` abre la ficha con el producto ya en el carrito (una sola vez; no agrega agotados) y
@@ -105,7 +128,10 @@ En `productos.imagenes` va la ruta dentro del bucket (ej. `<id-producto>/1.webp`
 ## Despliegue en Vercel
 1. En Vercel: **Add New → Project** e importar este repositorio (framework: Next.js, sin cambios de build).
 2. En **Settings → Environment Variables** cargar las tres variables de arriba (Production y Preview).
-3. Desplegar. La página de inicio muestra "Supabase: Configurado" si las variables públicas quedaron bien.
+3. Desplegar.
+4. Comprobar `https://<dominio>/api/health` → `{"estado":"ok"}`.
+
+> Condiciones de Vercel: el plan Hobby es solo para uso personal/no comercial; una tienda requiere el plan Pro.
 
 ## Estructura
 ```
@@ -113,7 +139,7 @@ app/                 rutas (App Router)
 lib/                 utilidades (formato, precios, WhatsApp) y clientes de Supabase
 supabase/migrations  migraciones SQL numeradas
 supabase/seed.sql    datos de prueba
-supabase/tests       pruebas SQL (RLS y flujo de pedidos)
+supabase/tests       pruebas SQL (RLS, pedidos, catálogo, ventas, límites)
 scripts/             utilidades (probar-bd.sh)
 docs/                especificación y plan
 ```

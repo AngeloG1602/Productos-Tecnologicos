@@ -82,24 +82,35 @@ Estado: ⬜ pendiente · 🟨 en curso · ✅ terminado
 - [x] `lib/fechas.ts`, `lib/anuncio.ts`, `lib/configuracion.ts`, `lib/relacionados.ts` y `pedidoVencido` con pruebas (54 en total)
 - [x] Probado de punta a punta: 45 pasos del bloque + regresión de B2, B3 y B4 (26 + 31 + 40)
 
-## B6 — Pulido y salida ⬜
+## B6 — Pulido y salida ✅
 **Listo cuando:** Lighthouse móvil ≥ 85 y prueba completa de punta a punta.
 
-- Open Graph de la página de inicio (las fichas ya lo tienen desde B5)
-- Revisar/completar el texto de la política de datos (la página ya existe desde B3)
-- Límite de pedidos anónimos seguidos (anti-spam de `crear_pedido`)
-- `/api/health` que consulta la BD + guía de monitoreo (UptimeRobot)
-- Revisión de rendimiento, README final, guía de respaldo semanal, dominio
+- [x] `20260925000100_salida.sql`: datos legales en `configuracion` (públicos vía `configuracion_publica()`) y límite de pedidos (3 cada 10 min por IP, 30 por hora en total; la IP no se guarda)
+- [x] `/terminos` (Ley 1480 de 2011 y Ley 2439 de 2024): vendedor, pedido, pagos, entrega, garantía, retracto, reversión, quejas y enlace a la SIC
+- [x] `/politica-de-datos` sin marcadores: responsable con dirección y teléfono (Decreto 1377 art. 13), encargados (Supabase, Vercel), código anti-spam
+- [x] Admin → Configuración: formulario de datos legales; aviso en el Inicio mientras falten
+- [x] Copia de seguridad: botón que descarga todas las tablas en JSON (`/admin/respaldo`)
+- [x] `/api/health` (consulta la BD, sin caché) + cron diario de Vercel (`vercel.json`) para que Supabase no pause el proyecto; guía de UptimeRobot
+- [x] Imagen para compartir la página de inicio (Open Graph) y nombre de la tienda centralizado en `lib/tienda.ts`
+- [x] Pie con términos, política y SIC; casilla del carrito enlaza términos
+- [x] Lighthouse móvil (local): rendimiento 99–100, accesibilidad 100 en inicio, ficha, carrito y términos
+- [x] Guía: monitoreo, datos legales, respaldo semanal, dominio propio y lista "antes de anunciar"
+- [x] `lib/legal.ts` y `formatearTelefono` con pruebas (60 en total); prueba SQL `05_salida.sql`
+- [x] Probado de punta a punta: 41 pasos del bloque + regresión de B3 y B5
+- [ ] **(Tú)** Aplicar la migración 6 en Supabase **antes** de publicar este código
+- [ ] **(Tú)** Completar datos legales, crear el monitor, revisar el plan de Vercel (uso comercial)
 
 ---
 
 ## Valores por defecto en uso ([POR CONFIRMAR])
 | Tema | Valor usado |
 |---|---|
-| Nombre de la tienda | "Tienda" |
+| Nombre de la tienda | "Tienda" (se cambia en `lib/tienda.ts`) |
 | Margen / redondeo | 40 % / múltiplos de $100 |
 | Socios | 2 socios 50/50 |
-| Envío, pago, IVA | Se acuerdan por WhatsApp; precio final sin desglose |
+| Envío, pago, IVA | Se acuerdan por WhatsApp; precio final sin desglose. Medios de pago y tiempo de entrega se publican desde Configuración |
+| Garantía | 12 meses por defecto (Ley 1480 art. 8), editable en Configuración |
+| Anti-spam | 3 pedidos / 10 min por IP; 30 pedidos / hora en total |
 | Precio "antes/ahora" | Campo opcional `precio_anterior`; solo se muestra si es un precio real ya cobrado (RN-01 ampliado, B4) |
 
 ## Notas

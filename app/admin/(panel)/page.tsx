@@ -3,6 +3,7 @@ import Link from "next/link";
 import { obtenerConfiguracionAdmin, obtenerProductosAdmin, obtenerResumenVentas } from "@/lib/admin/datos";
 import { esFechaValida, fechaLocal, rangoMesActual } from "@/lib/fechas";
 import { formatearCOP } from "@/lib/formato";
+import { datosLegalesFaltantes } from "@/lib/legal";
 
 export const metadata: Metadata = { title: "Inicio", robots: { index: false } };
 
@@ -27,12 +28,13 @@ export default async function Dashboard({ searchParams }: PageProps<"/admin">) {
   const stockBajo = productos
     .filter((p) => p.activo && p.stock <= configuracion.umbral_stock_bajo)
     .sort((a, b) => a.stock - b.stock);
+  const faltanLegales = datosLegalesFaltantes(configuracion);
 
   return (
     <div className="flex flex-col gap-6">
       <h1 className="text-xl font-bold">Inicio</h1>
 
-      {(resumen.pendientes > 0 || stockBajo.length > 0) && (
+      {(resumen.pendientes > 0 || stockBajo.length > 0 || faltanLegales.length > 0) && (
         <section aria-labelledby="titulo-alertas" className="flex flex-col gap-2">
           <h2 id="titulo-alertas" className="sr-only">
             Alertas
@@ -47,6 +49,17 @@ export default async function Dashboard({ searchParams }: PageProps<"/admin">) {
                   {resumen.pendientes} {resumen.pendientes === 1 ? "pedido pendiente" : "pedidos pendientes"}
                 </strong>
                 {resumen.vencidos > 0 && ` · ${resumen.vencidos} con más de 7 días`}
+              </span>
+              <span aria-hidden="true">→</span>
+            </Link>
+          )}
+          {faltanLegales.length > 0 && (
+            <Link
+              href="/admin/configuracion#datos-legales"
+              className="flex items-center justify-between gap-3 rounded-xl border border-amber-300 bg-amber-50 p-3 text-sm text-amber-900"
+            >
+              <span>
+                <strong>Completa los datos legales de la tienda</strong> · falta: {faltanLegales.join(", ")}
               </span>
               <span aria-hidden="true">→</span>
             </Link>

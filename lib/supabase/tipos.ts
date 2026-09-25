@@ -232,6 +232,14 @@ export type Database = {
           redondeo: number;
           umbral_stock_bajo: number;
           texto_envio: string;
+          legal_nombre: string;
+          legal_documento: string;
+          legal_direccion: string;
+          legal_ciudad: string;
+          legal_correo: string;
+          garantia_meses: number;
+          metodos_pago: string;
+          tiempo_entrega: string;
         };
         Insert: never;
         Update: {
@@ -240,6 +248,14 @@ export type Database = {
           redondeo?: number;
           umbral_stock_bajo?: number;
           texto_envio?: string;
+          legal_nombre?: string;
+          legal_documento?: string;
+          legal_direccion?: string;
+          legal_ciudad?: string;
+          legal_correo?: string;
+          garantia_meses?: number;
+          metodos_pago?: string;
+          tiempo_entrega?: string;
         };
         Relationships: [];
       };
@@ -268,6 +284,14 @@ export type Database = {
           whatsapp_numero: string | null;
           umbral_stock_bajo: number;
           texto_envio: string;
+          legal_nombre: string;
+          legal_documento: string;
+          legal_direccion: string;
+          legal_ciudad: string;
+          legal_correo: string;
+          garantia_meses: number;
+          metodos_pago: string;
+          tiempo_entrega: string;
         }[];
       };
       crear_pedido: {

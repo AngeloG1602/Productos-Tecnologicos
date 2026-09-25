@@ -1,12 +1,20 @@
 import type { Metadata, Viewport } from "next";
 import "./globals.css";
+import { DESCRIPCION_TIENDA, NOMBRE_TIENDA } from "@/lib/tienda";
 
 export const metadata: Metadata = {
   title: {
-    default: "Tienda",
-    template: "%s · Tienda",
+    default: NOMBRE_TIENDA,
+    template: `%s · ${NOMBRE_TIENDA}`,
   },
-  description: "Accesorios electrónicos: cargadores, audífonos y más. Pide por WhatsApp.",
+  description: DESCRIPCION_TIENDA,
+  openGraph: {
+    type: "website",
+    locale: "es_CO",
+    siteName: NOMBRE_TIENDA,
+    title: NOMBRE_TIENDA,
+    description: DESCRIPCION_TIENDA,
+  },
 };
 
 export const viewport: Viewport = {

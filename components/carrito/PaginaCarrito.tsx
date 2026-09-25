@@ -230,6 +230,10 @@ export function PaginaCarrito({ whatsappNumero, textoEnvio }: Props) {
             Acepto la{" "}
             <Link href="/politica-de-datos" target="_blank" className="text-marca underline">
               política de tratamiento de datos
+            </Link>{" "}
+            y los{" "}
+            <Link href="/terminos" target="_blank" className="text-marca underline">
+              términos y condiciones
             </Link>
             .
           </span>

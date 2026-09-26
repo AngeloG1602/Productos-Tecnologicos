@@ -133,8 +133,10 @@ Un dominio como `mitienda.com` se ve más confiable que `productos-tecnologicos.
 
 - [ ] Datos legales revisados (Parte 4).
 - [ ] Productos de prueba desactivados o eliminados y productos reales con fotos.
-- [ ] (Opcional) Borrar los pedidos de prueba: pegar `supabase/limpiar-pedidos-prueba.sql` en el SQL Editor
-      (descarga antes una copia de seguridad; el próximo pedido vuelve a ser PED-0001).
+- [ ] (Opcional) Borrar pedidos y productos de prueba: pegar `supabase/reiniciar-catalogo.sql` en el SQL Editor
+      (descarga antes una copia de seguridad); luego borra las fotos a mano en Supabase → Storage → bucket
+      `productos`. Las categorías no se tocan. Si solo quieres borrar pedidos (dejando los productos), usa
+      `supabase/limpiar-pedidos-prueba.sql`.
 - [ ] Tu socio creado como administrador (paso 4 de la Parte 1) y con acceso probado.
 - [ ] Monitor de UptimeRobot creado (Parte 3).
 - [ ] Una primera copia de seguridad descargada (Parte 5).

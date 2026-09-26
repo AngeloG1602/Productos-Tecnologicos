@@ -80,7 +80,7 @@ no carga. Hay dos protecciones:
 2. **Monitor con aviso (recomendado):** si la tienda se cae por cualquier motivo, te llega un correo.
    1. Crea una cuenta gratis en **uptimerobot.com**.
    2. **New monitor** → tipo **HTTP(s)**.
-   3. URL: la dirección de tu tienda + `/api/health` (ej. `https://ds-tech.netlify.app/api/health`, o tu dominio).
+   3. URL: la dirección de tu tienda + `/api/health` (ej. `https://dstore.netlify.app/api/health`, o tu dominio).
    4. Intervalo: **5 minutos**. En alertas deja tu correo → **Create monitor**.
 
 Para comprobarlo tú mismo abre esa dirección en el navegador: debe decir `"estado":"ok"`.
@@ -162,8 +162,8 @@ correo al 50 %, 75 % y 100 %. Para una tienda que empieza alcanza.
 
    La llave secreta (`SUPABASE_SERVICE_ROLE_KEY`) **no hace falta**: la tienda no la usa.
 5. **Deploy**. Tarda 2–4 minutos.
-6. **Project configuration → Change project name** → por ejemplo `ds-tech`. La tienda queda en
-   `https://ds-tech.netlify.app`.
+6. **Project configuration → Change project name** → por ejemplo `dstore`. La tienda queda en
+   `https://dstore.netlify.app`.
 7. Comprueba, en este orden:
    - `https://<tu-nombre>.netlify.app/api/health` → debe decir `"estado":"ok"`.
    - El catálogo, una ficha de producto y un pedido de prueba por WhatsApp.

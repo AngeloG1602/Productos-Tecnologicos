@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Logo } from "@/components/tienda/Logo";
 import { FormularioLogin } from "@/components/admin/FormularioLogin";
 
 export const metadata: Metadata = { title: "Entrar", robots: { index: false } };
@@ -12,8 +13,9 @@ export default async function EntrarAdmin({ searchParams }: PageProps<"/admin/en
   const siguiente = esRutaAdminValida(params.siguiente) ? params.siguiente : "/admin";
 
   return (
-    <main className="flex min-h-dvh flex-col items-center justify-center gap-8 px-4 py-10">
-      <h1 className="text-xl font-bold">Panel de administración</h1>
+    <main className="flex min-h-dvh flex-col items-center justify-center gap-6 px-4 py-10">
+      <Logo tamano="lg" />
+      <h1 className="text-base font-semibold text-neutral-600">Panel de administración</h1>
       <FormularioLogin siguiente={siguiente} />
     </main>
   );

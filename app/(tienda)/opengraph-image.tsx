@@ -21,7 +21,24 @@ export default function Imagen() {
           color: "white",
         }}
       >
-        <div style={{ fontSize: 110, fontWeight: 700 }}>{NOMBRE_TIENDA}</div>
+        <div style={{ display: "flex", alignItems: "center", gap: 32 }}>
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              width: 140,
+              height: 140,
+              borderRadius: 32,
+              background: "white",
+            }}
+          >
+            <svg width="72" height="72" viewBox="0 0 24 24" fill="none">
+              <path d="M13 2 3 14h7l-1 8 10-12h-7l1-8Z" fill={COLOR_MARCA} />
+            </svg>
+          </div>
+          <div style={{ fontSize: 110, fontWeight: 700 }}>{NOMBRE_TIENDA}</div>
+        </div>
         <div style={{ fontSize: 48, marginTop: 24, opacity: 0.9 }}>Accesorios electrónicos</div>
         <div
           style={{

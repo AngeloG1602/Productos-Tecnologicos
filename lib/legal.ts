@@ -71,18 +71,6 @@ export function validarDatosLegales(
   };
 }
 
-/** Campos que la ley exige publicar y aún están vacíos (para avisar en el panel). */
-export function datosLegalesFaltantes(d: DatosLegales): string[] {
-  const faltan: string[] = [];
-  if (!d.legal_nombre.trim()) faltan.push("nombre o razón social");
-  if (!d.legal_documento.trim()) faltan.push("cédula o NIT");
-  if (!d.legal_direccion.trim()) faltan.push("dirección");
-  if (!d.legal_ciudad.trim()) faltan.push("ciudad");
-  if (!d.legal_correo.trim()) faltan.push("correo");
-  if (!d.metodos_pago.trim()) faltan.push("medios de pago");
-  return faltan;
-}
-
 /** "12 meses (1 año)", "6 meses", "1 mes", "24 meses (2 años)". */
 export function textoGarantia(meses: number): string {
   const base = `${meses} ${meses === 1 ? "mes" : "meses"}`;

@@ -27,14 +27,15 @@ export function Seccion({ titulo, children }: { titulo: string; children: React.
   );
 }
 
-/** Muestra un dato legal o "(por completar)" si el admin aún no lo llenó. */
-export function Dato({ valor }: { valor: string | null | undefined }) {
-  const texto = valor?.trim();
-  return texto ? <>{texto}</> : <span className="text-neutral-400">(por completar)</span>;
+type FilaVendedor = [string, React.ReactNode];
+
+/** Quita las filas sin valor: lo que el admin deja vacío en Configuración no se publica. */
+export function filasPublicas(filas: [string, React.ReactNode | string | null | undefined][]): FilaVendedor[] {
+  return filas.filter((f): f is FilaVendedor => (typeof f[1] === "string" ? f[1].trim() !== "" : f[1] != null));
 }
 
 /** Tabla simple de datos del vendedor. */
-export function FichaVendedor({ filas }: { filas: [string, React.ReactNode][] }) {
+export function FichaVendedor({ filas }: { filas: FilaVendedor[] }) {
   return (
     <dl className="grid grid-cols-[auto_1fr] gap-x-3 gap-y-1 rounded-xl bg-neutral-50 p-3">
       {filas.map(([etiqueta, valor]) => (

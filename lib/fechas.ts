@@ -39,3 +39,52 @@ const formatoFechaHora = new Intl.DateTimeFormat("es-CO", {
 export function formatearFechaHora(iso: string): string {
   return formatoFechaHora.format(new Date(iso));
 }
+
+// Colombia no tiene horario de verano: siempre UTC-5.
+const DESFASE_COLOMBIA = "-05:00";
+
+/**
+ * Instantes (ISO, UTC) que delimitan un rango de días en hora de Colombia, ambos días incluidos:
+ * desde las 00:00 del primer día hasta antes de las 00:00 del día siguiente al último.
+ */
+export function limitesRango(desde: string, hasta: string): { inicio: string; fin: string } {
+  const inicio = new Date(`${desde}T00:00:00${DESFASE_COLOMBIA}`);
+  const fin = new Date(`${hasta}T00:00:00${DESFASE_COLOMBIA}`);
+  fin.setUTCDate(fin.getUTCDate() + 1);
+  return { inicio: inicio.toISOString(), fin: fin.toISOString() };
+}
+
+const formatoFechaHoraISO = new Intl.DateTimeFormat("en-CA", {
+  timeZone: ZONA_HORARIA,
+  year: "numeric",
+  month: "2-digit",
+  day: "2-digit",
+  hour: "2-digit",
+  minute: "2-digit",
+  hourCycle: "h23",
+});
+
+/** "2026-09-26 14:30" en hora de Colombia (para hojas de cálculo: se ordena bien como texto). */
+export function fechaHoraLocal(iso: string): string {
+  const p = Object.fromEntries(formatoFechaHoraISO.formatToParts(new Date(iso)).map((x) => [x.type, x.value]));
+  return `${p.year}-${p.month}-${p.day} ${p.hour}:${p.minute}`;
+}
+
+const NOMBRES_DIA = ["domingo", "lunes", "martes", "miércoles", "jueves", "viernes", "sábado"];
+
+/** Día de la semana de una fecha AAAA-MM-DD ("lunes", …). */
+export function diaSemana(fecha: string): string {
+  return NOMBRES_DIA[new Date(`${fecha}T12:00:00Z`).getUTCDay()] ?? "";
+}
+
+const formatoFechaLarga = new Intl.DateTimeFormat("es-CO", {
+  timeZone: "UTC",
+  day: "numeric",
+  month: "long",
+  year: "numeric",
+});
+
+/** "2026-09-26" → "26 de septiembre de 2026". */
+export function formatearFechaLarga(fecha: string): string {
+  return formatoFechaLarga.format(new Date(`${fecha}T12:00:00Z`));
+}

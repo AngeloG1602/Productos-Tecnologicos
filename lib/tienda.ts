@@ -1,7 +1,7 @@
-// Identidad de la tienda. [POR CONFIRMAR] nombre definitivo: cambiarlo aquí lo cambia en
+// Identidad de la tienda. Nombre provisional (iniciales DS): cambiarlo aquí lo cambia en
 // el título de las páginas, el pie, la imagen al compartir y los textos legales.
 
-export const NOMBRE_TIENDA = "Tienda";
+export const NOMBRE_TIENDA = "DS";
 
 /** Color principal (igual a --marca en app/globals.css). */
 export const COLOR_MARCA = "#1d4ed8";

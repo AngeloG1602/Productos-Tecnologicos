@@ -74,27 +74,28 @@ Así nadie más puede crearse una cuenta. (Aunque lo lograra, no tendría permis
 El plan gratis de Supabase **pausa el proyecto si pasa 7 días sin actividad**, y con la base pausada la tienda
 no carga. Hay dos protecciones:
 
-1. **Automática (ya incluida):** Vercel visita `/api/health` una vez al día (archivo `vercel.json`). Esa
-   dirección consulta la base, así que nunca pasan 7 días sin actividad. No tienes que hacer nada.
+1. **Automática (ya incluida):** una vez al día se visita `/api/health`, que consulta la base, así que nunca
+   pasan 7 días sin actividad. En Vercel lo hace `vercel.json`; en Netlify, la función `despertar-bd`
+   (`netlify.toml`). No tienes que hacer nada.
 2. **Monitor con aviso (recomendado):** si la tienda se cae por cualquier motivo, te llega un correo.
    1. Crea una cuenta gratis en **uptimerobot.com**.
    2. **New monitor** → tipo **HTTP(s)**.
-   3. URL: `https://productos-tecnologicos.vercel.app/api/health` (o tu dominio, si ya tienes uno).
+   3. URL: la dirección de tu tienda + `/api/health` (ej. `https://ds-tech.netlify.app/api/health`, o tu dominio).
    4. Intervalo: **5 minutos**. En alertas deja tu correo → **Create monitor**.
 
 Para comprobarlo tú mismo abre esa dirección en el navegador: debe decir `"estado":"ok"`.
 
 ---
 
-## Parte 4 · Datos legales de la tienda (≈ 5 min)
+## Parte 4 · Datos legales de la tienda (opcional, ≈ 5 min)
 
-La ley colombiana exige mostrar quién vende y cómo contactarlo (Ley 1480 de 2011, art. 50) y quién es el
-responsable de los datos personales (Decreto 1377 de 2013, art. 13).
+Las páginas **Términos y condiciones** y **Política de datos** (enlaces en el pie de la tienda) ya funcionan
+con lo básico: nombre de la tienda, WhatsApp, pago contra entrega, garantía, devoluciones y quejas.
 
-En el panel: **Configuración → Datos legales de la tienda** y completa nombre o razón social, cédula o NIT,
-dirección, ciudad, correo, garantía, medios de pago y tiempo de entrega. Se ven al instante en
-**Términos y condiciones** y en la **Política de datos** (enlaces en el pie de la tienda). Mientras falte algo,
-el Inicio del panel te lo recuerda.
+En el panel, **Configuración → Datos legales de la tienda**, puedes agregar si quieres nombre o razón social,
+cédula o NIT, dirección, ciudad, correo, garantía, forma de pago y tiempo de entrega. **Todo es opcional y lo
+que llenes es público**; lo que dejes vacío no aparece. La ley (Ley 1480 de 2011, art. 50) pide identificar al
+vendedor, así que cuanto más completo, mejor; la decisión es de ustedes.
 
 > Los textos de esas dos páginas son una base hecha con lo que dicen las leyes; lo ideal es que un abogado
 > les dé una revisada antes de invertir fuerte en anuncios.
@@ -130,15 +131,49 @@ Un dominio como `mitienda.com` se ve más confiable que `productos-tecnologicos.
 
 ## Parte 7 · Antes de anunciar
 
-- [ ] Datos legales completos (Parte 4).
+- [ ] Datos legales revisados (Parte 4).
 - [ ] Productos de prueba desactivados o eliminados y productos reales con fotos.
+- [ ] (Opcional) Borrar los pedidos de prueba: pegar `supabase/limpiar-pedidos-prueba.sql` en el SQL Editor
+      (descarga antes una copia de seguridad; el próximo pedido vuelve a ser PED-0001).
 - [ ] Tu socio creado como administrador (paso 4 de la Parte 1) y con acceso probado.
 - [ ] Monitor de UptimeRobot creado (Parte 3).
 - [ ] Una primera copia de seguridad descargada (Parte 5).
 - [ ] Un pedido de prueba de punta a punta desde otro celular.
-- [ ] **Plan de Vercel:** las condiciones de Vercel dicen que el plan gratis (Hobby) es para uso personal, no
-      comercial; para una tienda piden el plan Pro (desde US$20 al mes por persona que publica). Decide con tu socio si pasan a Pro o si
-      prefieren mover la página a un servicio gratuito que sí permita uso comercial.
+- [ ] **Tienda en Netlify** (Parte 8): el plan gratis de Vercel es solo para uso personal, no comercial.
+- [ ] Los enlaces de los anuncios se crean **después** de pasar a Netlify (o al dominio propio).
+
+---
+
+## Parte 8 · Pasar la tienda a Netlify (≈ 15 min)
+
+Netlify es gratis y **sí permite uso comercial**. El plan gratis trae 300 créditos al mes: cada publicación
+gasta 15 y cada GB de visitas 20. Si se acaban, **la tienda se pausa hasta el mes siguiente**; Netlify avisa por
+correo al 50 %, 75 % y 100 %. Para una tienda que empieza alcanza.
+
+1. Entra a **netlify.com** → **Sign up** → **Continue with GitHub** (autoriza a Netlify).
+2. **Add new project** → **Import an existing project** → **GitHub** → elige **Productos-Tecnologicos**.
+   (Si no aparece, toca **Configure the Netlify app on GitHub** y dale acceso a ese repositorio.)
+3. **Branch to deploy:** `claude/friendly-bell-6t1w6r`. Lo demás lo toma solo del archivo `netlify.toml`
+   (no cambies el comando de build ni la carpeta).
+4. **Environment variables** → **Add variables** → agrega estas **dos** (las mismas que tienes en Vercel,
+   en Vercel → Settings → Environment Variables, o en Supabase → Project Settings → API):
+   - `NEXT_PUBLIC_SUPABASE_URL`
+   - `NEXT_PUBLIC_SUPABASE_ANON_KEY`
+
+   La llave secreta (`SUPABASE_SERVICE_ROLE_KEY`) **no hace falta**: la tienda no la usa.
+5. **Deploy**. Tarda 2–4 minutos.
+6. **Project configuration → Change project name** → por ejemplo `ds-tech`. La tienda queda en
+   `https://ds-tech.netlify.app`.
+7. Comprueba, en este orden:
+   - `https://<tu-nombre>.netlify.app/api/health` → debe decir `"estado":"ok"`.
+   - El catálogo, una ficha de producto y un pedido de prueba por WhatsApp.
+   - `/admin`: entrar, cambiar el stock de un producto y ver que en la tienda cambia al momento.
+8. Crea el monitor de UptimeRobot con la dirección de Netlify (Parte 3).
+9. Cuando todo funcione en Netlify, **apaga Vercel** para que no siga publicando: Vercel → tu proyecto →
+   Settings → General → **Delete Project**. (Tus datos están en Supabase; no se pierde nada.)
+
+> Desde que la tienda esté en Netlify, cada cambio que yo suba a la rama se publica ahí solo, igual que en
+> Vercel. Los cambios que solo tocan documentos no se publican, para ahorrar créditos.
 
 ---
 
@@ -148,6 +183,7 @@ Cada bloque nuevo que toque la base traerá un archivo en `supabase/migrations/`
 igual que en el paso 2 (SQL Editor → New query → pegar → Run). **No vuelvas a pegar `instalar.sql`** en un
 proyecto que ya lo tiene.
 
-**El orden importa:** primero pega la migración en Supabase y después se sube el código. Vercel publica solo
+**El orden importa:** primero pega la migración en Supabase y después se sube el código. El hosting (Vercel o Netlify) publica solo
 cada cambio y, al hacerlo, consulta tu base; si la base todavía no tiene lo nuevo, el despliegue falla (la página
-sigue en la versión anterior). Si eso pasa: aplica la migración y en Vercel → Deployments → ⋯ → **Redeploy**.
+sigue en la versión anterior). Si eso pasa: aplica la migración y vuelve a publicar (Vercel → Deployments → ⋯ →
+**Redeploy**; Netlify → Deploys → **Trigger deploy**).

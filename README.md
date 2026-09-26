@@ -7,7 +7,7 @@ Catálogo web mobile-first de accesorios electrónicos con carrito y pedidos por
 - Reglas para desarrollar: [`CLAUDE.md`](CLAUDE.md)
 
 ## Stack
-Next.js 16 (App Router, TypeScript estricto) · Tailwind CSS 4 · Supabase (Postgres, Auth, Storage) · Vercel
+Next.js 16 (App Router, TypeScript estricto) · Tailwind CSS 4 · Supabase (Postgres, Auth, Storage) · Netlify (antes Vercel)
 
 ## Requisitos
 - Node.js 22.18 o superior (las pruebas usan `node:test` ejecutando TypeScript directamente)
@@ -93,22 +93,26 @@ misma IP y 30 por hora en total. La IP se toma de las cabeceras que Supabase pas
 - Productos: lista con edición rápida de stock y de activo/inactivo, formulario con precio sugerido (RN-01) y precio anterior opcional (muestra el descuento en la tienda), duplicar, eliminar y **copiar enlace para anuncio**.
 - Categorías: crear, renombrar, reordenar, eliminar.
 - Socios: porcentajes de reparto (los activos deben sumar 100 %).
+- Inicio: además, reparto por socio (nombre y porcentaje actuales; cada pedido conserva el reparto con que se
+  confirmó), más vendidos y **reporte en Excel** del rango (`/admin/reporte?desde=&hasta=`: resumen, pedidos,
+  detalle, por producto, categoría, día, día de la semana, ciudad y reparto; `lib/xlsx.ts` lo genera sin librerías).
 - Configuración: WhatsApp, margen por defecto, redondeo, umbral de stock bajo y texto de envío; **datos legales**
-  (responsable, cédula/NIT, dirección, ciudad, correo, garantía, medios de pago, tiempo de entrega) y
+  opcionales y públicos (responsable, cédula/NIT, dirección, ciudad, correo, garantía, pago, tiempo de entrega) y
   **copia de seguridad** (`/admin/respaldo` descarga todas las tablas en JSON, con la sesión del admin).
 - Guardar desde el admin actualiza la tienda pública al instante (`updateTag`).
 
 ### Páginas legales
-- `/terminos`: quién vende, cómo funciona un pedido, pagos, entrega (máx. 30 días si no se acuerda otro plazo),
-  garantía, derecho de retracto (5 días hábiles; devolución en 15 días calendario), reversión del pago, quejas y enlace a la SIC
+- `/terminos`: quién vende, cómo funciona un pedido, pago contra entrega, entrega (máx. 30 días si no se acuerda otro plazo),
+  garantía, derecho de retracto (5 días hábiles; devolución en 15 días calendario), quejas y enlace a la SIC
   (Ley 1480 de 2011 y Ley 2439 de 2024).
 - `/politica-de-datos`: Ley 1581 de 2012 y Decreto 1377 de 2013.
-- Ambas toman los datos de Configuración. La fecha de revisión está en `lib/legal.ts` (`ACTUALIZACION_TEXTOS_LEGALES`).
+- Ambas toman los datos de Configuración; los que están vacíos no se muestran. Textos pensados para pago contra
+  entrega (la página no cobra). La fecha de revisión está en `lib/legal.ts` (`ACTUALIZACION_TEXTOS_LEGALES`).
 - Textos base: se recomienda revisión de un abogado.
 
 ### Monitoreo y disponibilidad
 - `/api/health` consulta la base en cada llamada (sin caché) y responde `{"estado":"ok"}` o 503.
-- `vercel.json` programa una visita diaria (Vercel Cron) para que Supabase gratis no pause el proyecto por inactividad (7 días).
+- Una visita diaria a `/api/health` evita que Supabase gratis pause el proyecto por inactividad (7 días): en Netlify la hace la función programada `netlify/functions/despertar-bd.mts` (`netlify.toml`); en Vercel, `vercel.json`.
 - Monitor externo recomendado: UptimeRobot cada 5 min contra `/api/health` (ver la guía).
 
 ### Identidad de la tienda
@@ -125,13 +129,16 @@ En `productos.imagenes` va la ruta dentro del bucket (ej. `<id-producto>/1.webp`
 `next.config.ts` solo permite imágenes de ese bucket, y `lib/imagen-cliente.ts` las redimensiona y comprime a WebP
 (≤ 1200 px, RNF-02) en el navegador antes de subirlas.
 
-## Despliegue en Vercel
-1. En Vercel: **Add New → Project** e importar este repositorio (framework: Next.js, sin cambios de build).
-2. En **Settings → Environment Variables** cargar las tres variables de arriba (Production y Preview).
-3. Desplegar.
-4. Comprobar `https://<dominio>/api/health` → `{"estado":"ok"}`.
+## Despliegue en Netlify
+Paso a paso sin conocimientos técnicos: [`docs/GUIA-INSTALACION.md`](docs/GUIA-INSTALACION.md), Parte 8.
 
-> Condiciones de Vercel: el plan Hobby es solo para uso personal/no comercial; una tienda requiere el plan Pro.
+1. Netlify → **Add new project → Import an existing project** → este repositorio, rama de trabajo.
+2. `netlify.toml` define el build (`npm run build`, `.next`, Node 22), la función diaria y el `ignore`
+   que no publica cambios de solo documentos (cada publicación gasta créditos del plan gratis).
+3. Variables: `NEXT_PUBLIC_SUPABASE_URL` y `NEXT_PUBLIC_SUPABASE_ANON_KEY`. La llave `service_role` no se usa.
+4. Comprobar `https://<sitio>/api/health` → `{"estado":"ok"}`.
+
+> Vercel: el plan Hobby es solo para uso personal/no comercial; por eso la tienda pasa a Netlify.
 
 ## Estructura
 ```

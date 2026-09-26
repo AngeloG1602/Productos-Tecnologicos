@@ -1,8 +1,9 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { ArticuloLegal, Dato, ENLACE_SIC, FichaVendedor, Seccion } from "@/components/tienda/TextoLegal";
+import { ArticuloLegal, ENLACE_SIC, FichaVendedor, Seccion, filasPublicas } from "@/components/tienda/TextoLegal";
 import { obtenerDatosTienda } from "@/lib/datos-tienda";
 import { ACTUALIZACION_TEXTOS_LEGALES } from "@/lib/legal";
+import { NOMBRE_TIENDA } from "@/lib/tienda";
 import { enlaceWhatsApp, formatearTelefono } from "@/lib/whatsapp";
 
 export const metadata: Metadata = {
@@ -11,6 +12,7 @@ export const metadata: Metadata = {
 };
 
 // Los datos del responsable se editan en Admin → Configuración (se actualiza al guardar).
+// Los que se dejen vacíos no se muestran.
 export const revalidate = 60;
 
 // TEXTO BASE: refleja lo que la plataforma hace hoy (RN-09) y el contenido mínimo del
@@ -18,23 +20,20 @@ export const revalidate = 60;
 export default async function PoliticaDeDatos() {
   const { whatsappNumero, legal } = await obtenerDatosTienda();
   const correo = legal.legal_correo.trim();
+  const whatsapp = whatsappNumero ? (
+    <a href={enlaceWhatsApp(whatsappNumero)} className="text-marca underline">
+      {formatearTelefono(whatsappNumero)}
+    </a>
+  ) : null;
+  const enlaceCorreo = correo ? (
+    <a href={`mailto:${correo}`} className="text-marca underline">
+      {correo}
+    </a>
+  ) : null;
   const contacto = (
     <>
-      {correo ? (
-        <a href={`mailto:${correo}`} className="text-marca underline">
-          {correo}
-        </a>
-      ) : (
-        <Dato valor="" />
-      )}
-      {whatsappNumero && (
-        <>
-          {" "}o por WhatsApp al{" "}
-          <a href={enlaceWhatsApp(whatsappNumero)} className="text-marca underline">
-            {formatearTelefono(whatsappNumero)}
-          </a>
-        </>
-      )}
+      por WhatsApp{whatsapp && <> ({whatsapp})</>}
+      {enlaceCorreo && <> o al correo {enlaceCorreo}</>}
     </>
   );
 
@@ -42,18 +41,19 @@ export default async function PoliticaDeDatos() {
     <ArticuloLegal titulo="Política de tratamiento de datos personales" actualizacion={ACTUALIZACION_TEXTOS_LEGALES}>
       <Seccion titulo="1. Responsable">
         <p>
-          El responsable del tratamiento de los datos personales que recibe esta tienda, conforme a la Ley 1581 de
-          2012 y el Decreto 1377 de 2013 (compilado en el Decreto 1074 de 2015), es:
+          Responsable del tratamiento de los datos personales que recibe esta tienda (Ley 1581 de 2012 y Decreto
+          1377 de 2013):
         </p>
         <FichaVendedor
-          filas={[
-            ["Nombre", <Dato key="n" valor={legal.legal_nombre} />],
-            ["Cédula / NIT", <Dato key="d" valor={legal.legal_documento} />],
-            ["Dirección", <Dato key="a" valor={legal.legal_direccion} />],
-            ["Ciudad", <Dato key="c" valor={legal.legal_ciudad} />],
-            ["Teléfono", whatsappNumero ? formatearTelefono(whatsappNumero) : <Dato key="t" valor="" />],
-            ["Correo", <Dato key="e" valor={correo} />],
-          ]}
+          filas={filasPublicas([
+            ["Tienda", NOMBRE_TIENDA],
+            ["Responsable", legal.legal_nombre],
+            ["Cédula / NIT", legal.legal_documento],
+            ["Dirección", legal.legal_direccion],
+            ["Ciudad", legal.legal_ciudad],
+            ["WhatsApp", whatsapp],
+            ["Correo", enlaceCorreo],
+          ])}
         />
       </Seccion>
 
@@ -104,7 +104,7 @@ export default async function PoliticaDeDatos() {
 
       <Seccion titulo="5. Cómo ejercerlos">
         <p>
-          Escríbenos a {contacto}. Responderemos consultas en máximo 10 días hábiles y reclamos en máximo 15 días
+          Escríbenos {contacto}. Responderemos consultas en máximo 10 días hábiles y reclamos en máximo 15 días
           hábiles (artículos 14 y 15 de la Ley 1581 de 2012).
         </p>
       </Seccion>

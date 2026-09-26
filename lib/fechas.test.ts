@@ -1,6 +1,15 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { esFechaValida, fechaLocal, formatearFechaHora, rangoMesActual } from "./fechas.ts";
+import {
+  diaSemana,
+  esFechaValida,
+  fechaHoraLocal,
+  fechaLocal,
+  formatearFechaHora,
+  formatearFechaLarga,
+  limitesRango,
+  rangoMesActual,
+} from "./fechas.ts";
 
 test("la fecha local usa la hora de Colombia (UTC-5)", () => {
   // 3 a. m. UTC del 1 de octubre = 10 p. m. del 30 de septiembre en Bogotá
@@ -27,4 +36,27 @@ test("formatea fecha y hora en español y hora de Colombia", () => {
   assert.match(texto, /30/);
   assert.match(texto, /sept?/);
   assert.match(texto, /10:00/);
+});
+
+test("límites de un rango en hora de Colombia", () => {
+  assert.deepEqual(limitesRango("2026-09-01", "2026-09-30"), {
+    inicio: "2026-09-01T05:00:00.000Z",
+    fin: "2026-10-01T05:00:00.000Z",
+  });
+  // Un solo día; cruce de año
+  assert.deepEqual(limitesRango("2026-12-31", "2026-12-31"), {
+    inicio: "2026-12-31T05:00:00.000Z",
+    fin: "2027-01-01T05:00:00.000Z",
+  });
+});
+
+test("fecha y hora para hojas de cálculo", () => {
+  assert.equal(fechaHoraLocal("2026-10-01T03:05:00Z"), "2026-09-30 22:05");
+  assert.equal(fechaHoraLocal("2026-10-01T05:00:00Z"), "2026-10-01 00:00");
+});
+
+test("día de la semana y fecha larga", () => {
+  assert.equal(diaSemana("2026-09-26"), "sábado");
+  assert.equal(diaSemana("2026-09-28"), "lunes");
+  assert.equal(formatearFechaLarga("2026-09-26"), "26 de septiembre de 2026");
 });

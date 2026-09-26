@@ -1,0 +1,16 @@
+# Configuración para publicar en Netlify (plan gratis: permite uso comercial, 300 créditos al mes).
+# Netlify detecta Next.js y aplica su adaptador (OpenNext) automáticamente.
+
+[build]
+  command = "npm run build"
+  publish = ".next"
+  # Cada publicación gasta créditos: no publicar si solo cambiaron documentos (*.md, docs/).
+  # En la primera publicación de la rama las dos referencias son iguales y siempre se publica.
+  ignore = "[ \"$CACHED_COMMIT_REF\" != \"$COMMIT_REF\" ] && git diff --quiet $CACHED_COMMIT_REF $COMMIT_REF -- . ':(exclude)docs' ':(exclude)*.md'"
+
+[build.environment]
+  NODE_VERSION = "22"
+
+# Visita diaria a /api/health para que Supabase gratis no pause el proyecto (7 días sin actividad).
+[functions."despertar-bd"]
+  schedule = "@daily"

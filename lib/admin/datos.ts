@@ -1,5 +1,7 @@
 import "server-only";
 import { crearClienteServidor } from "@/lib/supabase/servidor";
+import { limitesRango } from "@/lib/fechas";
+import type { PedidoVendido } from "@/lib/reporte";
 import type { Fila } from "@/lib/supabase/tipos";
 
 export type CategoriaAdmin = Fila<"categorias">;
@@ -163,7 +165,6 @@ export type ResumenVentas = {
   ventas: number;
   costo: number;
   ganancia: number;
-  reparto: { socio: string; monto: number }[];
   pendientes: number;
   vencidos: number;
 };
@@ -178,10 +179,78 @@ export async function obtenerResumenVentas(desde: string, hasta: string): Promis
     ventas: Number(r.ventas ?? 0),
     costo: Number(r.costo ?? 0),
     ganancia: Number(r.ganancia ?? 0),
-    reparto: Array.isArray(r.reparto)
-      ? r.reparto.map((x) => ({ socio: String((x as { socio: unknown }).socio), monto: Number((x as { monto: unknown }).monto) }))
-      : [],
     pendientes: Number(r.pendientes ?? 0),
     vencidos: Number(r.vencidos ?? 0),
   };
+}
+
+// ─────────────────────────────────────────────────────────────
+// Ventas detalladas (Inicio y reporte en Excel)
+// ─────────────────────────────────────────────────────────────
+
+// Supabase entrega máximo 1000 filas por consulta: se pide por páginas.
+const TAMANO_PAGINA = 1000;
+
+/**
+ * Pedidos confirmados o entregados cuya confirmación cae en el rango (hora de Colombia),
+ * con sus ítems y el reparto congelado. Mismo criterio que resumen_ventas.
+ */
+export async function obtenerVentasDetalle(desde: string, hasta: string): Promise<PedidoVendido[]> {
+  const supabase = await crearClienteServidor();
+  const { inicio, fin } = limitesRango(desde, hasta);
+  const pedidos: PedidoVendido[] = [];
+  for (let desdeFila = 0; ; desdeFila += TAMANO_PAGINA) {
+    const { data, error } = await supabase
+      .from("pedidos")
+      .select(
+        "id, codigo, estado, cliente_nombre, cliente_ciudad, created_at, confirmado_at, entregado_at, total_venta, total_costo, ganancia, items:pedido_items(producto_id, nombre_snapshot, cantidad, precio_unitario, costo_unitario), reparto:pedido_reparto(socio_id, socio_nombre, porcentaje, monto)",
+      )
+      .in("estado", ["confirmado", "entregado"])
+      .gte("confirmado_at", inicio)
+      .lt("confirmado_at", fin)
+      .order("confirmado_at")
+      .order("id")
+      .range(desdeFila, desdeFila + TAMANO_PAGINA - 1);
+    if (error) throw new Error(`No se pudieron cargar las ventas: ${error.message}`);
+    pedidos.push(...data.map((p) => ({ ...p, reparto: p.reparto.map((r) => ({ ...r, porcentaje: Number(r.porcentaje) })) })));
+    if (data.length < TAMANO_PAGINA) break;
+  }
+  return pedidos;
+}
+
+/** Cuántos pedidos llegaron en el rango (por fecha de creación), por estado. */
+export async function contarPedidosRecibidos(desde: string, hasta: string): Promise<Record<PedidoVendido["estado"], number>> {
+  const supabase = await crearClienteServidor();
+  const { inicio, fin } = limitesRango(desde, hasta);
+  const conteo = { pendiente: 0, confirmado: 0, entregado: 0, cancelado: 0 };
+  for (let desdeFila = 0; ; desdeFila += TAMANO_PAGINA) {
+    const { data, error } = await supabase
+      .from("pedidos")
+      .select("estado")
+      .gte("created_at", inicio)
+      .lt("created_at", fin)
+      .order("id")
+      .range(desdeFila, desdeFila + TAMANO_PAGINA - 1);
+    if (error) throw new Error(`No se pudieron contar los pedidos: ${error.message}`);
+    for (const p of data) conteo[p.estado]++;
+    if (data.length < TAMANO_PAGINA) break;
+  }
+  return conteo;
+}
+
+/** Categoría actual de cada producto (id → nombre de la categoría). */
+export async function obtenerCategoriasDeProductos(): Promise<Map<string, string>> {
+  const supabase = await crearClienteServidor();
+  const mapa = new Map<string, string>();
+  for (let desdeFila = 0; ; desdeFila += TAMANO_PAGINA) {
+    const { data, error } = await supabase
+      .from("productos")
+      .select("id, categoria:categorias(nombre)")
+      .order("id")
+      .range(desdeFila, desdeFila + TAMANO_PAGINA - 1);
+    if (error) throw new Error(`No se pudieron cargar los productos: ${error.message}`);
+    for (const p of data) if (p.categoria) mapa.set(p.id, p.categoria.nombre);
+    if (data.length < TAMANO_PAGINA) break;
+  }
+  return mapa;
 }

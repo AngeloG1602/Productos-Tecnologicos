@@ -46,25 +46,25 @@ export function FormularioDatosLegales({ configuracion }: { configuracion: Confi
 
   return (
     <form onSubmit={enviar} className="flex flex-col gap-5 pb-10">
-      <p className="text-sm text-neutral-600">
-        La ley exige mostrar quién vende y cómo contactarlo. Estos datos aparecen en{" "}
-        <Link href="/terminos" target="_blank" className="text-marca underline">
+      <p className="rounded-xl bg-amber-50 p-3 text-sm text-amber-900">
+        <strong>Todo es opcional y lo que llenes es público:</strong> se muestra en{" "}
+        <Link href="/terminos" target="_blank" className="underline">
           Términos y condiciones
         </Link>{" "}
         y en la{" "}
-        <Link href="/politica-de-datos" target="_blank" className="text-marca underline">
+        <Link href="/politica-de-datos" target="_blank" className="underline">
           Política de datos
         </Link>
-        . El teléfono es el WhatsApp de arriba.
+        . Si dejas un campo vacío, no aparece. El WhatsApp de arriba siempre se muestra como contacto.
       </p>
 
-      <Campo etiqueta="Nombre o razón social" ayuda="Persona o empresa que vende (quien responde ante el cliente).">
+      <Campo etiqueta="Nombre o razón social" ayuda="Opcional. Persona o empresa que vende.">
         <input name="nombre" defaultValue={configuracion.legal_nombre} maxLength={120} className={CLASE_CAMPO} />
       </Campo>
-      <Campo etiqueta="Cédula o NIT" ayuda="Ej. CC 1.234.567.890 o NIT 901.234.567-8">
+      <Campo etiqueta="Cédula o NIT" ayuda="Opcional.">
         <input name="documento" defaultValue={configuracion.legal_documento} maxLength={40} className={CLASE_CAMPO} />
       </Campo>
-      <Campo etiqueta="Dirección" ayuda="Para notificaciones (puede ser la de la casa o el local).">
+      <Campo etiqueta="Dirección" ayuda="Opcional. No tiene que ser tu casa: puede ser un local u oficina.">
         <input name="direccion" defaultValue={configuracion.legal_direccion} maxLength={160} className={CLASE_CAMPO} />
       </Campo>
       <div className="grid grid-cols-2 gap-3">
@@ -81,7 +81,7 @@ export function FormularioDatosLegales({ configuracion }: { configuracion: Confi
           />
         </Campo>
       </div>
-      <Campo etiqueta="Correo de contacto" ayuda="Para quejas, garantías y datos personales.">
+      <Campo etiqueta="Correo de contacto" ayuda="Opcional. Mejor uno exclusivo de la tienda.">
         <input
           name="correo"
           type="email"
@@ -90,10 +90,11 @@ export function FormularioDatosLegales({ configuracion }: { configuracion: Confi
           className={CLASE_CAMPO}
         />
       </Campo>
-      <Campo etiqueta="Medios de pago" ayuda="Ej. Nequi, Daviplata, transferencia Bancolombia o efectivo contraentrega.">
+      <Campo etiqueta="Pago" ayuda='Si lo dejas vacío dice: "Contra entrega, cuando recibes tu pedido."'>
         <textarea
           name="metodos_pago"
           defaultValue={configuracion.metodos_pago}
+          placeholder="Ej. Contra entrega: efectivo o transferencia al recibir"
           maxLength={300}
           rows={2}
           className="rounded-xl border border-neutral-300 px-3 py-2 text-base"

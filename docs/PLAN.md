@@ -100,12 +100,24 @@ Estado: ⬜ pendiente · 🟨 en curso · ✅ terminado
 - [ ] **(Tú)** Aplicar la migración 6 en Supabase **antes** de publicar este código
 - [ ] **(Tú)** Completar datos legales, crear el monitor, revisar el plan de Vercel (uso comercial)
 
+## Mejoras después de B6 ✅
+Pedido del cliente tras usar la tienda.
+
+- [x] Textos legales sencillos: los datos vacíos no se muestran, textos para pago contra entrega, sin aviso en el Inicio; nombre provisional **DS** (`lib/tienda.ts`)
+- [x] Reparto en el Inicio: se agrupa por socio (nombre y % actuales, aunque se haya renombrado), aparecen los socios sin ventas y se avisa si hay pedidos confirmados con otro reparto (RN-07 intacto)
+- [x] "Más vendidos" en el Inicio
+- [x] Reporte de ventas en Excel por rango de fechas, con 9 hojas (resumen y estadísticas); generador `.xlsx` propio sin librerías (`lib/xlsx.ts`)
+- [x] Preparado el paso a Netlify: `netlify.toml`, función diaria `despertar-bd`, guía (Parte 8)
+- [x] `supabase/limpiar-pedidos-prueba.sql` (opcional, antes de lanzar)
+- [x] Pruebas: `lib/xlsx.ts`, `lib/reporte.ts`, `lib/reporte-excel.ts`, fechas (80 en total); recorrido de 37 pasos (el Excel se valida con openpyxl y LibreOffice)
+- [ ] **(Tú)** Crear el sitio en Netlify (guía, Parte 8), comprobarlo y apagar Vercel
+
 ---
 
 ## Valores por defecto en uso ([POR CONFIRMAR])
 | Tema | Valor usado |
 |---|---|
-| Nombre de la tienda | "Tienda" (se cambia en `lib/tienda.ts`) |
+| Nombre de la tienda | "DS" provisional (se cambia en `lib/tienda.ts`) |
 | Margen / redondeo | 40 % / múltiplos de $100 |
 | Socios | 2 socios 50/50 |
 | Envío, pago, IVA | Se acuerdan por WhatsApp; precio final sin desglose. Medios de pago y tiempo de entrega se publican desde Configuración |

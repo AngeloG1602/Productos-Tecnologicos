@@ -9,7 +9,7 @@ La especificación completa está en `docs/ESPECIFICACION.md`. Léela antes de e
 - Next.js (App Router) + TypeScript estricto
 - Tailwind CSS
 - Supabase: Postgres, Auth (correo/contraseña), Storage (imágenes)
-- Vercel (hosting)
+- Hosting: Netlify (plan gratis, permite uso comercial; `netlify.toml`). Vercel se usó al inicio (`vercel.json`) y se apaga tras la migración
 - Estado del carrito: en el cliente, persistido en localStorage
 
 No agregues librerías nuevas sin preguntar primero y explicar por qué.
@@ -41,7 +41,7 @@ No agregues librerías nuevas sin preguntar primero y explicar por qué.
 - Antes de escribir código en un bloque, muestra un plan corto y espera aprobación.
 - Al terminar un bloque: resume qué hiciste, cómo probarlo y qué quedó pendiente. Detente y espera revisión.
 - Todo cambio de base de datos va como archivo nuevo en `supabase/migrations`. No edites migraciones ya aplicadas.
-- Vercel publica cada push a esta rama y, al compilar, consulta la base real. Si un bloque trae una migración nueva, el usuario debe aplicarla en Supabase **antes** del push del código que la usa; si no, el despliegue falla.
+- El hosting (Netlify; antes Vercel) publica cada push a esta rama y, al compilar, consulta la base real. En Netlify cada publicación gasta créditos del plan gratis: agrupar cambios en pocos push. Si un bloque trae una migración nueva, el usuario debe aplicarla en Supabase **antes** del push del código que la usa; si no, el despliegue falla.
 - Las funciones de precio (cálculo, redondeo) y armado del mensaje de WhatsApp van en `/lib` con pruebas unitarias simples.
 - Si algo de la especificación es ambiguo o está marcado [POR CONFIRMAR], usa el valor por defecto indicado y avísame; no inventes reglas nuevas.
 - Mensajes de commit en español, cortos y descriptivos.

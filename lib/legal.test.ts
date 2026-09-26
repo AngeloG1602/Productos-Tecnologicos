@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { datosLegalesFaltantes, textoGarantia, validarDatosLegales } from "./legal.ts";
+import { textoGarantia, validarDatosLegales } from "./legal.ts";
 
 const base = {
   nombre: "  Juan Pérez  ",
@@ -24,7 +24,7 @@ test("acepta y limpia datos legales válidos", () => {
 test("permite dejar campos vacíos (se completan después)", () => {
   const r = validarDatosLegales({ ...base, nombre: "", correo: "", metodosPago: "" });
   assert.ok(r.ok);
-  assert.deepEqual(datosLegalesFaltantes(r.valores), ["nombre o razón social", "correo", "medios de pago"]);
+  assert.equal(r.valores.legal_nombre, "");
 });
 
 test("rechaza correo, garantía y textos inválidos", () => {
@@ -34,12 +34,6 @@ test("rechaza correo, garantía y textos inválidos", () => {
   assert.equal(validarDatosLegales({ ...base, garantiaMeses: "6.5" }).ok, false);
   assert.equal(validarDatosLegales({ ...base, nombre: "x".repeat(121) }).ok, false);
   assert.equal(validarDatosLegales({ ...base, metodosPago: "x".repeat(301) }).ok, false);
-});
-
-test("sin faltantes cuando todo está completo", () => {
-  const r = validarDatosLegales(base);
-  assert.ok(r.ok);
-  assert.deepEqual(datosLegalesFaltantes(r.valores), []);
 });
 
 test("texto de la garantía", () => {

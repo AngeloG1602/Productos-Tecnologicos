@@ -36,6 +36,23 @@ do $$ begin
 end $$;
 
 -- ─────────────────────────────────────────────────────────────
+-- Tema de la tienda (lib/temas.ts)
+-- ─────────────────────────────────────────────────────────────
+do $$ begin
+  if (select tema_activo from public.configuracion where id = 1) <> 'clasico' then
+    raise exception 'FALLA el tema por defecto no es clasico';
+  end if;
+  update public.configuracion set tema_activo = 'black-friday' where id = 1;
+  begin
+    update public.configuracion set tema_activo = 'Black Friday' where id = 1; -- mayúsculas/espacio: no es un slug
+    raise exception 'FALLA aceptó un tema con formato inválido';
+  exception when check_violation then null;
+  end;
+  update public.configuracion set tema_activo = 'black-friday' where id = 1;
+  raise notice 'OK  tema_activo: por defecto "clasico", admite cambiarlo, rechaza formato inválido';
+end $$;
+
+-- ─────────────────────────────────────────────────────────────
 -- Anónimo: lee los datos legales, pero no el margen ni pedidos_origen
 -- ─────────────────────────────────────────────────────────────
 set local role anon;
@@ -50,6 +67,11 @@ begin
     raise exception 'FALLA configuracion_publica sin datos legales: %', c;
   end if;
   raise notice 'OK  configuracion_publica() entrega los datos legales';
+
+  if c.tema_activo <> 'black-friday' then
+    raise exception 'FALLA configuracion_publica no entrega el tema activo: %', c;
+  end if;
+  raise notice 'OK  configuracion_publica() entrega el tema activo';
 
   begin
     perform 1 from public.pedidos_origen;

@@ -2,6 +2,7 @@ import { AvisoSinConfigurar } from "@/components/tienda/AvisoSinConfigurar";
 import { Catalogo } from "@/components/tienda/Catalogo";
 import { obtenerCategorias, obtenerConfiguracionPublica, obtenerProductos } from "@/lib/catalogo";
 import { supabaseConfigurado } from "@/lib/env";
+import { obtenerTema } from "@/lib/temas";
 
 // Se regenera como máximo cada 60 s (y al instante cuando el admin edite, Bloque 4).
 export const revalidate = 60;
@@ -16,6 +17,11 @@ export default async function Inicio() {
   ]);
 
   return (
-    <Catalogo categorias={categorias} productos={productos} umbral={configuracion.umbralStockBajo} />
+    <Catalogo
+      categorias={categorias}
+      productos={productos}
+      umbral={configuracion.umbralStockBajo}
+      tema={obtenerTema(configuracion.temaActivo)}
+    />
   );
 }

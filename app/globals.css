@@ -25,28 +25,50 @@ body {
 /*
  * Temas de la tienda pública (lib/temas.ts elige cuál está activo, vía el
  * atributo data-tema puesto en app/(tienda)/layout.tsx). "Clásico" no
- * necesita bloque propio: son los valores de :root de arriba.
- * Los colores de acá deben coincidir con los de lib/temas.ts.
+ * necesita bloque propio: son los valores de acá abajo (:root y .tarjeta-tematica).
+ * Los colores y el ícono de acá deben coincidir con los de lib/temas.ts.
  */
 [data-tema="black-friday"] {
   --marca: #0a0a0a;
   --marca-suave: #fef3c7;
+  --tarjeta-radio: 0.25rem;
+  --tarjeta-borde: #0a0a0a;
+  --tarjeta-borde-grosor: 2px;
 }
 [data-tema="navidad"] {
   --marca: #b91c1c;
   --marca-suave: #dcfce7;
+  --tarjeta-borde: #b91c1c;
+  --tarjeta-borde-estilo: dashed;
+  --tarjeta-borde-grosor: 2px;
 }
 [data-tema="halloween"] {
   --marca: #581c87;
   --marca-suave: #ffedd5;
+  --tarjeta-radio: 0.25rem 1.25rem 0.25rem 1.25rem;
+  --tarjeta-borde: #581c87;
+  --tarjeta-borde-estilo: dashed;
+  --tarjeta-borde-grosor: 2px;
 }
 [data-tema="esmeralda"] {
   --marca: #065f46;
   --marca-suave: #ecfdf5;
+  --tarjeta-radio: 1.75rem;
+  --tarjeta-borde: #065f46;
 }
 [data-tema="atardecer"] {
   --marca: #9a3412;
   --marca-suave: #fff1f2;
+  --tarjeta-radio: 0 1.5rem 0 1.5rem;
+  --tarjeta-borde: #9a3412;
+}
+
+/* Tarjeta de producto: su "piel" (borde y esquinas) cambia según el tema. */
+.tarjeta-tematica {
+  border-radius: var(--tarjeta-radio, 0.75rem);
+  border-width: var(--tarjeta-borde-grosor, 1px);
+  border-style: var(--tarjeta-borde-estilo, solid);
+  border-color: var(--tarjeta-borde, #e5e5e5);
 }
 
 /* Filas con desplazamiento horizontal (chips, destacados, galería) sin barra visible */

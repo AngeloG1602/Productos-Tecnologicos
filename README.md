@@ -122,12 +122,17 @@ misma IP y 30 por hora en total. La IP se toma de las cabeceras que Supabase pas
 Nombre, color y descripción en `lib/tienda.ts` (título de las páginas, pie, imagen al compartir `app/(tienda)/opengraph-image.tsx`
 y textos legales). El color de la interfaz está en `app/globals.css` (`--marca`).
 
-### Temas de color
-Catálogo de temas (Clásico, Black Friday, Navidad, Halloween, Esmeralda, Atardecer) en `lib/temas.ts`, cada uno con
-sus dos colores (`marca`, `marcaSuave`) reflejados en `app/globals.css` (`[data-tema="..."]`). Desde **Configuración →
-Apariencia de la tienda** el admin elige cuál está activo (`configuracion.tema_activo`); se aplica solo a la tienda
-pública (`app/(tienda)/layout.tsx`), nunca al panel admin. Agregar un tema nuevo: una entrada en `lib/temas.ts` + su
-bloque de colores en `globals.css` (no hace falta migración).
+### Temas de color y decoración
+Catálogo de temas (Clásico, Black Friday, Navidad, Halloween, Esmeralda, Atardecer) en `lib/temas.ts`. Cada uno trae:
+- Colores (`marca`, `marcaSuave`) reflejados en `app/globals.css` (`[data-tema="..."]`).
+- Un ícono propio (`components/tienda/IconoTema.tsx`): junto a "Destacados" y como insignia en cada tarjeta de producto.
+- Una franja opcional arriba de la tienda (`banner`, `components/tienda/FranjaTema.tsx`) — solo los de temporada.
+- El borde y las esquinas de la tarjeta de producto (`--tarjeta-*` en `globals.css`, clase `.tarjeta-tematica`).
+
+Desde **Configuración → Apariencia de la tienda** el admin elige cuál está activo (`configuracion.tema_activo`); se
+aplica solo a la tienda pública (`app/(tienda)/layout.tsx`), nunca al panel admin ni al logo (el logo usa siempre
+`COLOR_MARCA` de `lib/tienda.ts`, ver `components/tienda/Logo.tsx`). Agregar un tema nuevo: una entrada en
+`lib/temas.ts` + su bloque de colores/tarjeta en `globals.css` (no hace falta migración).
 
 ### Enlaces para anuncios
 `/producto/<slug>?agregar=1` abre la ficha con el producto ya en el carrito (una sola vez; no agrega agotados) y

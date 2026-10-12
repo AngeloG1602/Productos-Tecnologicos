@@ -16,6 +16,7 @@ import { supabaseConfigurado } from "@/lib/env";
 import { formatearCOP } from "@/lib/formato";
 import { urlImagen } from "@/lib/imagenes";
 import { productosRelacionados } from "@/lib/relacionados";
+import { obtenerTema } from "@/lib/temas";
 
 export const revalidate = 60;
 
@@ -59,6 +60,7 @@ export default async function FichaProducto({ params }: PageProps<"/producto/[sl
   ]);
   if (!producto) notFound();
   const relacionados = productosRelacionados(todos, producto);
+  const tema = obtenerTema(configuracion.temaActivo);
 
   return (
     <article className="flex flex-col gap-5 md:grid md:grid-cols-2 md:items-start md:gap-8">
@@ -116,7 +118,7 @@ export default async function FichaProducto({ params }: PageProps<"/producto/[sl
           <div className="sin-barra -mx-4 flex snap-x snap-mandatory gap-3 overflow-x-auto px-4 pb-1">
             {relacionados.map((p) => (
               <div key={p.id} className="w-40 shrink-0 snap-start sm:w-48">
-                <TarjetaProducto producto={p} umbral={configuracion.umbralStockBajo} sizes="192px" />
+                <TarjetaProducto producto={p} umbral={configuracion.umbralStockBajo} tema={tema} sizes="192px" />
               </div>
             ))}
           </div>

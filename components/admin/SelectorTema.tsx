@@ -3,6 +3,7 @@
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
 import { TEMAS, type Tema } from "@/lib/temas";
+import { IconoTema } from "@/components/tienda/IconoTema";
 import { guardarTema } from "@/app/admin/(panel)/configuracion/acciones";
 
 const TITULO_CATEGORIA: Record<Tema["categoria"], string> = {
@@ -37,7 +38,8 @@ export function SelectorTema({ temaActivo }: { temaActivo: string }) {
   return (
     <div className="flex flex-col gap-4">
       <p className="text-sm text-neutral-600">
-        Cambia los colores de la tienda pública (inicio, catálogo, ficha, carrito). El panel admin no cambia.
+        Cambia los colores, los íconos y el estilo de las tarjetas de producto en la tienda pública (inicio, catálogo,
+        ficha, carrito). El logo y el panel admin no cambian.
       </p>
 
       {categorias.map((categoria) => {
@@ -65,9 +67,7 @@ export function SelectorTema({ temaActivo }: { temaActivo: string }) {
                       style={{ background: tema.marca }}
                       aria-hidden="true"
                     >
-                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
-                        <path d="M13 2 3 14h7l-1 8 10-12h-7l1-8Z" fill={tema.marcaSuave} />
-                      </svg>
+                      <IconoTema nombre={tema.icono} className="h-4 w-4" style={{ color: tema.marcaSuave }} />
                     </span>
                     <span>{tema.nombre}</span>
                     {activo && <span className="text-[10px] font-semibold text-neutral-500">Activo</span>}

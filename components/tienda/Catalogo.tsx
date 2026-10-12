@@ -2,7 +2,9 @@
 
 import { useMemo } from "react";
 import type { Categoria, ProductoResumen } from "@/lib/catalogo";
+import type { Tema } from "@/lib/temas";
 import { coincideBusqueda } from "@/lib/texto";
+import { IconoTema } from "./IconoTema";
 import { TarjetaProducto } from "./TarjetaProducto";
 import { useFiltrosURL } from "./useFiltrosURL";
 
@@ -10,13 +12,14 @@ type Props = {
   categorias: Categoria[];
   productos: ProductoResumen[];
   umbral: number;
+  tema: Tema;
 };
 
 /**
  * Catálogo con chips de categoría y buscador. El catálogo es pequeño (< 50
  * productos), así que se filtra en el navegador: respuesta instantánea en 4G.
  */
-export function Catalogo({ categorias, productos, umbral }: Props) {
+export function Catalogo({ categorias, productos, umbral, tema }: Props) {
   const { categoria, busqueda, actualizar } = useFiltrosURL();
 
   // Solo categorías que tienen productos a la venta
@@ -87,13 +90,16 @@ export function Catalogo({ categorias, productos, umbral }: Props) {
 
       {destacados.length > 0 && (
         <section aria-labelledby="titulo-destacados" className="flex flex-col gap-3">
-          <h2 id="titulo-destacados" className="text-base font-semibold">
+          <h2 id="titulo-destacados" className="flex items-center gap-1.5 text-base font-semibold">
+            {tema.categoria !== "clasico" && (
+              <IconoTema nombre={tema.icono} className="h-4 w-4" style={{ color: tema.marca }} />
+            )}
             Destacados
           </h2>
           <div className="sin-barra -mx-4 flex snap-x snap-mandatory gap-3 overflow-x-auto px-4 pb-1">
             {destacados.map((p, i) => (
               <div key={p.id} className="w-40 shrink-0 snap-start sm:w-48">
-                <TarjetaProducto producto={p} umbral={umbral} sizes="192px" preload={i < 2} />
+                <TarjetaProducto producto={p} umbral={umbral} tema={tema} sizes="192px" preload={i < 2} />
               </div>
             ))}
           </div>
@@ -110,7 +116,7 @@ export function Catalogo({ categorias, productos, umbral }: Props) {
           <ul className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
             {filtrados.map((p) => (
               <li key={p.id} className="flex">
-                <TarjetaProducto producto={p} umbral={umbral} />
+                <TarjetaProducto producto={p} umbral={umbral} tema={tema} />
               </li>
             ))}
           </ul>

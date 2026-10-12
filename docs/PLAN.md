@@ -111,8 +111,7 @@ Pedido del cliente tras usar la tienda.
 - [x] `supabase/limpiar-pedidos-prueba.sql` (opcional, antes de lanzar)
 - [x] Pruebas: `lib/xlsx.ts`, `lib/reporte.ts`, `lib/reporte-excel.ts`, fechas (80 en total); recorrido de 37 pasos (el Excel se valida con openpyxl y LibreOffice)
 - [x] Distribuidor por producto: tabla `distribuidores` (admin-only, RLS), campo seleccionable con "+ Otro" en el formulario de productos, filtro en la lista; nunca visible en la tienda pública
-- [x] Temas de color: azul de marca nuevo (`#031c52`); catálogo de temas (`lib/temas.ts`) con 3 de temporada (Black Friday, Navidad, Halloween) y 2 de variedad (Esmeralda, Atardecer); selector en Configuración → Apariencia, aplicado solo a la tienda pública
-- [ ] **(Tú)** Aplicar la migración `20261013000100_temas.sql` en Supabase **antes** de publicar este código
+- [x] Temas de color y decoración: azul de marca nuevo (`#031c52`, fijo en el logo); catálogo de temas (`lib/temas.ts`) con 3 de temporada (Black Friday, Navidad, Halloween) y 2 de variedad (Esmeralda, Atardecer), cada uno con ícono propio, franja opcional y borde/esquinas de tarjeta distintos; selector en Configuración → Apariencia, aplicado solo a la tienda pública (nunca al panel ni al logo)
 - [ ] **(Tú)** Crear el sitio en Netlify (guía, Parte 8), comprobarlo y apagar Vercel
 
 ---

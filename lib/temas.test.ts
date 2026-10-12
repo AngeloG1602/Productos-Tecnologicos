@@ -15,6 +15,17 @@ test("cada tema tiene un slug único y colores no vacíos", () => {
   }
 });
 
+test("solo los temas de temporada traen franja; clásico y estilo no", () => {
+  for (const t of TEMAS) {
+    if (t.categoria === "temporada") assert.ok(t.banner && t.banner.length > 0, `${t.slug} debería tener franja`);
+    else assert.equal(t.banner, null, `${t.slug} no debería tener franja`);
+  }
+});
+
+test("cada tema tiene un ícono asignado", () => {
+  for (const t of TEMAS) assert.ok(t.icono);
+});
+
 test("esTemaValido reconoce solo los slugs del catálogo", () => {
   assert.equal(esTemaValido("black-friday"), true);
   assert.equal(esTemaValido("no-existe"), false);

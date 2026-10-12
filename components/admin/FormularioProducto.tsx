@@ -2,16 +2,21 @@
 
 import { useMemo, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
-import type { CategoriaAdmin, ProductoAdmin } from "@/lib/admin/datos";
+import type { CategoriaAdmin, DistribuidorAdmin, ProductoAdmin } from "@/lib/admin/datos";
 import { formatearCOP } from "@/lib/formato";
 import { margenReal, precioPorDebajoDelCosto, precioSugerido } from "@/lib/precio";
 import { generarSlug } from "@/lib/slug";
 import { BotonCopiarEnlace } from "@/components/admin/BotonCopiarEnlace";
 import { SubidaImagenes } from "@/components/admin/SubidaImagenes";
+import { crearOBuscarDistribuidor } from "@/app/admin/(panel)/distribuidores/acciones";
 import { duplicarProducto, eliminarProducto, guardarProducto } from "@/app/admin/(panel)/productos/acciones";
+
+/** Valor del <select> cuando el admin elige escribir un distribuidor nuevo ("Otro"). */
+const DISTRIBUIDOR_NUEVO = "__nuevo__";
 
 type Props = {
   categorias: CategoriaAdmin[];
+  distribuidores: DistribuidorAdmin[];
   producto: ProductoAdmin | null;
   margenDefault: number;
   redondeo: number;
@@ -25,7 +30,7 @@ function leerEntero(texto: string): number | null {
   return Number.isInteger(n) && n >= 0 ? n : null;
 }
 
-export function FormularioProducto({ categorias, producto, margenDefault, redondeo }: Props) {
+export function FormularioProducto({ categorias, distribuidores, producto, margenDefault, redondeo }: Props) {
   const router = useRouter();
   const esNuevo = producto === null;
   // El id se genera ANTES de guardar: así las fotos se pueden subir mientras se llena el formulario.
@@ -47,6 +52,8 @@ export function FormularioProducto({ categorias, producto, margenDefault, redond
   const [stockTexto, setStockTexto] = useState(producto ? String(producto.stock) : "0");
   const [activo, setActivo] = useState(producto?.activo ?? true);
   const [destacado, setDestacado] = useState(producto?.destacado ?? false);
+  const [distribuidorSel, setDistribuidorSel] = useState(producto?.distribuidor_id ?? "");
+  const [distribuidorNuevoNombre, setDistribuidorNuevoNombre] = useState("");
 
   const [error, setError] = useState<string | null>(null);
   const [guardando, iniciarGuardado] = useTransition();
@@ -86,8 +93,18 @@ export function FormularioProducto({ categorias, producto, margenDefault, redond
     }
     const stock = leerEntero(stockTexto);
     if (stock === null) return setError("Escribe el stock (puede ser 0).");
+    if (distribuidorSel === DISTRIBUIDOR_NUEVO && distribuidorNuevoNombre.trim().length === 0) {
+      return setError("Escribe el nombre del distribuidor nuevo, o elige uno de la lista.");
+    }
 
     iniciarGuardado(async () => {
+      let distribuidorId: string | null = distribuidorSel === "" ? null : distribuidorSel;
+      if (distribuidorSel === DISTRIBUIDOR_NUEVO) {
+        const rDist = await crearOBuscarDistribuidor(distribuidorNuevoNombre);
+        if (!rDist.ok) return setError(rDist.error);
+        distribuidorId = rDist.id;
+      }
+
       const r = await guardarProducto({
         id: productoId,
         categoriaId: categoriaId || null,
@@ -102,6 +119,7 @@ export function FormularioProducto({ categorias, producto, margenDefault, redond
         stock,
         activo,
         destacado,
+        distribuidorId,
       });
       if (r.ok) router.push("/admin/productos");
       else setError(r.error);
@@ -264,6 +282,41 @@ export function FormularioProducto({ categorias, producto, margenDefault, redond
             />
           </Campo>
         </div>
+      </div>
+
+      <div className="rounded-xl border border-neutral-200 p-3">
+        <p className="mb-1 text-sm font-semibold">Distribuidor</p>
+        <p className="mb-3 text-xs text-neutral-500">
+          Solo para uso interno (quién les provee este producto). Nunca se muestra en la tienda ni al cliente.
+        </p>
+        <Campo etiqueta="Distribuidor">
+          <select
+            value={distribuidorSel}
+            onChange={(e) => setDistribuidorSel(e.target.value)}
+            className="h-11 rounded-xl border border-neutral-300 px-3 text-base"
+          >
+            <option value="">Sin distribuidor</option>
+            {distribuidores.map((d) => (
+              <option key={d.id} value={d.id}>
+                {d.nombre}
+              </option>
+            ))}
+            <option value={DISTRIBUIDOR_NUEVO}>+ Otro (escribir nuevo)</option>
+          </select>
+        </Campo>
+        {distribuidorSel === DISTRIBUIDOR_NUEVO && (
+          <div className="mt-3">
+            <Campo etiqueta="Nombre del distribuidor nuevo">
+              <input
+                value={distribuidorNuevoNombre}
+                onChange={(e) => setDistribuidorNuevoNombre(e.target.value)}
+                maxLength={80}
+                autoFocus
+                className="h-11 rounded-xl border border-neutral-300 px-3 text-base"
+              />
+            </Campo>
+          </div>
+        )}
       </div>
 
       <Campo etiqueta="Stock">

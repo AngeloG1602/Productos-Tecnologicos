@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useMemo, useState, useTransition } from "react";
-import type { CategoriaAdmin, ProductoAdmin } from "@/lib/admin/datos";
+import type { CategoriaAdmin, DistribuidorAdmin, ProductoAdmin } from "@/lib/admin/datos";
 import { formatearCOP } from "@/lib/formato";
 import { margenReal, precioPorDebajoDelCosto } from "@/lib/precio";
 import { coincideBusqueda } from "@/lib/texto";
@@ -11,11 +11,11 @@ import { BotonCopiarEnlace } from "@/components/admin/BotonCopiarEnlace";
 import { ImagenProducto } from "@/components/tienda/ImagenProducto";
 import { actualizarStock, alternarActivo, duplicarProducto, eliminarProducto } from "@/app/admin/(panel)/productos/acciones";
 
-type Props = { productos: ProductoAdmin[]; categorias: CategoriaAdmin[] };
+type Props = { productos: ProductoAdmin[]; categorias: CategoriaAdmin[]; distribuidores: DistribuidorAdmin[] };
 
 type Filtro = "todos" | "activos" | "inactivos" | "agotados";
 
-export function ListaProductos({ productos: iniciales, categorias }: Props) {
+export function ListaProductos({ productos: iniciales, categorias, distribuidores }: Props) {
   const [productos, setProductos] = useState(iniciales);
   // router.refresh() le pasa a este componente ya montado un arreglo nuevo de props;
   // como no hay remount, hay que ajustar el estado durante el render (patrón de React
@@ -27,6 +27,7 @@ export function ListaProductos({ productos: iniciales, categorias }: Props) {
   }
   const [busqueda, setBusqueda] = useState("");
   const [categoriaId, setCategoriaId] = useState("");
+  const [distribuidorId, setDistribuidorId] = useState("");
   const [filtro, setFiltro] = useState<Filtro>("todos");
 
   const filtrados = useMemo(
@@ -34,13 +35,14 @@ export function ListaProductos({ productos: iniciales, categorias }: Props) {
       productos
         .filter((p) => coincideBusqueda(p.nombre, busqueda))
         .filter((p) => !categoriaId || p.categoria_id === categoriaId)
+        .filter((p) => !distribuidorId || p.distribuidor_id === distribuidorId)
         .filter((p) => {
           if (filtro === "activos") return p.activo;
           if (filtro === "inactivos") return !p.activo;
           if (filtro === "agotados") return p.stock <= 0;
           return true;
         }),
-    [productos, busqueda, categoriaId, filtro],
+    [productos, busqueda, categoriaId, distribuidorId, filtro],
   );
 
   return (
@@ -65,6 +67,20 @@ export function ListaProductos({ productos: iniciales, categorias }: Props) {
             </option>
           ))}
         </select>
+        {distribuidores.length > 0 && (
+          <select
+            value={distribuidorId}
+            onChange={(e) => setDistribuidorId(e.target.value)}
+            className="h-11 rounded-xl border border-neutral-300 px-3 text-sm"
+          >
+            <option value="">Todos los distribuidores</option>
+            {distribuidores.map((d) => (
+              <option key={d.id} value={d.id}>
+                {d.nombre}
+              </option>
+            ))}
+          </select>
+        )}
       </div>
 
       <div className="flex gap-2 overflow-x-auto">
@@ -183,7 +199,10 @@ function FilaProducto({
         </div>
         <div className="min-w-0">
           <p className="truncate text-sm font-medium">{producto.nombre}</p>
-          <p className="truncate text-xs text-neutral-500">{producto.categoria_nombre ?? "Sin categoría"}</p>
+          <p className="truncate text-xs text-neutral-500">
+            {producto.categoria_nombre ?? "Sin categoría"}
+            {producto.distribuidor_nombre && ` · ${producto.distribuidor_nombre}`}
+          </p>
           <p className="text-sm">
             {formatearCOP(producto.precio_venta)}{" "}
             {margen != null && (

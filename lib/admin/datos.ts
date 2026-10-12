@@ -23,14 +23,16 @@ export type ProductoAdmin = Pick<
   categoria_nombre: string | null;
   costo: number | null;
   margen_pct: number | null;
+  distribuidor_id: string | null;
+  distribuidor_nombre: string | null;
 };
 
 const CAMPOS_PRODUCTO_ADMIN =
-  "id, categoria_id, nombre, slug, descripcion, imagenes, precio_venta, precio_anterior, stock, activo, destacado, categoria:categorias(nombre), producto_costos(costo, margen_pct)";
+  "id, categoria_id, nombre, slug, descripcion, imagenes, precio_venta, precio_anterior, stock, activo, destacado, categoria:categorias(nombre), producto_costos(costo, margen_pct, distribuidor_id, distribuidor:distribuidores(nombre))";
 
 type FilaProductoConRelaciones = Omit<Fila<"productos">, "created_at" | "updated_at"> & {
   categoria: { nombre: string } | null;
-  producto_costos: { costo: number; margen_pct: number } | null;
+  producto_costos: { costo: number; margen_pct: number; distribuidor_id: string | null; distribuidor: { nombre: string } | null } | null;
 };
 
 function aplanar(fila: FilaProductoConRelaciones): ProductoAdmin {
@@ -49,6 +51,8 @@ function aplanar(fila: FilaProductoConRelaciones): ProductoAdmin {
     categoria_nombre: fila.categoria?.nombre ?? null,
     costo: fila.producto_costos?.costo ?? null,
     margen_pct: fila.producto_costos?.margen_pct ?? null,
+    distribuidor_id: fila.producto_costos?.distribuidor_id ?? null,
+    distribuidor_nombre: fila.producto_costos?.distribuidor?.nombre ?? null,
   };
 }
 
@@ -82,6 +86,16 @@ export async function obtenerCategoriasAdmin(): Promise<CategoriaAdmin[]> {
   const supabase = await crearClienteServidor();
   const { data, error } = await supabase.from("categorias").select("*").order("orden").order("nombre");
   if (error) throw new Error(`No se pudieron cargar las categorías: ${error.message}`);
+  return data;
+}
+
+export type DistribuidorAdmin = Fila<"distribuidores">;
+
+/** Clasificación interna (quién les provee cada producto). Nunca se muestra en la tienda pública. */
+export async function obtenerDistribuidoresAdmin(): Promise<DistribuidorAdmin[]> {
+  const supabase = await crearClienteServidor();
+  const { data, error } = await supabase.from("distribuidores").select("*").order("nombre");
+  if (error) throw new Error(`No se pudieron cargar los distribuidores: ${error.message}`);
   return data;
 }
 

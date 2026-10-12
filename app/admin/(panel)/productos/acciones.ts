@@ -30,6 +30,7 @@ export type DatosProducto = {
   stock: number;
   activo: boolean;
   destacado: boolean;
+  distribuidorId: string | null;
 };
 
 /** Crea o actualiza un producto (guardar_producto es una sola transacción, ver migración 4). */
@@ -49,6 +50,7 @@ export async function guardarProducto(datos: DatosProducto): Promise<ResultadoCo
     p_stock: datos.stock,
     p_activo: datos.activo,
     p_destacado: datos.destacado,
+    p_distribuidor_id: datos.distribuidorId,
   };
   const { data, error } = await supabase.rpc("guardar_producto", args);
   if (error) return { ok: false, error: error.code === "22023" ? error.message : MENSAJE_GENERICO };

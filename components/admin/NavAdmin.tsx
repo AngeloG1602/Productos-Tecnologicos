@@ -8,6 +8,7 @@ const SECCIONES = [
   { href: "/admin/pedidos", etiqueta: "Pedidos" },
   { href: "/admin/productos", etiqueta: "Productos" },
   { href: "/admin/categorias", etiqueta: "Categorías" },
+  { href: "/admin/distribuidores", etiqueta: "Distribuidores" },
   { href: "/admin/socios", etiqueta: "Socios" },
   { href: "/admin/configuracion", etiqueta: "Configuración" },
 ];

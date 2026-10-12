@@ -1,12 +1,16 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { ListaProductos } from "@/components/admin/ListaProductos";
-import { obtenerCategoriasAdmin, obtenerProductosAdmin } from "@/lib/admin/datos";
+import { obtenerCategoriasAdmin, obtenerDistribuidoresAdmin, obtenerProductosAdmin } from "@/lib/admin/datos";
 
 export const metadata: Metadata = { title: "Productos", robots: { index: false } };
 
 export default async function ProductosAdmin() {
-  const [productos, categorias] = await Promise.all([obtenerProductosAdmin(), obtenerCategoriasAdmin()]);
+  const [productos, categorias, distribuidores] = await Promise.all([
+    obtenerProductosAdmin(),
+    obtenerCategoriasAdmin(),
+    obtenerDistribuidoresAdmin(),
+  ]);
 
   return (
     <div className="flex flex-col gap-4">
@@ -16,7 +20,7 @@ export default async function ProductosAdmin() {
           + Nuevo
         </Link>
       </div>
-      <ListaProductos productos={productos} categorias={categorias} />
+      <ListaProductos productos={productos} categorias={categorias} distribuidores={distribuidores} />
     </div>
   );
 }

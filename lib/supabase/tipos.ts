@@ -101,16 +101,19 @@ export type Database = {
           producto_id: string;
           costo: number;
           margen_pct: number;
+          distribuidor_id: string | null;
         };
         Insert: {
           producto_id: string;
           costo: number;
           margen_pct: number;
+          distribuidor_id?: string | null;
         };
         Update: {
           producto_id?: string;
           costo?: number;
           margen_pct?: number;
+          distribuidor_id?: string | null;
         };
         Relationships: [
           {
@@ -120,7 +123,32 @@ export type Database = {
             referencedRelation: "productos";
             referencedColumns: ["id"];
           },
+          {
+            foreignKeyName: "producto_costos_distribuidor_id_fkey";
+            columns: ["distribuidor_id"];
+            isOneToOne: false;
+            referencedRelation: "distribuidores";
+            referencedColumns: ["id"];
+          },
         ];
+      };
+      distribuidores: {
+        Row: {
+          id: string;
+          nombre: string;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          nombre: string;
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          nombre?: string;
+          created_at?: string;
+        };
+        Relationships: [];
       };
       socios: {
         Row: {
@@ -325,6 +353,7 @@ export type Database = {
           p_stock: number;
           p_activo: boolean;
           p_destacado: boolean;
+          p_distribuidor_id?: string | null;
         };
         Returns: string;
       };

@@ -3,8 +3,8 @@
 :root {
   --background: #ffffff;
   --foreground: #171717;
-  --marca: #1d4ed8;
-  --marca-suave: #eff6ff;
+  --marca: #031c52;
+  --marca-suave: #e7ebf3;
 }
 
 @theme inline {
@@ -20,6 +20,33 @@ body {
   background: var(--background);
   color: var(--foreground);
   font-family: var(--font-sans);
+}
+
+/*
+ * Temas de la tienda pública (lib/temas.ts elige cuál está activo, vía el
+ * atributo data-tema puesto en app/(tienda)/layout.tsx). "Clásico" no
+ * necesita bloque propio: son los valores de :root de arriba.
+ * Los colores de acá deben coincidir con los de lib/temas.ts.
+ */
+[data-tema="black-friday"] {
+  --marca: #0a0a0a;
+  --marca-suave: #fef3c7;
+}
+[data-tema="navidad"] {
+  --marca: #b91c1c;
+  --marca-suave: #dcfce7;
+}
+[data-tema="halloween"] {
+  --marca: #581c87;
+  --marca-suave: #ffedd5;
+}
+[data-tema="esmeralda"] {
+  --marca: #065f46;
+  --marca-suave: #ecfdf5;
+}
+[data-tema="atardecer"] {
+  --marca: #9a3412;
+  --marca-suave: #fff1f2;
 }
 
 /* Filas con desplazamiento horizontal (chips, destacados, galería) sin barra visible */

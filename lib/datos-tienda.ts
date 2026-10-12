@@ -2,6 +2,7 @@ import "server-only";
 import { obtenerConfiguracionPublica, type ConfiguracionPublica } from "@/lib/catalogo";
 import { supabaseConfigurado } from "@/lib/env";
 import { GARANTIA_POR_DEFECTO_MESES } from "@/lib/legal";
+import { TEMA_POR_DEFECTO } from "@/lib/temas";
 
 const SIN_CONFIGURAR: ConfiguracionPublica = {
   whatsappNumero: null,
@@ -17,6 +18,7 @@ const SIN_CONFIGURAR: ConfiguracionPublica = {
     metodos_pago: "",
     tiempo_entrega: "",
   },
+  temaActivo: TEMA_POR_DEFECTO,
 };
 
 /** Configuración pública para páginas que deben verse aunque Supabase aún no esté conectado. */

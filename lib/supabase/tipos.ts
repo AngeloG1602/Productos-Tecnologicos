@@ -268,6 +268,7 @@ export type Database = {
           garantia_meses: number;
           metodos_pago: string;
           tiempo_entrega: string;
+          tema_activo: string;
         };
         Insert: never;
         Update: {
@@ -284,6 +285,7 @@ export type Database = {
           garantia_meses?: number;
           metodos_pago?: string;
           tiempo_entrega?: string;
+          tema_activo?: string;
         };
         Relationships: [];
       };
@@ -320,6 +322,7 @@ export type Database = {
           garantia_meses: number;
           metodos_pago: string;
           tiempo_entrega: string;
+          tema_activo: string;
         }[];
       };
       crear_pedido: {

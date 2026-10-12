@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { FormularioConfiguracion } from "@/components/admin/FormularioConfiguracion";
 import { FormularioDatosLegales } from "@/components/admin/FormularioDatosLegales";
+import { SelectorTema } from "@/components/admin/SelectorTema";
 import { obtenerConfiguracionAdmin } from "@/lib/admin/datos";
 
 export const metadata: Metadata = { title: "Configuración", robots: { index: false } };
@@ -11,6 +12,13 @@ export default async function ConfiguracionAdmin() {
     <div className="flex flex-col gap-4">
       <h1 className="text-xl font-bold">Configuración</h1>
       <FormularioConfiguracion configuracion={configuracion} />
+
+      <section id="apariencia" aria-labelledby="titulo-apariencia" className="flex scroll-mt-20 flex-col gap-3">
+        <h2 id="titulo-apariencia" className="border-t border-neutral-200 pt-6 text-lg font-bold">
+          Apariencia de la tienda
+        </h2>
+        <SelectorTema temaActivo={configuracion.tema_activo} />
+      </section>
 
       <section id="datos-legales" aria-labelledby="titulo-legales" className="flex scroll-mt-20 flex-col gap-3">
         <h2 id="titulo-legales" className="border-t border-neutral-200 pt-6 text-lg font-bold">

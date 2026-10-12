@@ -2,6 +2,7 @@ import "server-only";
 import { crearClientePublico } from "@/lib/supabase/publico";
 import { GARANTIA_POR_DEFECTO_MESES, type DatosLegales } from "@/lib/legal";
 import type { Fila } from "@/lib/supabase/tipos";
+import { TEMA_POR_DEFECTO } from "@/lib/temas";
 
 // Solo columnas públicas: el costo y el margen viven en otra tabla y nunca se consultan aquí.
 
@@ -20,6 +21,7 @@ export type ConfiguracionPublica = {
   umbralStockBajo: number;
   textoEnvio: string;
   legal: DatosLegales;
+  temaActivo: string;
 };
 
 const UMBRAL_POR_DEFECTO = 5;
@@ -87,5 +89,6 @@ export async function obtenerConfiguracionPublica(): Promise<ConfiguracionPublic
       metodos_pago: data?.metodos_pago ?? "",
       tiempo_entrega: data?.tiempo_entrega ?? "",
     },
+    temaActivo: data?.tema_activo ?? TEMA_POR_DEFECTO,
   };
 }

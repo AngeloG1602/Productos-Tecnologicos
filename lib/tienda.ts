@@ -3,7 +3,7 @@
 
 export const NOMBRE_TIENDA = "DStore";
 
-/** Color principal (igual a --marca en app/globals.css). */
-export const COLOR_MARCA = "#1d4ed8";
+/** Color principal (igual a --marca en app/globals.css; tema "Clásico" de lib/temas.ts). */
+export const COLOR_MARCA = "#031c52";
 
 export const DESCRIPCION_TIENDA = "Accesorios electrónicos: cargadores, audífonos y más. Pide por WhatsApp.";

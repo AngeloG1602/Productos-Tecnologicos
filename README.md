@@ -122,6 +122,13 @@ misma IP y 30 por hora en total. La IP se toma de las cabeceras que Supabase pas
 Nombre, color y descripción en `lib/tienda.ts` (título de las páginas, pie, imagen al compartir `app/(tienda)/opengraph-image.tsx`
 y textos legales). El color de la interfaz está en `app/globals.css` (`--marca`).
 
+### Temas de color
+Catálogo de temas (Clásico, Black Friday, Navidad, Halloween, Esmeralda, Atardecer) en `lib/temas.ts`, cada uno con
+sus dos colores (`marca`, `marcaSuave`) reflejados en `app/globals.css` (`[data-tema="..."]`). Desde **Configuración →
+Apariencia de la tienda** el admin elige cuál está activo (`configuracion.tema_activo`); se aplica solo a la tienda
+pública (`app/(tienda)/layout.tsx`), nunca al panel admin. Agregar un tema nuevo: una entrada en `lib/temas.ts` + su
+bloque de colores en `globals.css` (no hace falta migración).
+
 ### Enlaces para anuncios
 `/producto/<slug>?agregar=1` abre la ficha con el producto ya en el carrito (una sola vez; no agrega agotados) y
 conserva los parámetros de campaña (`utm_source`, `fbclid`…). El botón "Copiar enlace para anuncio" del panel lo arma.

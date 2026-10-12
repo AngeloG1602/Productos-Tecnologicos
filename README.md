@@ -92,6 +92,9 @@ misma IP y 30 por hora en total. La IP se toma de las cabeceras que Supabase pas
 - Pedidos: lista filtrable y detalle con botones de estado (confirmar descuenta stock; cancelar un confirmado lo devuelve).
 - Productos: lista con edición rápida de stock y de activo/inactivo, formulario con precio sugerido (RN-01) y precio anterior opcional (muestra el descuento en la tienda), duplicar, eliminar y **copiar enlace para anuncio**.
 - Categorías: crear, renombrar, reordenar, eliminar.
+- Distribuidores: crear, renombrar, eliminar; clasificación interna de quién provee cada producto. Se elige en el
+  formulario de productos (o se crea uno nuevo con "+ Otro" sin salir del formulario) y se puede filtrar en la lista.
+  Vive en `producto_costos` con RLS solo-admin: nunca se expone en la tienda pública ni en rutas anónimas.
 - Socios: porcentajes de reparto (los activos deben sumar 100 %).
 - Inicio: además, reparto por socio (nombre y porcentaje actuales; cada pedido conserva el reparto con que se
   confirmó), más vendidos y **reporte en Excel** del rango (`/admin/reporte?desde=&hasta=`: resumen, pedidos,

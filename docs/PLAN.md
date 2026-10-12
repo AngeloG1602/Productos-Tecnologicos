@@ -110,6 +110,8 @@ Pedido del cliente tras usar la tienda.
 - [x] Preparado el paso a Netlify: `netlify.toml`, función diaria `despertar-bd`, guía (Parte 8)
 - [x] `supabase/limpiar-pedidos-prueba.sql` (opcional, antes de lanzar)
 - [x] Pruebas: `lib/xlsx.ts`, `lib/reporte.ts`, `lib/reporte-excel.ts`, fechas (80 en total); recorrido de 37 pasos (el Excel se valida con openpyxl y LibreOffice)
+- [x] Distribuidor por producto: tabla `distribuidores` (admin-only, RLS), campo seleccionable con "+ Otro" en el formulario de productos, filtro en la lista; nunca visible en la tienda pública
+- [ ] **(Tú)** Aplicar la migración `20261012000100_distribuidores.sql` en Supabase **antes** de publicar este código
 - [ ] **(Tú)** Crear el sitio en Netlify (guía, Parte 8), comprobarlo y apagar Vercel
 
 ---

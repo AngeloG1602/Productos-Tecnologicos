@@ -23,16 +23,44 @@ declare
   v_dup uuid;
   v_n int;
   v_prod public.productos;
+  v_dist1 uuid;
+  v_dist2 uuid;
 begin
+  -- Distribuidores: crear, "Otro" sin repetir si solo cambian mayúsculas, y borrar
+  insert into public.distribuidores (nombre) values ('Mayorista Uno') returning id into v_dist1;
+  insert into public.distribuidores (nombre) values ('Mayorista Dos') returning id into v_dist2;
+  begin
+    insert into public.distribuidores (nombre) values ('mayorista uno');
+    raise exception 'FALLA: aceptó un distribuidor repetido (ignorando mayúsculas)';
+  exception when unique_violation then
+    raise notice 'OK  distribuidores: no duplica aunque cambien mayúsculas/espacios';
+  end;
+  update public.distribuidores set nombre = 'Mayorista Uno SAS' where id = v_dist1;
+  if (select count(*) from public.distribuidores) <> 2 then
+    raise exception 'FALLA: no se pudo renombrar un distribuidor';
+  end if;
+  raise notice 'OK  admin crea y renombra distribuidores';
+
   -- Crear (el id lo genera el panel antes de llamar): costo 12.000, margen 40% → sugerido 16.800 (RN-01)
   v_id := public.guardar_producto(v_id, v_cat, 'Producto Admin', 'producto-admin', 'Descripción', '{}',
-                                   12000, 40, 16800, null, 10, true, false);
+                                   12000, 40, 16800, null, 10, true, false, v_dist1);
   select * into v_prod from public.productos where id = v_id;
   if v_prod.nombre <> 'Producto Admin' or v_prod.precio_venta <> 16800 then
     raise exception 'FALLA crear producto: %', row_to_json(v_prod);
   end if;
+  if (select distribuidor_id from public.producto_costos where producto_id = v_id) <> v_dist1 then
+    raise exception 'FALLA: no guardó el distribuidor';
+  end if;
   select costo, margen_pct into strict v_n, v_n from public.producto_costos where producto_id = v_id; -- solo valida que existe
-  raise notice 'OK  guardar_producto crea producto + costo';
+  raise notice 'OK  guardar_producto crea producto + costo + distribuidor';
+
+  -- Distribuidor inexistente → error amigable (no un error críptico de llave foránea)
+  begin
+    perform public.guardar_producto(gen_random_uuid(), v_cat, 'X', 'x-dist-invalido', '', '{}', 1000, 40, 1400, null, 1, true, false, gen_random_uuid());
+    raise exception 'FALLA: aceptó un distribuidor que no existe';
+  exception when invalid_parameter_value then
+    raise notice 'OK  distribuidor inexistente → error amigable';
+  end;
 
   -- Slug repetido → error amigable
   begin
@@ -51,23 +79,45 @@ begin
     raise notice 'OK  precio_anterior debe ser mayor al precio actual';
   end;
 
-  -- Actualizar: sube el precio anterior válido, baja el precio (queda bajo costo) y cambia el costo
-  v_id := public.guardar_producto(v_id, v_cat, 'Producto Admin', 'producto-admin', '', '{}', 12000, 8, 13000, 20000, 10, true, true);
+  -- Actualizar: sube el precio anterior válido, baja el precio (queda bajo costo), cambia el costo
+  -- y el distribuidor (de v_dist1 a v_dist2)
+  v_id := public.guardar_producto(v_id, v_cat, 'Producto Admin', 'producto-admin', '', '{}', 12000, 8, 13000, 20000, 10, true, true, v_dist2);
   select * into v_prod from public.productos where id = v_id;
   if v_prod.precio_anterior <> 20000 or v_prod.destacado <> true or v_prod.precio_venta <> 13000 then
     raise exception 'FALLA actualizar producto: %', row_to_json(v_prod);
   end if;
-  raise notice 'OK  guardar_producto actualiza (mismo id, no crea uno nuevo)';
+  if (select distribuidor_id from public.producto_costos where producto_id = v_id) <> v_dist2 then
+    raise exception 'FALLA: no actualizó el distribuidor';
+  end if;
+  raise notice 'OK  guardar_producto actualiza (mismo id, no crea uno nuevo; cambia el distribuidor)';
 
-  -- Duplicar: copia inactiva, stock 0, mismo costo/margen, slug distinto
+  -- Quitar el distribuidor (vuelve a null) es válido
+  v_id := public.guardar_producto(v_id, v_cat, 'Producto Admin', 'producto-admin', '', '{}', 12000, 8, 13000, 20000, 10, true, true, null);
+  if (select distribuidor_id from public.producto_costos where producto_id = v_id) is not null then
+    raise exception 'FALLA: no se pudo quitar el distribuidor';
+  end if;
+  raise notice 'OK  se puede dejar el producto sin distribuidor';
+
+  -- Borrar un distribuidor usado en un producto no borra el producto (solo lo deja sin distribuidor)
+  v_id := public.guardar_producto(v_id, v_cat, 'Producto Admin', 'producto-admin', '', '{}', 12000, 8, 13000, 20000, 10, true, true, v_dist2);
+  delete from public.distribuidores where id = v_dist2;
+  if (select distribuidor_id from public.producto_costos where producto_id = v_id) is not null
+     or not exists (select 1 from public.productos where id = v_id) then
+    raise exception 'FALLA: borrar el distribuidor debía dejar el producto sin distribuidor, no borrarlo';
+  end if;
+  raise notice 'OK  borrar un distribuidor no borra los productos que lo usaban';
+
+  -- Duplicar: copia inactiva, stock 0, mismo costo/margen/distribuidor, slug distinto
+  v_id := public.guardar_producto(v_id, v_cat, 'Producto Admin', 'producto-admin', '', '{}', 12000, 8, 13000, 20000, 10, true, true, v_dist1);
   v_dup := public.duplicar_producto(v_id);
   select * into v_prod from public.productos where id = v_dup;
   if v_prod.slug <> 'producto-admin-copia' or v_prod.activo <> false or v_prod.stock <> 0
      or v_prod.nombre <> 'Producto Admin (copia)' or v_prod.precio_venta <> 13000 then
     raise exception 'FALLA duplicar_producto: %', row_to_json(v_prod);
   end if;
-  if (select margen_pct from public.producto_costos where producto_id = v_dup) <> 8 then
-    raise exception 'FALLA: la copia no llevó el costo/margen';
+  if (select margen_pct from public.producto_costos where producto_id = v_dup) <> 8
+     or (select distribuidor_id from public.producto_costos where producto_id = v_dup) <> v_dist1 then
+    raise exception 'FALLA: la copia no llevó el costo/margen/distribuidor';
   end if;
   -- Duplicar la copia otra vez: no choca de slug (usa -copia-2)
   perform public.duplicar_producto(v_dup);
@@ -115,6 +165,18 @@ begin
     raise notice 'OK  no-admin no puede ejecutar duplicar_producto';
   end;
 
+  if exists (select 1 from public.distribuidores) then
+    raise exception 'FALLA: no-admin puede leer distribuidores';
+  end if;
+  raise notice 'OK  no-admin no ve ningún distribuidor (RLS)';
+
+  begin
+    insert into public.distribuidores (nombre) values ('Intruso');
+    raise exception 'FALLA: no-admin pudo crear un distribuidor';
+  exception when insufficient_privilege then
+    raise notice 'OK  no-admin no puede crear distribuidores';
+  end;
+
   begin
     insert into storage.objects (bucket_id, name) values ('productos', 'x/1.webp');
     raise exception 'FALLA: no-admin pudo subir una imagen';
@@ -153,6 +215,11 @@ begin
   exception when insufficient_privilege then
     raise notice 'OK  anónimo no puede ejecutar guardar_producto';
   end;
+
+  if exists (select 1 from public.distribuidores) then
+    raise exception 'FALLA: anónimo puede leer distribuidores';
+  end if;
+  raise notice 'OK  anónimo no ve ningún distribuidor (RLS)';
 end
 $$;
 

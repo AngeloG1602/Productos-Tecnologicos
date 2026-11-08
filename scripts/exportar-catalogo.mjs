@@ -13,8 +13,20 @@
 import { mkdir, writeFile, stat } from "node:fs/promises";
 import { join } from "node:path";
 
-const URL_SUPABASE = (process.env.NEXT_PUBLIC_SUPABASE_URL ?? "").replace(/\/+$/, "");
-const LLAVE = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ?? "";
+// Se queda solo con el origen (https://xxxx.supabase.co): tolera que peguen ".../rest/v1" o una "/" final.
+function origenSupabase(valor) {
+  const limpio = valor.trim().replace(/^["']|["']$/g, "");
+  if (!limpio) return "";
+  try {
+    return new URL(limpio).origin;
+  } catch {
+    console.error(`La URL de Supabase no es válida: "${limpio}". Debe ser como https://xxxxxxxx.supabase.co`);
+    process.exit(1);
+  }
+}
+
+const URL_SUPABASE = origenSupabase(process.env.NEXT_PUBLIC_SUPABASE_URL ?? "");
+const LLAVE = (process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ?? "").trim().replace(/^["']|["']$/g, "");
 const SITIO = (process.env.SITIO_URL ?? "https://7dstore.netlify.app").replace(/\/+$/, "");
 const SALIDA = process.env.SALIDA ?? "exportacion-catalogo";
 const BUCKET = "productos";

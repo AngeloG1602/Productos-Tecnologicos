@@ -29,7 +29,8 @@ if (!URL_SUPABASE || !LLAVE) {
 
 async function consultar(ruta) {
   const respuesta = await fetch(`${URL_SUPABASE}/rest/v1/${ruta}`, {
-    headers: { apikey: LLAVE, Authorization: `Bearer ${LLAVE}` },
+    // Las llaves nuevas (sb_publishable_...) no son JWT: solo van en "apikey".
+    headers: LLAVE.startsWith("eyJ") ? { apikey: LLAVE, Authorization: `Bearer ${LLAVE}` } : { apikey: LLAVE },
   });
   if (!respuesta.ok) {
     throw new Error(`Supabase respondió ${respuesta.status} en ${ruta.split("?")[0]}: ${await respuesta.text()}`);

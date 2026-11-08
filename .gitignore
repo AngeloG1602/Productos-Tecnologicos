@@ -43,3 +43,6 @@ next-env.d.ts
 
 # netlify
 .netlify
+
+# exportación del catálogo para publicidad (npm run exportar)
+/exportacion-catalogo/

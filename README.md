@@ -39,6 +39,7 @@ La llave `service_role` ignora RLS: nunca se le pone prefijo `NEXT_PUBLIC_` ni s
 | `npm run typecheck` | Genera tipos de rutas y corre `tsc` |
 | `npm test` | Pruebas unitarias de `/lib` (`node:test`) |
 | `npm run test:bd` | Pruebas de migraciones, RLS y funciones en un Postgres local |
+| `npm run exportar` | Baja el catálogo público a `exportacion-catalogo/` (CSV, JSON y fotos) para publicidad; solo usa la llave pública, sin costos ni márgenes |
 
 > En `/lib`, los imports relativos entre archivos usan extensión `.ts` (por ejemplo `./formato.ts`) para que las pruebas corran directo con Node.
 

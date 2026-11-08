@@ -9,7 +9,8 @@
     "lint": "eslint",
     "typecheck": "next typegen && tsc --noEmit",
     "test": "node --test \"lib/**/*.test.ts\"",
-    "test:bd": "bash scripts/probar-bd.sh"
+    "test:bd": "bash scripts/probar-bd.sh",
+    "exportar": "node --env-file-if-exists=.env.local scripts/exportar-catalogo.mjs"
   },
   "dependencies": {
     "@supabase/ssr": "^0.12.7",

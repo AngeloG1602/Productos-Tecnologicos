@@ -41,6 +41,11 @@ export function TarjetaProducto({
               −{descuento}%
             </span>
           )}
+          {producto.nuevo && !agotado && descuento === null && (
+            <span className="absolute top-2 left-2 rounded-lg bg-marca px-2 py-0.5 text-xs font-extrabold text-sobre-marca shadow-sm">
+              Nuevo
+            </span>
+          )}
           {agotado && (
             <span className="absolute top-2 left-2 rounded-lg bg-black/75 px-2 py-0.5 text-xs font-bold text-[#ffffff]">Agotado</span>
           )}

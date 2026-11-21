@@ -2,19 +2,22 @@ import "server-only";
 import { crearClientePublico } from "@/lib/supabase/publico";
 import { GARANTIA_POR_DEFECTO_MESES, type DatosLegales } from "@/lib/legal";
 import type { Fila } from "@/lib/supabase/tipos";
+import { esNuevo } from "@/lib/nuevo";
 import { TEMA_POR_DEFECTO } from "@/lib/temas";
 
 // Solo columnas públicas: el costo y el margen viven en otra tabla y nunca se consultan aquí.
 
 export type Categoria = Pick<Fila<"categorias">, "id" | "nombre" | "slug">;
 
-export type ProductoResumen = Pick<
+type ProductoBase = Pick<
   Fila<"productos">,
   "id" | "categoria_id" | "nombre" | "slug" | "imagenes" | "precio_venta" | "precio_anterior" | "stock" | "destacado"
 >;
 
-export type ProductoDetalle = ProductoResumen &
-  Pick<Fila<"productos">, "descripcion"> & { categoria: Categoria | null };
+/** Producto del listado: trae la fecha de creación y si cuenta como "nuevo" (calculado en el servidor). */
+export type ProductoResumen = ProductoBase & { created_at: string; nuevo: boolean };
+
+export type ProductoDetalle = ProductoBase & Pick<Fila<"productos">, "descripcion"> & { categoria: Categoria | null };
 
 export type PromocionPublica = {
   titulo: string;
@@ -56,11 +59,12 @@ export async function obtenerCategorias(): Promise<Categoria[]> {
 export async function obtenerProductos(): Promise<ProductoResumen[]> {
   const { data, error } = await crearClientePublico()
     .from("productos")
-    .select("id, categoria_id, nombre, slug, imagenes, precio_venta, precio_anterior, stock, destacado")
+    .select("id, categoria_id, nombre, slug, imagenes, precio_venta, precio_anterior, stock, destacado, created_at")
     .eq("activo", true)
     .order("nombre");
   if (error) throw new Error(`No se pudieron cargar los productos: ${error.message}`);
-  return data;
+  const ahora = new Date();
+  return data.map((p) => ({ ...p, nuevo: esNuevo(p.created_at, ahora) }));
 }
 
 export async function obtenerProductoPorSlug(slug: string): Promise<ProductoDetalle | null> {

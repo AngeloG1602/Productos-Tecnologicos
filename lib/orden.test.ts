@@ -2,7 +2,13 @@ import assert from "node:assert/strict";
 import { test } from "node:test";
 import { esOrden, filtrarPorPrecio, leerMonto, ordenarProductos } from "./orden.ts";
 
-const p = (nombre: string, precio_venta: number, stock = 5, destacado = false) => ({ nombre, precio_venta, stock, destacado });
+const p = (nombre: string, precio_venta: number, stock = 5, destacado = false, created_at = "2026-11-01T00:00:00Z") => ({
+  nombre,
+  precio_venta,
+  stock,
+  destacado,
+  created_at,
+});
 const lista = [p("a", 30000), p("b", 10000, 0), p("c", 20000, 5, true), p("d", 5000)];
 
 test("precio ascendente: agotados al final", () => {
@@ -15,6 +21,11 @@ test("precio descendente: agotados al final", () => {
 
 test("relevancia: destacados primero y conserva el orden original", () => {
   assert.deepEqual(ordenarProductos(lista, "relevancia").map((x) => x.nombre), ["c", "a", "d", "b"]);
+});
+
+test("recientes: lo último creado primero, agotados al final", () => {
+  const l = [p("viejo", 1, 5, false, "2026-10-01T00:00:00Z"), p("nuevo", 1, 5, false, "2026-11-20T00:00:00Z"), p("agotado-nuevo", 1, 0, false, "2026-11-21T00:00:00Z")];
+  assert.deepEqual(ordenarProductos(l, "recientes").map((x) => x.nombre), ["nuevo", "viejo", "agotado-nuevo"]);
 });
 
 test("no modifica la lista original", () => {

@@ -1528,6 +1528,16 @@ revoke execute on function public.promocion_activa() from public;
 grant execute on function public.promocion_activa() to anon, authenticated;
 
 -- ────────────────────────────────────────────────────────────────────────────
+-- Archivo: supabase/migrations/20261122000100_respaldo.sql
+-- ────────────────────────────────────────────────────────────────────────────
+-- Fecha de la última copia de seguridad descargada desde el panel, para recordarla en el inicio.
+-- Solo admins ven y editan "configuracion" (RLS ya existente); el público no la recibe
+-- (configuracion_publica() no incluye esta columna).
+
+alter table public.configuracion
+  add column ultimo_respaldo timestamptz;
+
+-- ────────────────────────────────────────────────────────────────────────────
 -- Archivo: supabase/seed.sql
 -- ────────────────────────────────────────────────────────────────────────────
 -- Datos de prueba (B1). Se pueden ejecutar varias veces sin duplicar.

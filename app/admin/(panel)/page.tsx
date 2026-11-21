@@ -9,6 +9,7 @@ import {
 } from "@/lib/admin/datos";
 import { esFechaValida, fechaLocal, rangoMesActual } from "@/lib/fechas";
 import { formatearCOP } from "@/lib/formato";
+import { necesitaRespaldo, textoUltimoRespaldo } from "@/lib/respaldo";
 import { estadisticas, repartoPorSocio } from "@/lib/reporte";
 
 export const metadata: Metadata = { title: "Inicio", robots: { index: false } };
@@ -42,6 +43,18 @@ export default async function Dashboard({ searchParams }: PageProps<"/admin">) {
   return (
     <div className="flex flex-col gap-6">
       <h1 className="text-xl font-bold">Inicio</h1>
+
+      {necesitaRespaldo(configuracion.ultimo_respaldo, ahora) && (
+        <Link
+          href="/admin/configuracion#respaldo"
+          className="flex items-center justify-between gap-3 rounded-xl border border-sky-300 bg-sky-50 p-3 text-sm text-sky-900"
+        >
+          <span>
+            <strong>Descarga tu copia de seguridad.</strong> {textoUltimoRespaldo(configuracion.ultimo_respaldo, ahora)}
+          </span>
+          <span aria-hidden="true">→</span>
+        </Link>
+      )}
 
       {(resumen.pendientes > 0 || stockBajo.length > 0) && (
         <section aria-labelledby="titulo-alertas" className="flex flex-col gap-2">

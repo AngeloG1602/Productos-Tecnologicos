@@ -1,4 +1,5 @@
 import { AvisoFlotante } from "@/components/carrito/AvisoFlotante";
+import { BarraCarrito } from "@/components/carrito/BarraCarrito";
 import { BotonWhatsApp } from "@/components/tienda/BotonWhatsApp";
 import { Encabezado } from "@/components/tienda/Encabezado";
 import { FranjaTema } from "@/components/tienda/FranjaTema";
@@ -22,6 +23,7 @@ export default async function LayoutTienda({ children }: LayoutProps<"/">) {
       <Encabezado />
       <main className="mx-auto w-full max-w-5xl flex-1 px-4 py-5">{children}</main>
       <Pie configuracion={configuracion} />
+      <BarraCarrito />
       <AvisoFlotante />
       {promocion && <PromoEmergente promo={promocion} />}
       {configuracion?.whatsappNumero && <BotonWhatsApp numero={configuracion.whatsappNumero} />}

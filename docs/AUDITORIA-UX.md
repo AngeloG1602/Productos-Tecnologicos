@@ -86,6 +86,12 @@ Hecho: T1 (consulta por WhatsApp con el producto), T2 (cómo comprar + preguntas
 
 Pendiente de ustedes: cargar tiempo de entrega y medios de pago en Configuración (T3), y definir la URL del sitio con `NEXT_PUBLIC_SITE_URL` si usan dominio propio (si no, se toma la de Netlify).
 
+## Ola 2: estado
+
+Hecho: P1 (cambios en lote en Productos: activar, desactivar, categoría y distribuidor; al activar se omiten los de precio $0), T11 (barra fija del carrito con el total), T12 (etiqueta "Nuevo" y orden "Recién llegados"), P5 (recordatorio de copia de seguridad en el inicio, con la fecha de la última copia; requiere la migración `20261122000100_respaldo.sql`).
+
+Pendiente: trampa de foco en la ventana emergente.
+
 ## Corregido durante la auditoría
 
 - Los botones verdes de WhatsApp del carrito tenían el texto claro en el tema Black Friday (contraste 1,8:1). Ahora usan texto verde oscuro (7,5:1).

@@ -1,10 +1,11 @@
 // Orden y filtro de precio del catálogo. Se aplican en el navegador (el catálogo es chico).
 // Los agotados siempre van al final, sea cual sea el orden elegido.
 
-export type Orden = "relevancia" | "precio-asc" | "precio-desc";
+export type Orden = "relevancia" | "recientes" | "precio-asc" | "precio-desc";
 
 export const ORDENES: { valor: Orden; etiqueta: string }[] = [
   { valor: "relevancia", etiqueta: "Destacados" },
+  { valor: "recientes", etiqueta: "Recién llegados" },
   { valor: "precio-asc", etiqueta: "Precio: menor a mayor" },
   { valor: "precio-desc", etiqueta: "Precio: mayor a menor" },
 ];
@@ -13,13 +14,14 @@ export function esOrden(valor: string | null): valor is Orden {
   return ORDENES.some((o) => o.valor === valor);
 }
 
-type ConPrecio = { precio_venta: number; stock: number; destacado: boolean };
+type ConPrecio = { precio_venta: number; stock: number; destacado: boolean; created_at: string };
 
 export function ordenarProductos<T extends ConPrecio>(lista: readonly T[], orden: Orden): T[] {
   // sort es estable: a igualdad de criterio se conserva el orden de entrada (alfabético).
   return [...lista].sort((a, b) => {
     const agotados = Number(a.stock <= 0) - Number(b.stock <= 0);
     if (agotados !== 0) return agotados;
+    if (orden === "recientes") return b.created_at.localeCompare(a.created_at); // ISO: se ordena como texto
     if (orden === "precio-asc") return a.precio_venta - b.precio_venta;
     if (orden === "precio-desc") return b.precio_venta - a.precio_venta;
     return Number(b.destacado) - Number(a.destacado);

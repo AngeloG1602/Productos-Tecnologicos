@@ -269,6 +269,7 @@ export type Database = {
           metodos_pago: string;
           tiempo_entrega: string;
           tema_activo: string;
+          ultimo_respaldo: string | null;
         };
         Insert: never;
         Update: {
@@ -286,6 +287,7 @@ export type Database = {
           metodos_pago?: string;
           tiempo_entrega?: string;
           tema_activo?: string;
+          ultimo_respaldo?: string | null;
         };
         Relationships: [];
       };

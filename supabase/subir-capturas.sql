@@ -179,7 +179,16 @@ Especificaciones técnicas
     ('relojes-inteligentes', 'Reloj Xiaomi Redmi Watch 3 negro (Gr. A)', 'reloj-xiaomi-redmi-watch-3-negro-gr-a', 'Reloj inteligente Xiaomi Redmi Watch 3 en color negro, con Bluetooth para llamadas.', 130000, 182000, 6),
     ('relojes-inteligentes', 'Reloj Xiaomi Redmi Watch 4 (Gr. A)', 'reloj-xiaomi-redmi-watch-4-gr-a', 'Reloj inteligente Xiaomi Redmi Watch 4.', 205000, 287000, 7),
     ('relojes-inteligentes', 'Reloj Xiaomi Redmi Watch 5 Active (Gr. A)', 'reloj-xiaomi-redmi-watch-5-active-gr-a', 'Reloj inteligente Xiaomi Redmi Watch 5 Active.', 160000, 224000, 9),
-    ('relojes-inteligentes', 'Reloj Xiaomi Redmi Watch 5 (Gr. A)', 'reloj-xiaomi-redmi-watch-5-gr-a', 'Reloj inteligente Xiaomi Redmi Watch 5.', 220000, 308000, 6),
+    ('relojes-inteligentes', 'Reloj Xiaomi Redmi Watch 5 (Gr. A)', 'reloj-xiaomi-redmi-watch-5-gr-a', 'Reloj inteligente Xiaomi Redmi Watch 5 (versión estándar): pantalla AMOLED ultragrande con biseles delgados de 2 mm, GPS integrado y hasta 24 días de autonomía.
+
+Especificaciones técnicas
+• Pantalla: AMOLED cuadrada de 2,07 pulgadas, 432 × 514 píxeles (324 PPP), 60 Hz y brillo máximo de 1.500 nits. Relación pantalla-cuerpo del 82 % y cristal 2.5D.
+• Diseño y materiales: marco de aleación de aluminio, corona giratoria de acero inoxidable y correa de TPU ajustable (135–205 mm). Mide 47,5 × 41,1 × 11,3 mm y pesa 33,5 gramos sin correa.
+• Batería: 550 mAh, hasta 24 días de uso típico (cerca de 12 días con Always-On Display).
+• Conectividad y llamadas: Bluetooth 5.3 con llamadas desde la muñeca, altavoz y doble micrófono con cancelación de ruido del viento. 164 MB de almacenamiento interno para música y grabadora de voz independiente.
+• Posicionamiento: GNSS con GPS, Galileo, GLONASS, BeiDou y QZSS.
+• Salud y deporte: frecuencia cardíaca, oxígeno en sangre (SpO₂), sueño y estrés; más de 150 modos deportivos y resistencia al agua 5 ATM.
+• Sistema: Xiaomi HyperOS con más de 200 esferas personalizables y motor lineal háptico. Compatible con Android 8.0 o superior e iOS 12.0 o superior.', 220000, 308000, 6),
     ('relojes-inteligentes', 'Reloj Xiaomi Redmi Watch 5 Lite (Gr. A)', 'reloj-xiaomi-redmi-watch-5-lite-gr-a', 'Reloj inteligente Xiaomi Redmi Watch 5 Lite: ligero, con pantalla AMOLED, GPS integrado y llamadas por Bluetooth. Versión en color dorado claro (Light Gold), con marco de acabado brillante y correa de silicona TPU.
 
 Pantalla y diseño

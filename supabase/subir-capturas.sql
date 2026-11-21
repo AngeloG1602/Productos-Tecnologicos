@@ -178,7 +178,25 @@ Especificaciones técnicas
 • Formatos multimedia compatibles: audio (MP3, AC3, PCM), imagen (JPEG, PNG, BMP, GIF) y video (MPEG2, MPEG4, H.264, H.265, VP8, VP9 y AV1).', 945000, 1323000, 2),
     ('relojes-inteligentes', 'Reloj Xiaomi Redmi Watch 3 negro (Gr. A)', 'reloj-xiaomi-redmi-watch-3-negro-gr-a', 'Reloj inteligente Xiaomi Redmi Watch 3 en color negro, con Bluetooth para llamadas.', 130000, 182000, 6),
     ('relojes-inteligentes', 'Reloj Xiaomi Redmi Watch 4 (Gr. A)', 'reloj-xiaomi-redmi-watch-4-gr-a', 'Reloj inteligente Xiaomi Redmi Watch 4.', 205000, 287000, 7),
-    ('relojes-inteligentes', 'Reloj Xiaomi Redmi Watch 5 Active (Gr. A)', 'reloj-xiaomi-redmi-watch-5-active-gr-a', 'Reloj inteligente Xiaomi Redmi Watch 5 Active.', 160000, 224000, 9),
+    ('relojes-inteligentes', 'Reloj Xiaomi Redmi Watch 5 Active (Gr. A)', 'reloj-xiaomi-redmi-watch-5-active-gr-a', 'Reloj inteligente Xiaomi Redmi Watch 5 Active (color plata mate): gran pantalla, autonomía prolongada y llamadas por Bluetooth desde la muñeca.
+
+Pantalla y diseño
+• Pantalla LCD cuadrada de 2 pulgadas, 320 × 385 píxeles (250 PPP) y brillo de hasta 500 nits.
+• Dimensiones de 49,1 × 40,4 × 11,4 mm y peso de 30,6 gramos sin la correa.
+• Marco de plástico con revestimiento metálico y correa de TPU ajustable (135 a 205 mm).
+• Más de 200 esferas intercambiables desde la aplicación.
+
+Batería y conectividad
+• Batería de 470 mAh: hasta 18 días en uso normal y hasta 12 días en uso intensivo.
+• Carga con cable magnético incluido en la caja.
+• Llamadas Bluetooth con altavoz integrado y doble micrófono con cancelación de ruido.
+• Xiaomi HyperOS, Bluetooth 5.3; compatible con Android 8.0 o iOS 12.0 en adelante.
+
+Salud, deporte y resistencia
+• Sensor de frecuencia cardíaca, oxígeno en sangre (SpO2) y acelerómetro.
+• Seguimiento continuo de ritmo cardíaco, estrés, sueño y salud femenina.
+• Más de 140 modos de entrenamiento con detección automática de actividad. No tiene GPS integrado: usa el GPS del teléfono para registrar rutas.
+• Resistencia al agua 5 ATM: apto para lluvia, salpicaduras y natación en aguas poco profundas.', 160000, 224000, 9),
     ('relojes-inteligentes', 'Reloj Xiaomi Redmi Watch 5 (Gr. A)', 'reloj-xiaomi-redmi-watch-5-gr-a', 'Reloj inteligente Xiaomi Redmi Watch 5 (versión estándar): pantalla AMOLED ultragrande con biseles delgados de 2 mm, GPS integrado y hasta 24 días de autonomía.
 
 Especificaciones técnicas

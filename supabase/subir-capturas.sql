@@ -177,7 +177,24 @@ Especificaciones técnicas
 • Sintonizador de televisión: digital terrestre DVB-T2 (compatible con la señal TDT en Colombia), además de los estándares analógicos PAL-M/N y NTSC-M.
 • Formatos multimedia compatibles: audio (MP3, AC3, PCM), imagen (JPEG, PNG, BMP, GIF) y video (MPEG2, MPEG4, H.264, H.265, VP8, VP9 y AV1).', 945000, 1323000, 2),
     ('relojes-inteligentes', 'Reloj Xiaomi Redmi Watch 3 negro (Gr. A)', 'reloj-xiaomi-redmi-watch-3-negro-gr-a', 'Reloj inteligente Xiaomi Redmi Watch 3 en color negro, con Bluetooth para llamadas.', 130000, 182000, 6),
-    ('relojes-inteligentes', 'Reloj Xiaomi Redmi Watch 4 (Gr. A)', 'reloj-xiaomi-redmi-watch-4-gr-a', 'Reloj inteligente Xiaomi Redmi Watch 4.', 205000, 287000, 7),
+    ('relojes-inteligentes', 'Reloj Xiaomi Redmi Watch 4 (Gr. A)', 'reloj-xiaomi-redmi-watch-4-gr-a', 'Reloj inteligente Xiaomi Redmi Watch 4 en color gris plata (Silver Gray): pantalla AMOLED amplia, marco de aluminio y autonomía de hasta 20 días.
+
+Pantalla y diseño
+• Pantalla AMOLED cuadrada de 1,97 pulgadas, 390 × 450 píxeles, brillo de hasta 600 nits y 60 Hz. Modo de pantalla siempre activa (AOD).
+• Marco de aleación de aluminio, corona giratoria de acero inoxidable y correa de TPU de liberación rápida.
+• Mide 47,5 × 41,1 × 10,5 mm y pesa 31,5 gramos sin correa.
+• Resistencia al agua 5 ATM: apto para natación en piscina y actividades acuáticas poco profundas.
+
+Batería y conectividad
+• Batería de 470 mAh con carga magnética: hasta 20 días en uso típico, cerca de 10 días con pantalla siempre activa y hasta 30 días en modo de ahorro prolongado.
+• Llamadas por Bluetooth 5.3 con micrófono y altavoz.
+• GNSS independiente con GPS, Galileo, GLONASS, BeiDou y QZSS.
+• Compatible con Android 8.0 o superior e iOS 12.0 o superior mediante la app Mi Fitness.
+
+Salud y deporte
+• Sensor óptico de 4 canales para ritmo cardíaco y oxígeno en sangre (SpO2), acelerómetro, giroscopio, brújula electrónica y sensor de luz ambiental.
+• Más de 150 modos deportivos; sincroniza datos con plataformas como Strava y Apple Salud.
+• Registro de sueño, estrés, calorías y pasos.', 205000, 287000, 7),
     ('relojes-inteligentes', 'Reloj Xiaomi Redmi Watch 5 Active (Gr. A)', 'reloj-xiaomi-redmi-watch-5-active-gr-a', 'Reloj inteligente Xiaomi Redmi Watch 5 Active (color plata mate): gran pantalla, autonomía prolongada y llamadas por Bluetooth desde la muñeca.
 
 Pantalla y diseño

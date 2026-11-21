@@ -20,6 +20,8 @@ export type Tema = {
   banner: string | null;
   /** Fecha y hora de fin (ISO con zona). Si existe, la franja muestra una cuenta regresiva hasta ese momento. */
   finaliza?: string;
+  /** Texto junto a la cuenta regresiva (por defecto "Termina en"). */
+  cuentaEtiqueta?: string;
 };
 
 export const TEMAS: Tema[] = [
@@ -40,9 +42,11 @@ export const TEMAS: Tema[] = [
     nombre: "Navidad",
     categoria: "temporada",
     marca: "#b91c1c",
-    marcaSuave: "#dcfce7",
+    marcaSuave: "#fdeaea",
     icono: "copo",
     banner: "Feliz Navidad de parte de todo el equipo",
+    finaliza: "2026-12-25T00:00:00-05:00",
+    cuentaEtiqueta: "Faltan para Navidad",
   },
   {
     slug: "halloween",

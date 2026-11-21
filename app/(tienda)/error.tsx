@@ -16,11 +16,11 @@ export default function ErrorTienda({
   return (
     <div className="flex flex-col items-center gap-4 py-16 text-center">
       <h1 className="text-xl font-bold">No pudimos cargar la tienda</h1>
-      <p className="text-sm text-neutral-600">Revisa tu conexión e inténtalo de nuevo.</p>
+      <p className="text-sm text-suave">Revisa tu conexión e inténtalo de nuevo.</p>
       <button
         type="button"
         onClick={() => retry()}
-        className="rounded-lg bg-neutral-900 px-4 py-2 text-sm font-medium text-white"
+        className="rounded-lg bg-texto px-4 py-2 text-sm font-medium text-fondo"
       >
         Intentar de nuevo
       </button>

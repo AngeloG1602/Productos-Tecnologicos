@@ -4,6 +4,9 @@ import { enlaceWhatsApp, MENSAJE_CONSULTA } from "@/lib/whatsapp";
 import { CuentaRegresiva } from "./CuentaRegresiva";
 import { IconoUbicacion } from "./IconoUbicacion";
 import { IconoWhatsApp } from "./IconoWhatsApp";
+import { ArbolNavidad, Esfera } from "./navidad/ArbolNavidad";
+import { GuirnaldaLuces } from "./navidad/GuirnaldaLuces";
+import { Nieve } from "./navidad/Nieve";
 
 /**
  * Portada de la tienda. Tiene una versión para Black Friday y otra para el resto de temas
@@ -11,6 +14,7 @@ import { IconoWhatsApp } from "./IconoWhatsApp";
  */
 export function HeroPortada({ tema, whatsappNumero }: { tema: Tema; whatsappNumero: string | null }) {
   if (tema.slug === "black-friday") return <HeroBlackFriday tema={tema} whatsappNumero={whatsappNumero} />;
+  if (tema.slug === "navidad") return <HeroNavidad tema={tema} whatsappNumero={whatsappNumero} />;
 
   return (
     <section
@@ -97,6 +101,74 @@ function HeroBlackFriday({ tema, whatsappNumero }: { tema: Tema; whatsappNumero:
         )}
 
         <BotonesPortada whatsappNumero={whatsappNumero} oscuro />
+      </div>
+    </section>
+  );
+}
+
+function HeroNavidad({ tema, whatsappNumero }: { tema: Tema; whatsappNumero: string | null }) {
+  return (
+    <section
+      aria-labelledby="titulo-portada"
+      className="aparece relative overflow-hidden rounded-3xl p-6 pt-12 text-[#fff8ea] shadow-lg ring-1 ring-[#d4a017]/50 sm:p-10 sm:pt-14"
+      style={{
+        backgroundImage:
+          "radial-gradient(70% 90% at 90% 0%, rgb(212 160 23 / 0.25), transparent 70%), linear-gradient(160deg, #0f3d2e 0%, #14532d 55%, #0b2e22 100%)",
+      }}
+    >
+      <Nieve />
+      <GuirnaldaLuces className="absolute inset-x-0 top-0" />
+
+      {/* Adornos colgantes y árbol (solo decoración) */}
+      <div aria-hidden="true" className="pointer-events-none absolute top-6 right-4 flex items-start gap-2 sm:right-10 sm:gap-3">
+        <Esfera color="#ef4444" cuerda={22} className="hidden h-14 w-7 sm:block sm:h-20 sm:w-9" />
+        <Esfera color="#facc15" cuerda={46} className="h-20 w-7 sm:h-28 sm:w-9" />
+        <Esfera color="#e5e7eb" cuerda={30} className="h-16 w-7 sm:h-24 sm:w-9" />
+      </div>
+      <ArbolNavidad className="pointer-events-none absolute -right-3 -bottom-4 hidden h-52 w-44 opacity-95 sm:block lg:right-14 lg:h-64 lg:w-56" />
+
+      <div className="relative flex max-w-xl flex-col gap-4">
+        <span className="flex w-fit items-center gap-1.5 rounded-full bg-[rgb(255_255_255/0.12)] px-3 py-1 text-xs font-semibold ring-1 ring-[rgb(255_255_255/0.25)] backdrop-blur">
+          <IconoUbicacion className="h-3.5 w-3.5 text-[#facc15]" />
+          {UBICACION_TIENDA}
+        </span>
+        <h1
+          id="titulo-portada"
+          className="text-4xl leading-[1.05] font-bold tracking-tight text-balance sm:text-6xl"
+          style={{ fontFamily: "ui-serif, Georgia, 'Times New Roman', serif" }}
+        >
+          Regala tecnología <span className="text-[#facc15]">esta Navidad</span>
+        </h1>
+        <p className="max-w-md text-base leading-relaxed text-[rgb(255_248_234/0.88)] text-pretty">
+          Cargadores, audífonos, relojes y más para sorprender a los tuyos. Pide por WhatsApp aquí en Ocaña.
+        </p>
+
+        {tema.finaliza && (
+          <div className="flex flex-col gap-1.5">
+            <span className="text-xs font-semibold tracking-wider text-[#facc15] uppercase">{tema.cuentaEtiqueta ?? "Termina en"}</span>
+            <CuentaRegresiva hasta={tema.finaliza} />
+          </div>
+        )}
+
+        <div className="mt-1 flex flex-wrap gap-2.5">
+          <a
+            href="#catalogo"
+            className="brilla rounded-xl bg-[#facc15] px-5 py-3 text-sm font-bold text-[#3b2a00] shadow-md transition-transform active:scale-[0.98]"
+          >
+            Ver regalos
+          </a>
+          {whatsappNumero && (
+            <a
+              href={enlaceWhatsApp(whatsappNumero, MENSAJE_CONSULTA)}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-2 rounded-xl bg-[#25D366] px-5 py-3 text-sm font-bold text-[#052e16] shadow-md transition-transform active:scale-[0.98]"
+            >
+              <IconoWhatsApp className="h-4 w-4" />
+              Escríbenos
+            </a>
+          )}
+        </div>
       </div>
     </section>
   );

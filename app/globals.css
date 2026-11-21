@@ -115,12 +115,27 @@ body:has([data-tema="black-friday"]) {
   --color-amber-50: #3a2a05;
   --color-amber-800: #fcd34d;
 }
+/* Navidad: fondo crema cálido, rojo, verde bosque y dorado. */
 [data-tema="navidad"] {
+  --fondo: #fbf6ee;
+  --superficie: #ffffff;
+  --texto: #1b2a22;
+  --suave: #5d6b62;
+  --borde: #eadfce;
   --marca: #b91c1c;
-  --marca-suave: #dcfce7;
-  --tarjeta-borde: #b91c1c;
-  --tarjeta-borde-estilo: dashed;
-  --tarjeta-borde-grosor: 2px;
+  --marca-suave: #fdeaea;
+  --sobre-marca: #ffffff;
+  --acento: #166534;
+  --sobre-acento: #ffffff;
+  --exito: #166534;
+  --sombra-tarjeta: 0 1px 2px rgb(60 40 10 / 0.07), 0 6px 18px rgb(120 80 10 / 0.08);
+  --sombra-tarjeta-hover: 0 0 0 1.5px #d4a017, 0 12px 30px rgb(212 160 23 / 0.28);
+  --tarjeta-radio: 1.125rem;
+  --tarjeta-borde: #eadfce;
+}
+body:has([data-tema="navidad"]) {
+  --background: #fbf6ee;
+  --foreground: #1b2a22;
 }
 [data-tema="halloween"] {
   --marca: #581c87;
@@ -226,4 +241,65 @@ body:has([data-tema="black-friday"]) {
   width: 40%;
   background: linear-gradient(100deg, transparent, rgb(255 255 255 / 0.55), transparent);
   animation: brillo 3.4s ease-in-out infinite;
+}
+
+/* Decoración navideña: nieve que cae, luces que titilan y adornos que se balancean. */
+@keyframes caer {
+  0% {
+    transform: translate3d(0, -8%, 0);
+    opacity: 0;
+  }
+  10% {
+    opacity: var(--op, 0.8);
+  }
+  100% {
+    transform: translate3d(var(--vaiven, 14px), 108%, 0);
+    opacity: 0;
+  }
+}
+@keyframes titilar {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.25;
+  }
+}
+@keyframes balanceo {
+  0%,
+  100% {
+    transform: rotate(-4deg);
+  }
+  50% {
+    transform: rotate(4deg);
+  }
+}
+.copo-nieve {
+  position: absolute;
+  top: 0;
+  border-radius: 9999px;
+  background: #fff;
+  animation: caer var(--dur, 9s) linear var(--ret, 0s) infinite;
+}
+.luz-a {
+  animation: titilar 1.8s ease-in-out infinite;
+}
+.luz-b {
+  animation: titilar 1.8s ease-in-out 0.9s infinite;
+}
+.adorno {
+  transform-origin: top center;
+  animation: balanceo 4.5s ease-in-out infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .copo-nieve,
+  .luz-a,
+  .luz-b,
+  .adorno {
+    animation: none !important;
+  }
+  .copo-nieve {
+    opacity: 0.6;
+  }
 }

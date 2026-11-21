@@ -4,11 +4,11 @@ import { IconoUbicacion } from "./IconoUbicacion";
 import { IconoWhatsApp } from "./IconoWhatsApp";
 
 /**
- * Cuatro razones para confiar, bajo la portada. Los datos de garantía, pagos y entrega salen de
+ * Razones para confiar, bajo la portada. Los datos de entrega y medios de pago salen de
  * Configuración (admin); si no están cargados, ese punto no se muestra en vez de inventar algo.
  */
 export function FranjaConfianza({ configuracion }: { configuracion: ConfiguracionPublica }) {
-  const { garantia_meses, metodos_pago, tiempo_entrega } = configuracion.legal;
+  const { metodos_pago, tiempo_entrega } = configuracion.legal;
   const puntos: { icono: React.ReactNode; titulo: string; detalle: string }[] = [
     {
       icono: <IconoUbicacion className="h-5 w-5" />,
@@ -21,13 +21,11 @@ export function FranjaConfianza({ configuracion }: { configuracion: Configuracio
       detalle: "Atención directa y personal",
     },
   ];
-  if (garantia_meses > 0) {
-    puntos.push({
-      icono: <Escudo />,
-      titulo: "Garantía",
-      detalle: `${garantia_meses} ${garantia_meses === 1 ? "mes" : "meses"} en tus productos`,
-    });
-  }
+  puntos.push({
+    icono: <Check />,
+    titulo: "Compra sin registro",
+    detalle: "Arma tu pedido y envíalo",
+  });
   if (tiempo_entrega.trim()) {
     puntos.push({ icono: <Camion />, titulo: "Entrega", detalle: tiempo_entrega.trim() });
   } else if (metodos_pago.trim()) {
@@ -51,11 +49,11 @@ export function FranjaConfianza({ configuracion }: { configuracion: Configuracio
 
 const trazo = { fill: "none", stroke: "currentColor", strokeWidth: 2, strokeLinecap: "round", strokeLinejoin: "round" } as const;
 
-function Escudo() {
+function Check() {
   return (
     <svg viewBox="0 0 24 24" className="h-5 w-5" {...trazo} aria-hidden="true">
-      <path d="M12 3 5 6v5c0 4.5 3 8 7 10 4-2 7-5.5 7-10V6l-7-3Z" />
-      <path d="m9 12 2 2 4-4" />
+      <circle cx="12" cy="12" r="9" />
+      <path d="m8.5 12.5 2.5 2.5 4.5-5" />
     </svg>
   );
 }

@@ -243,7 +243,7 @@ export function PaginaCarrito({ whatsappNumero, textoEnvio }: Props) {
           <button
             type="submit"
             disabled={enviando}
-            className="flex h-12 items-center justify-center gap-2 rounded-xl bg-[#25D366] text-base font-semibold text-texto disabled:opacity-60"
+            className="flex h-12 items-center justify-center gap-2 rounded-xl bg-[#25D366] text-base font-semibold text-[#052e16] disabled:opacity-60"
           >
             <IconoWhatsApp />
             {enviando ? "Registrando pedido…" : "Enviar pedido por WhatsApp"}
@@ -306,7 +306,7 @@ function PedidoListo({ codigo, enlace }: { codigo: string; enlace: string }) {
       </p>
       <a
         href={enlace}
-        className="flex h-12 items-center gap-2 rounded-xl bg-[#25D366] px-6 text-base font-semibold text-texto"
+        className="flex h-12 items-center gap-2 rounded-xl bg-[#25D366] px-6 text-base font-semibold text-[#052e16]"
       >
         <IconoWhatsApp />
         Abrir WhatsApp

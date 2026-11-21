@@ -16,7 +16,7 @@
   --marca: #031c52;
   --marca-suave: #e7ebf3;
   --sobre-marca: #ffffff;
-  --acento: #f2542d; /* ofertas y llamadas a la acción */
+  --acento: #d63f12; /* ofertas y llamadas a la acción (blanco encima: contraste 4.6:1) */
   --sobre-acento: #ffffff;
   --exito: #15803d;
   --exito-suave: #dcfce7;
@@ -80,7 +80,7 @@ body:has([data-tema="black-friday"]) {
   --marca: #facc15;
   --marca-suave: #1a1a1d;
   --sobre-marca: #0a0a0a;
-  --acento: #ff3b30;
+  --acento: #dc2626;
   --sobre-acento: #ffffff;
   --exito: #4ade80;
   --exito-suave: #052e16;

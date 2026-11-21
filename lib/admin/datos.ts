@@ -268,3 +268,40 @@ export async function obtenerCategoriasDeProductos(): Promise<Map<string, string
   }
   return mapa;
 }
+
+// ─────────────────────────────────────────────────────────────
+// Promoción emergente
+// ─────────────────────────────────────────────────────────────
+
+export type PromocionAdmin = Fila<"promocion">;
+
+export async function obtenerPromocionAdmin(): Promise<PromocionAdmin> {
+  const supabase = await crearClienteServidor();
+  const { data, error } = await supabase.from("promocion").select("*").eq("id", 1).single();
+  if (error) throw new Error(`No se pudo cargar la promoción: ${error.message}`);
+  return data;
+}
+
+export type ProductoParaPromocion = Pick<
+  Fila<"productos">,
+  "id" | "nombre" | "activo" | "imagenes" | "precio_venta" | "precio_anterior" | "stock"
+>;
+
+/** Productos para elegir el "producto estrella" (solo columnas públicas, sin costos). */
+export async function obtenerProductosParaPromocion(): Promise<ProductoParaPromocion[]> {
+  const supabase = await crearClienteServidor();
+  const { data, error } = await supabase
+    .from("productos")
+    .select("id, nombre, activo, imagenes, precio_venta, precio_anterior, stock")
+    .order("nombre");
+  if (error) throw new Error(`No se pudieron cargar los productos: ${error.message}`);
+  return data;
+}
+
+/** Cantidad de pedidos pendientes (para el aviso del menú). */
+export async function contarPedidosPendientes(): Promise<number> {
+  const supabase = await crearClienteServidor();
+  const { count, error } = await supabase.from("pedidos").select("id", { count: "exact", head: true }).eq("estado", "pendiente");
+  if (error) return 0; // es solo un aviso: no debe tumbar el panel
+  return count ?? 0;
+}

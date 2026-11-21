@@ -26,7 +26,7 @@ export function CompraProducto({ producto }: { producto: ProductoParaCarrito }) 
 
   if (producto.stock <= 0) {
     return (
-      <button type="button" disabled className="h-12 w-full rounded-xl bg-neutral-200 text-base font-semibold text-neutral-500">
+      <button type="button" disabled className="h-12 w-full rounded-xl bg-borde text-base font-semibold text-suave">
         Agotado
       </button>
     );
@@ -44,7 +44,7 @@ export function CompraProducto({ producto }: { producto: ProductoParaCarrito }) 
     <div className="flex flex-col gap-3">
       {disponible > 0 && (
         <div className="flex items-center gap-3">
-          <span className="text-sm text-neutral-600">Cantidad</span>
+          <span className="text-sm text-suave">Cantidad</span>
           <SelectorCantidad valor={Math.min(cantidad, disponible)} maximo={disponible} onCambiar={setCantidad} />
         </div>
       )}
@@ -53,13 +53,13 @@ export function CompraProducto({ producto }: { producto: ProductoParaCarrito }) 
         type="button"
         onClick={alAgregar}
         disabled={disponible === 0}
-        className="h-12 w-full rounded-xl bg-marca text-base font-semibold text-white active:opacity-90 disabled:bg-neutral-200 disabled:text-neutral-500"
+        className="h-13 w-full rounded-xl bg-marca text-base font-bold text-sobre-marca shadow-md transition-transform active:scale-[0.99] disabled:bg-borde disabled:text-suave disabled:shadow-none"
       >
         {disponible === 0 ? "Ya tienes todas las unidades disponibles" : "Agregar al carrito"}
       </button>
 
       {enCarrito > 0 && (
-        <p className="text-center text-sm text-neutral-600">
+        <p className="text-center text-sm text-suave">
           Tienes {enCarrito} en el carrito
         </p>
       )}

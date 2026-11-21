@@ -9,6 +9,13 @@ export const revalidate = 60;
 
 export default async function Carrito() {
   if (!supabaseConfigurado()) return <AvisoSinConfigurar />;
-  const { whatsappNumero, textoEnvio } = await obtenerConfiguracionPublica();
-  return <PaginaCarrito whatsappNumero={whatsappNumero} textoEnvio={textoEnvio} />;
+  const { whatsappNumero, textoEnvio, legal } = await obtenerConfiguracionPublica();
+  return (
+    <PaginaCarrito
+      whatsappNumero={whatsappNumero}
+      textoEnvio={textoEnvio}
+      tiempoEntrega={legal.tiempo_entrega}
+      metodosPago={legal.metodos_pago}
+    />
+  );
 }

@@ -89,11 +89,11 @@ begin
     join pg_namespace n on n.oid = p.pronamespace
     where n.nspname = 'public'
       and has_function_privilege('anon', p.oid, 'execute')
-      and p.proname not in ('es_admin', 'configuracion_publica', 'crear_pedido')
+      and p.proname not in ('es_admin', 'configuracion_publica', 'crear_pedido', 'promocion_activa')
   ) then
     raise exception 'FALLA: hay funciones de public ejecutables por anónimo que no deberían';
   end if;
-  raise notice 'OK  anónimo solo puede ejecutar es_admin, configuracion_publica y crear_pedido';
+  raise notice 'OK  anónimo solo puede ejecutar es_admin, configuracion_publica, crear_pedido y promocion_activa';
 
   -- 7. La configuración pública sí está disponible, sin margen ni redondeo
   select to_jsonb(c) into v_json from public.configuracion_publica() c;

@@ -19,7 +19,7 @@ export function BotonCarrito() {
         <circle cx="17" cy="20" r="1.3" />
       </svg>
       {unidades > 0 && (
-        <span className="absolute top-0.5 right-0.5 flex h-5 min-w-5 items-center justify-center rounded-full bg-marca px-1 text-[11px] font-bold text-white">
+        <span className="absolute top-0.5 right-0.5 flex h-5 min-w-5 items-center justify-center rounded-full bg-marca px-1 text-[11px] font-bold text-sobre-marca">
           {unidades > 99 ? "99+" : unidades}
         </span>
       )}

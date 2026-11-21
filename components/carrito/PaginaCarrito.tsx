@@ -11,11 +11,15 @@ import { ImagenProducto } from "@/components/tienda/ImagenProducto";
 import { SelectorCantidad } from "@/components/tienda/SelectorCantidad";
 import { IconoWhatsApp } from "@/components/tienda/IconoWhatsApp";
 import { useCarrito } from "./useCarrito";
+import { guardarDatosCliente, olvidarDatosCliente, useDatosCliente } from "./datosCliente";
 import { guardarUltimoPedido, olvidarUltimoPedido, useUltimoPedido } from "./ultimoPedido";
 
 type Props = {
   whatsappNumero: string | null;
   textoEnvio: string;
+  /** Datos de Configuración (pueden estar vacíos): se muestran junto al botón de enviar. */
+  tiempoEntrega: string;
+  metodosPago: string;
 };
 
 type Estado =
@@ -24,11 +28,12 @@ type Estado =
   | { tipo: "error"; mensaje: string }
   | { tipo: "cambios"; avisos: string[] };
 
-export function PaginaCarrito({ whatsappNumero, textoEnvio }: Props) {
+export function PaginaCarrito({ whatsappNumero, textoEnvio, tiempoEntrega, metodosPago }: Props) {
   const { items, cambiarCantidad, quitar, reemplazar, vaciar } = useCarrito();
   const [estado, setEstado] = useState<Estado>({ tipo: "editando" });
   const avisoRef = useRef<HTMLDivElement>(null);
   const ultimoPedido = useUltimoPedido();
+  const recordado = useDatosCliente();
 
   if (items.length === 0 && ultimoPedido) {
     return <PedidoListo codigo={ultimoPedido.codigo} enlace={ultimoPedido.enlace} />;
@@ -38,8 +43,8 @@ export function PaginaCarrito({ whatsappNumero, textoEnvio }: Props) {
     return (
       <div className="flex flex-col items-center gap-4 py-16 text-center">
         <h1 className="text-xl font-bold">Tu carrito está vacío</h1>
-        <p className="text-sm text-neutral-600">Agrega productos del catálogo para armar tu pedido.</p>
-        <Link href="/" className="rounded-xl bg-marca px-5 py-3 text-sm font-semibold text-white">
+        <p className="text-sm text-suave">Agrega productos del catálogo para armar tu pedido.</p>
+        <Link href="/" className="rounded-xl bg-marca px-5 py-3 text-sm font-semibold text-sobre-marca">
           Ver productos
         </Link>
       </div>
@@ -110,6 +115,7 @@ export function PaginaCarrito({ whatsappNumero, textoEnvio }: Props) {
       });
       const enlace = enlaceWhatsApp(whatsappNumero, mensaje);
 
+      guardarDatosCliente({ nombre: cliente.nombre, ciudad: cliente.ciudad });
       guardarUltimoPedido({ codigo: respuesta.codigo, enlace });
       vaciar();
       setEstado({ tipo: "editando" });
@@ -153,7 +159,7 @@ export function PaginaCarrito({ whatsappNumero, textoEnvio }: Props) {
           )}
         </div>
 
-        <ul className="flex flex-col divide-y divide-neutral-200 rounded-xl border border-neutral-200">
+        <ul className="flex flex-col divide-y divide-borde rounded-xl border border-borde">
           {items.map((item) => (
             <li key={item.productoId} className="flex gap-3 p-3">
               <Link href={`/producto/${item.slug}`} className="w-20 shrink-0 overflow-hidden rounded-lg">
@@ -168,7 +174,7 @@ export function PaginaCarrito({ whatsappNumero, textoEnvio }: Props) {
                     type="button"
                     onClick={() => quitar(item.productoId)}
                     aria-label={`Quitar ${item.nombre} del carrito`}
-                    className="-mt-1 -mr-1 flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-neutral-500"
+                    className="-mt-1 -mr-1 flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-suave"
                   >
                     <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
                       <path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13" />
@@ -195,32 +201,66 @@ export function PaginaCarrito({ whatsappNumero, textoEnvio }: Props) {
         </Link>
       </section>
 
-      <form onSubmit={enviar} className="flex flex-col gap-4 rounded-xl border border-neutral-200 p-4 md:sticky md:top-20">
+      <form onSubmit={enviar} className="flex flex-col gap-4 rounded-xl border border-borde p-4 md:sticky md:top-20">
         <div className="flex items-baseline justify-between">
-          <span className="text-sm text-neutral-600">Total productos</span>
+          <span className="text-sm text-suave">Total productos</span>
           <span className="text-xl font-bold">{formatearCOP(total)}</span>
         </div>
-        <p className="-mt-2 text-xs text-neutral-500">El costo del envío se acuerda por WhatsApp.</p>
+        <p className="-mt-2 text-xs text-suave">El costo del envío se acuerda por WhatsApp.</p>
+        {(tiempoEntrega.trim() || metodosPago.trim()) && (
+          <dl className="flex flex-col gap-1.5 rounded-xl bg-marca-suave p-3 text-xs">
+            {tiempoEntrega.trim() && (
+              <div className="flex gap-1.5">
+                <dt className="font-bold">Entrega:</dt>
+                <dd className="text-suave">{tiempoEntrega.trim()}</dd>
+              </div>
+            )}
+            {metodosPago.trim() && (
+              <div className="flex gap-1.5">
+                <dt className="font-bold">Pago:</dt>
+                <dd className="text-suave">{metodosPago.trim()}</dd>
+              </div>
+            )}
+          </dl>
+        )}
 
-        <Campo etiqueta="Tu nombre" nombre="nombre" maxLength={80} autoComplete="name" requerido />
         <Campo
+          key={`nombre-${recordado.nombre}`}
+          etiqueta="Tu nombre"
+          nombre="nombre"
+          maxLength={80}
+          autoComplete="name"
+          valorInicial={recordado.nombre}
+          requerido
+        />
+        <Campo
+          key={`ciudad-${recordado.ciudad}`}
           etiqueta="Ciudad y barrio"
           nombre="ciudad"
           maxLength={120}
           autoComplete="address-level2"
-          placeholder="Ej: Bogotá - Chapinero"
+          placeholder="Ej: Ocaña - Barrio Centro"
+          valorInicial={recordado.ciudad}
           requerido
         />
+        {(recordado.nombre || recordado.ciudad) && (
+          <p className="-mt-2 text-xs text-suave">
+            Usamos los datos de tu pedido anterior.{" "}
+            <button type="button" onClick={olvidarDatosCliente} className="text-marca underline">
+              Borrar mis datos de este celular
+            </button>
+          </p>
+        )}
         <label className="flex flex-col gap-1">
           <span className="text-sm font-medium">
-            Notas <span className="font-normal text-neutral-500">(opcional)</span>
+            Notas <span className="font-normal text-suave">(opcional)</span>
           </span>
           <textarea
             name="notas"
             maxLength={500}
             rows={2}
             placeholder="Ej: entregar en la tarde"
-            className="rounded-xl border border-neutral-300 px-3 py-2 text-base outline-none focus:border-marca focus:ring-2 focus:ring-marca/20"
+            className="rounded-xl border border-borde px-3 py-2 text-base outline-none focus:border-marca focus:ring-2 focus:ring-marca/20"
           />
         </label>
 
@@ -243,17 +283,17 @@ export function PaginaCarrito({ whatsappNumero, textoEnvio }: Props) {
           <button
             type="submit"
             disabled={enviando}
-            className="flex h-12 items-center justify-center gap-2 rounded-xl bg-[#25D366] text-base font-semibold text-neutral-950 disabled:opacity-60"
+            className="flex h-12 items-center justify-center gap-2 rounded-xl bg-[#25D366] text-base font-semibold text-[#052e16] disabled:opacity-60"
           >
             <IconoWhatsApp />
             {enviando ? "Registrando pedido…" : "Enviar pedido por WhatsApp"}
           </button>
         ) : (
-          <p className="rounded-xl bg-neutral-100 p-3 text-sm text-neutral-600">
+          <p className="rounded-xl bg-marca-suave p-3 text-sm text-suave">
             Los pedidos por WhatsApp estarán disponibles muy pronto.
           </p>
         )}
-        <p className="text-xs text-neutral-500">
+        <p className="text-xs text-suave">
           Te llevaremos a WhatsApp con tu pedido ya escrito. Solo tienes que enviarlo.
         </p>
       </form>
@@ -267,6 +307,7 @@ function Campo({
   maxLength,
   autoComplete,
   placeholder,
+  valorInicial = "",
   requerido = false,
 }: {
   etiqueta: string;
@@ -274,6 +315,7 @@ function Campo({
   maxLength: number;
   autoComplete?: string;
   placeholder?: string;
+  valorInicial?: string;
   requerido?: boolean;
 }) {
   return (
@@ -285,7 +327,8 @@ function Campo({
         maxLength={maxLength}
         autoComplete={autoComplete}
         placeholder={placeholder}
-        className="h-11 rounded-xl border border-neutral-300 px-3 text-base outline-none focus:border-marca focus:ring-2 focus:ring-marca/20"
+        defaultValue={valorInicial}
+        className="h-11 rounded-xl border border-borde px-3 text-base outline-none focus:border-marca focus:ring-2 focus:ring-marca/20"
       />
     </label>
   );
@@ -300,13 +343,13 @@ function PedidoListo({ codigo, enlace }: { codigo: string; enlace: string }) {
         </svg>
       </div>
       <h1 className="text-xl font-bold">¡Tu pedido {codigo} está listo!</h1>
-      <p className="max-w-xs text-sm text-neutral-600">
+      <p className="max-w-xs text-sm text-suave">
         Te estamos llevando a WhatsApp con el pedido ya escrito. Solo tienes que enviarlo. Si no se abrió, toca el
         botón.
       </p>
       <a
         href={enlace}
-        className="flex h-12 items-center gap-2 rounded-xl bg-[#25D366] px-6 text-base font-semibold text-neutral-950"
+        className="flex h-12 items-center gap-2 rounded-xl bg-[#25D366] px-6 text-base font-semibold text-[#052e16]"
       >
         <IconoWhatsApp />
         Abrir WhatsApp

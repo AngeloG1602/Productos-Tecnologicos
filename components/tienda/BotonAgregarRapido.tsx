@@ -15,7 +15,7 @@ export function BotonAgregarRapido({ producto }: { producto: ProductoParaCarrito
         const agregadas = agregar(producto, 1);
         notificar(agregadas ? "Agregado al carrito" : "Ya tienes todas las unidades disponibles", agregadas > 0);
       }}
-      className="flex h-10 w-10 items-center justify-center rounded-full bg-marca text-white shadow-md active:scale-95"
+      className="flex h-10 w-10 items-center justify-center rounded-full bg-marca text-sobre-marca shadow-md ring-2 ring-superficie transition-transform hover:scale-105 active:scale-95"
     >
       <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="2.5" aria-hidden="true">
         <path d="M12 5v14M5 12h14" />

@@ -26,7 +26,7 @@ export function TarjetaProducto({
   const agotado = producto.stock <= 0;
   const descuento = porcentajeDescuento(producto.precio_anterior, producto.precio_venta);
   return (
-    <div className="tarjeta-tematica relative flex w-full flex-col overflow-hidden bg-white">
+    <div className="tarjeta-tematica relative flex w-full flex-col overflow-hidden bg-superficie">
       <Link href={`/producto/${producto.slug}`} className="group flex flex-1 flex-col">
         <div className="relative">
           <ImagenProducto
@@ -34,16 +34,24 @@ export function TarjetaProducto({
             alt={producto.nombre}
             sizes={sizes}
             preload={preload}
-            className={agotado ? "opacity-60" : ""}
+            className={agotado ? "opacity-50 grayscale" : ""}
           />
           {descuento !== null && (
-            <span className="absolute top-2 left-2 rounded-md bg-red-600 px-1.5 py-0.5 text-xs font-bold text-white">
+            <span className="absolute top-2 left-2 rounded-lg bg-acento px-2 py-0.5 text-xs font-extrabold text-sobre-acento shadow-sm">
               −{descuento}%
             </span>
           )}
+          {producto.nuevo && !agotado && descuento === null && (
+            <span className="absolute top-2 left-2 rounded-lg bg-marca px-2 py-0.5 text-xs font-extrabold text-sobre-marca shadow-sm">
+              Nuevo
+            </span>
+          )}
+          {agotado && (
+            <span className="absolute top-2 left-2 rounded-lg bg-black/75 px-2 py-0.5 text-xs font-bold text-[#ffffff]">Agotado</span>
+          )}
           {tema.categoria !== "clasico" && (
             <span
-              className="absolute top-2 right-2 flex h-7 w-7 items-center justify-center rounded-full text-white shadow-sm"
+              className="absolute top-2 right-2 flex h-7 w-7 items-center justify-center rounded-full text-sobre-marca shadow-sm"
               style={{ background: tema.marca }}
               aria-hidden="true"
             >
@@ -51,12 +59,12 @@ export function TarjetaProducto({
             </span>
           )}
         </div>
-        <div className="flex flex-1 flex-col gap-1 p-3">
-          <h3 className="line-clamp-2 text-sm leading-snug group-hover:underline">{producto.nombre}</h3>
-          <div className="mt-auto pt-1">
+        <div className="flex flex-1 flex-col gap-1.5 p-3">
+          <h3 className="line-clamp-2 min-h-[2.5rem] text-sm leading-snug font-medium">{producto.nombre}</h3>
+          <div className="mt-auto flex flex-col gap-1.5 pt-1">
             <PrecioProducto precio={producto.precio_venta} precioAnterior={producto.precio_anterior} />
+            <EtiquetaStock stock={producto.stock} umbral={umbral} />
           </div>
-          <EtiquetaStock stock={producto.stock} umbral={umbral} />
         </div>
       </Link>
       {!agotado && (

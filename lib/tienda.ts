@@ -6,4 +6,7 @@ export const NOMBRE_TIENDA = "DStore";
 /** Color principal (igual a --marca en app/globals.css; tema "Clásico" de lib/temas.ts). */
 export const COLOR_MARCA = "#031c52";
 
-export const DESCRIPCION_TIENDA = "Accesorios electrónicos: cargadores, audífonos y más. Pide por WhatsApp.";
+export const CIUDAD_TIENDA = "Ocaña";
+export const UBICACION_TIENDA = "Ocaña, Norte de Santander";
+
+export const DESCRIPCION_TIENDA = `Tecnología y accesorios en ${UBICACION_TIENDA}: cargadores, audífonos, relojes y más. Pide por WhatsApp.`;

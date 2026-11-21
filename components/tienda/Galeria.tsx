@@ -12,7 +12,7 @@ export function Galeria({ imagenes, nombre }: { imagenes: string[]; nombre: stri
   const [actual, setActual] = useState(0);
 
   if (imagenes.length === 0) {
-    return <ImagenProducto ruta={undefined} alt={nombre} sizes="100vw" className="rounded-xl" />;
+    return <ImagenProducto ruta={undefined} alt={nombre} sizes="100vw" className="rounded-2xl" />;
   }
 
   const irA = (i: number) => {
@@ -28,7 +28,7 @@ export function Galeria({ imagenes, nombre }: { imagenes: string[]; nombre: stri
           const el = e.currentTarget;
           setActual(Math.round(el.scrollLeft / el.clientWidth));
         }}
-        className="sin-barra flex snap-x snap-mandatory overflow-x-auto rounded-xl"
+        className="sin-barra flex snap-x snap-mandatory overflow-x-auto rounded-2xl border border-borde"
         aria-label={`Imágenes de ${nombre}`}
       >
         {imagenes.map((ruta, i) => (
@@ -52,8 +52,8 @@ export function Galeria({ imagenes, nombre }: { imagenes: string[]; nombre: stri
               onClick={() => irA(i)}
               aria-label={`Ver imagen ${i + 1}`}
               aria-current={i === actual}
-              className={`w-16 overflow-hidden rounded-lg border-2 ${
-                i === actual ? "border-neutral-900" : "border-transparent"
+              className={`w-16 overflow-hidden rounded-xl border-2 ${
+                i === actual ? "border-marca" : "border-transparent"
               }`}
             >
               <ImagenProducto ruta={ruta} alt="" sizes="64px" />

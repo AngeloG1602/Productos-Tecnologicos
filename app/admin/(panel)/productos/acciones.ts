@@ -98,3 +98,63 @@ export async function eliminarProducto(id: string): Promise<ResultadoAccion> {
   actualizarCatalogoPublico();
   return { ok: true };
 }
+
+// ─────────────────────────────────────────────────────────────
+// Cambios en lote (varios productos a la vez)
+// ─────────────────────────────────────────────────────────────
+
+export type CambiosLote = {
+  activo?: boolean;
+  /** uuid de la categoría, o null para dejarlos sin categoría. */
+  categoriaId?: string | null;
+  /** uuid del distribuidor, o null para quitarlo. */
+  distribuidorId?: string | null;
+};
+
+export type ResultadoLote =
+  | { ok: true; actualizados: string[]; omitidos: string[] }
+  | { ok: false; error: string };
+
+const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+const MAXIMO_LOTE = 300;
+
+/**
+ * Aplica el mismo cambio a varios productos. Al ACTIVAR, los productos con precio 0 se omiten
+ * (no se publican a $0): se devuelven en "omitidos" para avisar al admin.
+ */
+export async function actualizarEnLote(ids: string[], cambios: CambiosLote): Promise<ResultadoLote> {
+  if (!Array.isArray(ids) || ids.length === 0) return { ok: false, error: "No hay productos seleccionados." };
+  if (ids.length > MAXIMO_LOTE) return { ok: false, error: `Máximo ${MAXIMO_LOTE} productos por vez.` };
+  if (!ids.every((id) => typeof id === "string" && UUID.test(id))) return { ok: false, error: "Selección inválida." };
+  for (const v of [cambios.categoriaId, cambios.distribuidorId]) {
+    if (typeof v === "string" && !UUID.test(v)) return { ok: false, error: "Selección inválida." };
+  }
+
+  const supabase = await crearClienteServidor();
+  let activables = ids;
+  let omitidos: string[] = [];
+
+  if (cambios.activo === true) {
+    const { data, error } = await supabase.from("productos").select("id, precio_venta").in("id", ids);
+    if (error) return { ok: false, error: MENSAJE_GENERICO };
+    activables = data.filter((p) => p.precio_venta > 0).map((p) => p.id);
+    omitidos = data.filter((p) => p.precio_venta <= 0).map((p) => p.id);
+  }
+
+  if (cambios.activo !== undefined && activables.length > 0) {
+    const { error } = await supabase.from("productos").update({ activo: cambios.activo }).in("id", activables);
+    if (error) return { ok: false, error: MENSAJE_GENERICO };
+  }
+  if (cambios.categoriaId !== undefined) {
+    const { error } = await supabase.from("productos").update({ categoria_id: cambios.categoriaId }).in("id", ids);
+    if (error) return { ok: false, error: MENSAJE_GENERICO };
+  }
+  if (cambios.distribuidorId !== undefined) {
+    const { error } = await supabase.from("producto_costos").update({ distribuidor_id: cambios.distribuidorId }).in("producto_id", ids);
+    if (error) return { ok: false, error: MENSAJE_GENERICO };
+  }
+
+  actualizarCatalogoPublico();
+  // La pantalla envía un tipo de cambio por vez: al activar, solo se actualizaron los "activables".
+  return { ok: true, actualizados: cambios.activo !== undefined ? activables : ids, omitidos };
+}

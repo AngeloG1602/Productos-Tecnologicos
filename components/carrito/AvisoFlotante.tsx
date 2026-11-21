@@ -10,7 +10,7 @@ export function AvisoFlotante() {
       {aviso && (
         <div
           key={aviso.id}
-          className="pointer-events-auto flex w-full max-w-sm items-center justify-between gap-3 rounded-xl bg-neutral-900 px-4 py-3 text-sm text-white shadow-lg"
+          className="pointer-events-auto flex w-full max-w-sm items-center justify-between gap-3 rounded-xl bg-texto px-4 py-3 text-sm text-fondo shadow-lg"
         >
           <span>{aviso.texto}</span>
           {aviso.conEnlaceCarrito && (

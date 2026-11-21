@@ -1,13 +1,13 @@
 import { BotonCerrarSesion } from "@/components/admin/BotonCerrarSesion";
 import { NavAdmin } from "@/components/admin/NavAdmin";
-import { obtenerNombreAdminActual } from "@/lib/admin/datos";
+import { contarPedidosPendientes, obtenerNombreAdminActual } from "@/lib/admin/datos";
 
 // Todo /admin es por sesión y nunca debe quedar cacheado ni prerenderizado en
 // el build (también evita que el build falle si aún no hay Supabase configurado).
 export const dynamic = "force-dynamic";
 
 export default async function LayoutPanel({ children }: LayoutProps<"/admin">) {
-  const nombre = await obtenerNombreAdminActual();
+  const [nombre, pendientes] = await Promise.all([obtenerNombreAdminActual(), contarPedidosPendientes()]);
 
   return (
     <div className="flex min-h-dvh flex-col">
@@ -19,7 +19,7 @@ export default async function LayoutPanel({ children }: LayoutProps<"/admin">) {
           </div>
           <BotonCerrarSesion className="shrink-0" />
         </div>
-        <NavAdmin />
+        <NavAdmin pedidosPendientes={pendientes} />
       </header>
       <main className="mx-auto w-full max-w-4xl flex-1 px-4 py-4">{children}</main>
     </div>

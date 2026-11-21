@@ -3,6 +3,7 @@ import { FormularioConfiguracion } from "@/components/admin/FormularioConfigurac
 import { FormularioDatosLegales } from "@/components/admin/FormularioDatosLegales";
 import { SelectorTema } from "@/components/admin/SelectorTema";
 import { obtenerConfiguracionAdmin } from "@/lib/admin/datos";
+import { textoUltimoRespaldo } from "@/lib/respaldo";
 
 export const metadata: Metadata = { title: "Configuración", robots: { index: false } };
 
@@ -34,7 +35,7 @@ export default async function ConfiguracionAdmin() {
         <p className="text-sm text-neutral-600">
           Descarga un archivo con los productos, costos, pedidos, socios y configuración. Guárdalo en tu
           computador o en Google Drive una vez por semana: el plan gratuito de Supabase no guarda copias. Las fotos
-          no se incluyen (siguen en Supabase).
+          no se incluyen (siguen en Supabase). <strong>{textoUltimoRespaldo(configuracion.ultimo_respaldo, new Date())}</strong>
         </p>
         <a
           href="/admin/respaldo"

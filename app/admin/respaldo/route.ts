@@ -52,6 +52,9 @@ export async function GET() {
     tablas,
   };
 
+  // Se anota la fecha para el recordatorio del inicio. Si falla, la descarga sigue igual.
+  await supabase.from("configuracion").update({ ultimo_respaldo: ahora.toISOString() }).eq("id", 1);
+
   return new Response(JSON.stringify(respaldo, null, 2), {
     headers: {
       "Content-Type": "application/json; charset=utf-8",

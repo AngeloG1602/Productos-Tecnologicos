@@ -16,16 +16,16 @@ export function Logo({ tamano = "sm" }: { tamano?: keyof typeof TAMANOS }) {
   return (
     <span className={`inline-flex items-center ${t.gap}`}>
       <span
-        className={`flex shrink-0 items-center justify-center ${t.icono}`}
-        style={{ background: COLOR_MARCA }}
+        className={`flex shrink-0 items-center justify-center ring-1 ring-[rgb(255_255_255/0.15)] ${t.icono}`}
+        style={{ background: `var(--logo-fondo, ${COLOR_MARCA})` }}
         aria-hidden="true"
       >
-        <svg viewBox="0 0 24 24" fill="none" className={`${t.rayo} text-white`}>
+        <svg viewBox="0 0 24 24" fill="none" className={t.rayo} style={{ color: "var(--logo-rayo, #ffffff)" }}>
           <path d="M13 2 3 14h7l-1 8 10-12h-7l1-8Z" fill="currentColor" />
         </svg>
       </span>
       <span className={`font-bold tracking-tight text-neutral-950 ${t.texto}`}>
-        <span style={{ color: COLOR_MARCA }}>{NOMBRE_TIENDA.charAt(0)}</span>
+        <span style={{ color: `var(--logo-letra, ${COLOR_MARCA})` }}>{NOMBRE_TIENDA.charAt(0)}</span>
         {NOMBRE_TIENDA.slice(1)}
       </span>
     </span>

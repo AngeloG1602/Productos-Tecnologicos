@@ -14,7 +14,7 @@ type Props = {
 /** Imagen cuadrada de producto, o un marcador neutro si no tiene imágenes. */
 export function ImagenProducto({ ruta, alt, sizes, preload = false, className = "" }: Props) {
   return (
-    <div className={`relative aspect-square overflow-hidden bg-neutral-100 ${className}`}>
+    <div className={`relative aspect-square overflow-hidden bg-marca-suave ${className}`}>
       {ruta ? (
         <Image
           src={urlImagen(ruta, process.env.NEXT_PUBLIC_SUPABASE_URL ?? "")}
@@ -22,7 +22,7 @@ export function ImagenProducto({ ruta, alt, sizes, preload = false, className = 
           fill
           sizes={sizes}
           preload={preload}
-          className="object-cover"
+          className="object-cover transition-transform duration-300 group-hover:scale-105"
         />
       ) : (
         <div className="flex h-full w-full items-center justify-center text-neutral-300" aria-hidden="true">

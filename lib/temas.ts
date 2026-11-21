@@ -18,6 +18,8 @@ export type Tema = {
   icono: IconoTema;
   /** Mensaje de la franja arriba de la tienda. null = sin franja (Clásico y los de "estilo", que no son de una fecha puntual). */
   banner: string | null;
+  /** Fecha y hora de fin (ISO con zona). Si existe, la franja muestra una cuenta regresiva hasta ese momento. */
+  finaliza?: string;
 };
 
 export const TEMAS: Tema[] = [
@@ -26,10 +28,12 @@ export const TEMAS: Tema[] = [
     slug: "black-friday",
     nombre: "Black Friday",
     categoria: "temporada",
-    marca: "#0a0a0a",
-    marcaSuave: "#fef3c7",
+    marca: "#facc15",
+    marcaSuave: "#1a1a1d",
     icono: "etiqueta",
     banner: "Black Friday: ofertas por tiempo limitado",
+    // Colombia es UTC-5 todo el año (sin horario de verano).
+    finaliza: "2026-11-30T23:59:59-05:00",
   },
   {
     slug: "navidad",

@@ -14,11 +14,11 @@ export default async function LayoutTienda({ children }: LayoutProps<"/">) {
     // data-tema: ver lib/temas.ts y los bloques [data-tema="..."] en app/globals.css.
     // flex flex-1 flex-col: reemplaza aquí el mismo rol que tenían estos hijos
     // directamente sobre <body> (que también es flex-col), para que el pie siga quedando abajo.
-    <div data-tema={tema.slug} className="flex flex-1 flex-col">
+    <div data-tema={tema.slug} className="flex flex-1 flex-col bg-fondo text-texto">
       <FranjaTema tema={tema} />
       <Encabezado />
-      <main className="mx-auto w-full max-w-5xl flex-1 px-4 py-4">{children}</main>
-      <Pie />
+      <main className="mx-auto w-full max-w-5xl flex-1 px-4 py-5">{children}</main>
+      <Pie configuracion={configuracion} />
       <AvisoFlotante />
       {configuracion?.whatsappNumero && <BotonWhatsApp numero={configuracion.whatsappNumero} />}
     </div>

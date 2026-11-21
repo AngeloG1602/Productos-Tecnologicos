@@ -1,5 +1,7 @@
 import { AvisoSinConfigurar } from "@/components/tienda/AvisoSinConfigurar";
 import { Catalogo } from "@/components/tienda/Catalogo";
+import { FranjaConfianza } from "@/components/tienda/FranjaConfianza";
+import { HeroPortada } from "@/components/tienda/HeroPortada";
 import { obtenerCategorias, obtenerConfiguracionPublica, obtenerProductos } from "@/lib/catalogo";
 import { supabaseConfigurado } from "@/lib/env";
 import { obtenerTema } from "@/lib/temas";
@@ -16,12 +18,13 @@ export default async function Inicio() {
     obtenerConfiguracionPublica(),
   ]);
 
+  const tema = obtenerTema(configuracion.temaActivo);
+
   return (
-    <Catalogo
-      categorias={categorias}
-      productos={productos}
-      umbral={configuracion.umbralStockBajo}
-      tema={obtenerTema(configuracion.temaActivo)}
-    />
+    <div className="flex flex-col gap-6">
+      <HeroPortada tema={tema} whatsappNumero={configuracion.whatsappNumero} />
+      <FranjaConfianza configuracion={configuracion} />
+      <Catalogo categorias={categorias} productos={productos} umbral={configuracion.umbralStockBajo} tema={tema} />
+    </div>
   );
 }

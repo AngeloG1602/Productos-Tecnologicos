@@ -11,16 +11,18 @@ type Props = {
 /** Precio, y si hay uno anterior válido, tachado junto a la etiqueta de descuento. */
 export function PrecioProducto({ precio, precioAnterior, tamano = "chico" }: Props) {
   const descuento = porcentajeDescuento(precioAnterior, precio);
+  const clasePrecio =
+    tamano === "grande" ? "text-3xl font-extrabold tracking-tight" : "text-lg leading-none font-extrabold tracking-tight";
 
   if (descuento === null) {
-    return <p className={tamano === "grande" ? "text-2xl font-bold" : "text-base font-semibold"}>{formatearCOP(precio)}</p>;
+    return <p className={clasePrecio}>{formatearCOP(precio)}</p>;
   }
 
   return (
-    <div className="flex flex-wrap items-baseline gap-2">
-      <p className={tamano === "grande" ? "text-2xl font-bold" : "text-base font-semibold"}>{formatearCOP(precio)}</p>
-      <p className="text-sm text-neutral-400 line-through">{formatearCOP(precioAnterior as number)}</p>
-      <span className="rounded-md bg-red-50 px-1.5 py-0.5 text-xs font-bold text-red-700">−{descuento}%</span>
+    <div className="flex flex-wrap items-baseline gap-x-2 gap-y-0.5">
+      <p className={clasePrecio}>{formatearCOP(precio)}</p>
+      <p className="text-xs text-suave line-through">{formatearCOP(precioAnterior as number)}</p>
+      <span className="rounded-md bg-acento px-1.5 py-0.5 text-xs font-bold text-sobre-acento">−{descuento}%</span>
     </div>
   );
 }

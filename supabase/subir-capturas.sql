@@ -259,7 +259,28 @@ Salud y deporte
 • Sensor de frecuencia cardíaca, oxígeno en sangre (SpO₂), acelerómetro y giroscopio.
 • Más de 150 modos deportivos y más de 200 esferas personalizables.
 • Monitoreo de sueño y estrés, salud femenina, control de cámara y música, widgets y asistente de voz.', 140000, 196000, 4),
-    ('relojes-inteligentes', 'Reloj Xiaomi Redmi Watch 3 Active (Gr. A)', 'reloj-xiaomi-redmi-watch-3-active-gr-a', 'Reloj inteligente Xiaomi Redmi Watch 3 Active, con Bluetooth para llamadas.', 120000, 168000, 10),
+    ('relojes-inteligentes', 'Reloj Xiaomi Redmi Watch 3 Active (Gr. A)', 'reloj-xiaomi-redmi-watch-3-active-gr-a', 'Reloj inteligente Xiaomi Redmi Watch 3 Active en color gris: pantalla amplia, autonomía prolongada y llamadas por Bluetooth.
+
+Pantalla y diseño
+• Pantalla táctil LCD de 1,83 pulgadas, 240 × 280 píxeles y brillo ajustable de hasta 450 nits.
+• Mide 46,94 × 38,88 × 10,94 mm y pesa 41,67 gramos incluyendo la correa.
+• Marco de acabado metálico (tecnología NCVM), cristal curvo 2.5D y más de 200 esferas disponibles.
+• Correa de TPU suave, ajustable para muñecas de 135 a 200 mm.
+
+Conectividad y llamadas
+• Llamadas por Bluetooth con micrófono y altavoz integrados.
+• Bluetooth 5.3 de bajo consumo.
+• Compatible con Android 6.0 o iOS 12.0 y posteriores mediante la app Mi Fitness.
+
+Salud y deporte
+• Más de 100 modos deportivos, incluidos 10 modos de entrenamiento profesional.
+• Frecuencia cardíaca las 24 horas, oxígeno en sangre (SpO₂), sueño, estrés y ciclo femenino.
+• Resistencia al agua 5 ATM: apto para nadar en piscinas.
+• No tiene GPS integrado: usa el del teléfono.
+
+Batería
+• 289 mAh: hasta 12 días con uso típico o hasta 8 días con uso intenso.
+• Carga con cable magnético incluido en la caja.', 120000, 168000, 10),
     ('power-banks', 'Power bank 33W 20000 mAh', 'power-bank-33w-20000-mah', 'Power bank de 20000 mAh con carga rápida de hasta 33 W y cable integrado.', 97000, 135800, 7),
     ('audifonos', 'Manos libres básico D21', 'manos-libres-basico-d21', 'Manos libres con cable D21, sonido Extra Bass, ideal para deporte y uso diario.', 2500, 3500, 46),
     ('accesorios', 'SIM card Claro prepago', 'sim-card-claro-prepago', 'SIM card Claro prepago.', 1500, 2100, 100)

@@ -180,7 +180,25 @@ Especificaciones técnicas
     ('relojes-inteligentes', 'Reloj Xiaomi Redmi Watch 4 (Gr. A)', 'reloj-xiaomi-redmi-watch-4-gr-a', 'Reloj inteligente Xiaomi Redmi Watch 4.', 205000, 287000, 7),
     ('relojes-inteligentes', 'Reloj Xiaomi Redmi Watch 5 Active (Gr. A)', 'reloj-xiaomi-redmi-watch-5-active-gr-a', 'Reloj inteligente Xiaomi Redmi Watch 5 Active.', 160000, 224000, 9),
     ('relojes-inteligentes', 'Reloj Xiaomi Redmi Watch 5 (Gr. A)', 'reloj-xiaomi-redmi-watch-5-gr-a', 'Reloj inteligente Xiaomi Redmi Watch 5.', 220000, 308000, 6),
-    ('relojes-inteligentes', 'Reloj Xiaomi Redmi Watch 5 Lite (Gr. A)', 'reloj-xiaomi-redmi-watch-5-lite-gr-a', 'Reloj inteligente Xiaomi Redmi Watch 5 Lite.', 140000, 196000, 4),
+    ('relojes-inteligentes', 'Reloj Xiaomi Redmi Watch 5 Lite (Gr. A)', 'reloj-xiaomi-redmi-watch-5-lite-gr-a', 'Reloj inteligente Xiaomi Redmi Watch 5 Lite: ligero, con pantalla AMOLED, GPS integrado y llamadas por Bluetooth. Versión en color dorado claro (Light Gold), con marco de acabado brillante y correa de silicona TPU.
+
+Pantalla y diseño
+• Pantalla cuadrada AMOLED de 1,96 pulgadas con modo Always-On Display (AOD).
+• Resolución de 410 × 502 píxeles y brillo máximo de hasta 600 nits.
+• Dimensiones de 48,1 × 39,2 × 10,6 mm y peso de 29,2 gramos sin la correa.
+• Marco de plástico con acabado metálico NCVM y correa de TPU ajustable (135 a 205 mm).
+• Resistencia al agua 5 ATM.
+
+Batería y conectividad
+• Batería de 470 mAh con carga magnética: hasta 18 días en uso normal, 12 en uso intenso y 7 con Always-On Display activo.
+• Llamadas por Bluetooth con altavoz y doble micrófono con reducción de ruido.
+• GNSS integrado (GPS, Galileo, GLONASS, BeiDou y QZSS) para registrar rutas sin llevar el teléfono.
+• Xiaomi HyperOS, Bluetooth 5.3; se vincula con la app Mi Fitness en Android 8.0 o iOS 12.0 en adelante.
+
+Salud y deporte
+• Sensor de frecuencia cardíaca, oxígeno en sangre (SpO₂), acelerómetro y giroscopio.
+• Más de 150 modos deportivos y más de 200 esferas personalizables.
+• Monitoreo de sueño y estrés, salud femenina, control de cámara y música, widgets y asistente de voz.', 140000, 196000, 4),
     ('relojes-inteligentes', 'Reloj Xiaomi Redmi Watch 3 Active (Gr. A)', 'reloj-xiaomi-redmi-watch-3-active-gr-a', 'Reloj inteligente Xiaomi Redmi Watch 3 Active, con Bluetooth para llamadas.', 120000, 168000, 10),
     ('power-banks', 'Power bank 33W 20000 mAh', 'power-bank-33w-20000-mah', 'Power bank de 20000 mAh con carga rápida de hasta 33 W y cable integrado.', 97000, 135800, 7),
     ('audifonos', 'Manos libres básico D21', 'manos-libres-basico-d21', 'Manos libres con cable D21, sonido Extra Bass, ideal para deporte y uso diario.', 2500, 3500, 46),

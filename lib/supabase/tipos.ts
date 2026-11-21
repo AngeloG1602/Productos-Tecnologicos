@@ -289,6 +289,38 @@ export type Database = {
         };
         Relationships: [];
       };
+      promocion: {
+        Row: {
+          id: number;
+          activa: boolean;
+          titulo: string;
+          texto: string;
+          boton_texto: string;
+          producto_id: string | null;
+          desde: string | null;
+          hasta: string | null;
+          updated_at: string;
+        };
+        Insert: never;
+        Update: {
+          activa?: boolean;
+          titulo?: string;
+          texto?: string;
+          boton_texto?: string;
+          producto_id?: string | null;
+          desde?: string | null;
+          hasta?: string | null;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "promocion_producto_id_fkey";
+            columns: ["producto_id"];
+            isOneToOne: false;
+            referencedRelation: "productos";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
       administradores: {
         Row: {
           user_id: string;
@@ -323,6 +355,21 @@ export type Database = {
           metodos_pago: string;
           tiempo_entrega: string;
           tema_activo: string;
+        }[];
+      };
+      promocion_activa: {
+        Args: Record<PropertyKey, never>;
+        Returns: {
+          titulo: string;
+          texto: string;
+          boton_texto: string;
+          version: string;
+          producto_slug: string | null;
+          producto_nombre: string | null;
+          producto_imagen: string | null;
+          precio_venta: number | null;
+          precio_anterior: number | null;
+          stock: number | null;
         }[];
       };
       crear_pedido: {

@@ -16,6 +16,22 @@ export type ProductoResumen = Pick<
 export type ProductoDetalle = ProductoResumen &
   Pick<Fila<"productos">, "descripcion"> & { categoria: Categoria | null };
 
+export type PromocionPublica = {
+  titulo: string;
+  texto: string;
+  botonTexto: string;
+  /** Cambia cada vez que el admin edita la promoción: así se le vuelve a mostrar a quien ya la cerró. */
+  version: string;
+  producto: {
+    slug: string;
+    nombre: string;
+    imagen: string | null;
+    precio: number;
+    precioAnterior: number | null;
+    stock: number;
+  } | null;
+};
+
 export type ConfiguracionPublica = {
   whatsappNumero: string | null;
   umbralStockBajo: number;
@@ -90,5 +106,34 @@ export async function obtenerConfiguracionPublica(): Promise<ConfiguracionPublic
       tiempo_entrega: data?.tiempo_entrega ?? "",
     },
     temaActivo: data?.tema_activo ?? TEMA_POR_DEFECTO,
+  };
+}
+
+/** Promoción emergente vigente (la base decide si está activa y dentro de sus fechas), o null. */
+export async function obtenerPromocionActiva(): Promise<PromocionPublica | null> {
+  const { data, error } = await crearClientePublico().rpc("promocion_activa", {}, { get: true }).maybeSingle();
+  if (error) {
+    // La promoción es un extra: si no se puede cargar (p. ej. aún no se aplicó la migración), la tienda
+    // sigue funcionando sin ventana en vez de caerse.
+    console.error(`No se pudo cargar la promoción: ${error.message}`);
+    return null;
+  }
+  if (!data) return null;
+  return {
+    titulo: data.titulo,
+    texto: data.texto,
+    botonTexto: data.boton_texto,
+    version: data.version,
+    producto:
+      data.producto_slug && data.producto_nombre && data.precio_venta !== null
+        ? {
+            slug: data.producto_slug,
+            nombre: data.producto_nombre,
+            imagen: data.producto_imagen,
+            precio: data.precio_venta,
+            precioAnterior: data.precio_anterior,
+            stock: data.stock ?? 0,
+          }
+        : null,
   };
 }

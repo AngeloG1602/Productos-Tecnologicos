@@ -3,12 +3,15 @@ import { BotonWhatsApp } from "@/components/tienda/BotonWhatsApp";
 import { Encabezado } from "@/components/tienda/Encabezado";
 import { FranjaTema } from "@/components/tienda/FranjaTema";
 import { Pie } from "@/components/tienda/Pie";
-import { obtenerConfiguracionPublica } from "@/lib/catalogo";
+import { PromoEmergente } from "@/components/tienda/PromoEmergente";
+import { obtenerConfiguracionPublica, obtenerPromocionActiva } from "@/lib/catalogo";
 import { supabaseConfigurado } from "@/lib/env";
 import { obtenerTema, TEMA_POR_DEFECTO } from "@/lib/temas";
 
 export default async function LayoutTienda({ children }: LayoutProps<"/">) {
-  const configuracion = supabaseConfigurado() ? await obtenerConfiguracionPublica() : null;
+  const [configuracion, promocion] = supabaseConfigurado()
+    ? await Promise.all([obtenerConfiguracionPublica(), obtenerPromocionActiva()])
+    : [null, null];
   const tema = obtenerTema(configuracion?.temaActivo ?? TEMA_POR_DEFECTO);
   return (
     // data-tema: ver lib/temas.ts y los bloques [data-tema="..."] en app/globals.css.
@@ -20,6 +23,7 @@ export default async function LayoutTienda({ children }: LayoutProps<"/">) {
       <main className="mx-auto w-full max-w-5xl flex-1 px-4 py-5">{children}</main>
       <Pie configuracion={configuracion} />
       <AvisoFlotante />
+      {promocion && <PromoEmergente promo={promocion} />}
       {configuracion?.whatsappNumero && <BotonWhatsApp numero={configuracion.whatsappNumero} />}
     </div>
   );

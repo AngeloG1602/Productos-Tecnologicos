@@ -176,7 +176,23 @@ Especificaciones técnicas
 • Procesador y memoria: procesador ARM Advance Quad-Core (CA55 x 4), 1.5 GB de RAM DDR y 8 GB de almacenamiento interno (eMMC) para aplicaciones.
 • Sintonizador de televisión: digital terrestre DVB-T2 (compatible con la señal TDT en Colombia), además de los estándares analógicos PAL-M/N y NTSC-M.
 • Formatos multimedia compatibles: audio (MP3, AC3, PCM), imagen (JPEG, PNG, BMP, GIF) y video (MPEG2, MPEG4, H.264, H.265, VP8, VP9 y AV1).', 945000, 1323000, 2),
-    ('relojes-inteligentes', 'Reloj Xiaomi Redmi Watch 3 negro (Gr. A)', 'reloj-xiaomi-redmi-watch-3-negro-gr-a', 'Reloj inteligente Xiaomi Redmi Watch 3 en color negro, con Bluetooth para llamadas.', 130000, 182000, 6),
+    ('relojes-inteligentes', 'Reloj Xiaomi Redmi Watch 3 negro (Gr. A)', 'reloj-xiaomi-redmi-watch-3-negro-gr-a', 'Reloj inteligente Xiaomi Redmi Watch 3 (versión estándar) en color negro: pantalla AMOLED, GPS integrado y llamadas por Bluetooth.
+
+Pantalla y diseño
+• Pantalla táctil AMOLED de 1,75 pulgadas, 390 × 450 píxeles, brillo máximo de 600 nits y revestimiento antihuellas.
+• Mide 42,58 × 36,56 × 9,99 mm y pesa 37 gramos sin la correa.
+• Correa de TPU ajustable a muñecas de 135 a 200 mm.
+
+Conectividad y llamadas
+• Llamadas por Bluetooth con micrófono y altavoz integrados.
+• GPS multisistema (GPS, GLONASS, Galileo, BeiDou y QZSS) para registrar rutas sin llevar el teléfono.
+• Bluetooth 5.2; compatible con Android 6.0 o iOS 12 en adelante mediante la app Mi Fitness.
+
+Salud, deporte y batería
+• Monitoreo continuo de frecuencia cardíaca, oxígeno en sangre (SpO2), sueño, estrés y salud femenina. Incluye acelerómetro, giroscopio y sensor geomagnético.
+• Más de 120 modos de entrenamiento y 10 cursos de carrera integrados.
+• Resistencia al agua 5 ATM, apto para natación en piscina.
+• Batería de 289 mAh con carga magnética: hasta 12 días en uso normal y de 7 a 9 días en uso intensivo.', 130000, 182000, 6),
     ('relojes-inteligentes', 'Reloj Xiaomi Redmi Watch 4 (Gr. A)', 'reloj-xiaomi-redmi-watch-4-gr-a', 'Reloj inteligente Xiaomi Redmi Watch 4 en color gris plata (Silver Gray): pantalla AMOLED amplia, marco de aluminio y autonomía de hasta 20 días.
 
 Pantalla y diseño

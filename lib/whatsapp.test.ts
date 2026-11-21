@@ -1,6 +1,14 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { enlaceWhatsApp, formatearTelefono, mensajePedido, normalizarNumero } from "./whatsapp.ts";
+import {
+  enlaceCompartirWhatsApp,
+  enlaceWhatsApp,
+  formatearTelefono,
+  mensajeCompartirProducto,
+  mensajeConsultaProducto,
+  mensajePedido,
+  normalizarNumero,
+} from "./whatsapp.ts";
 
 const n = (t: string) => t.replace(/ /g, " ");
 
@@ -60,4 +68,16 @@ test("formatea el teléfono para mostrarlo", () => {
   assert.equal(formatearTelefono("573001234567"), "+57 300 123 4567");
   assert.equal(formatearTelefono("+57 300 123 4567"), "+57 300 123 4567");
   assert.equal(formatearTelefono("5215512345678"), "+5215512345678");
+});
+
+test("consulta y compartir de un producto llevan nombre y enlace", () => {
+  assert.equal(
+    mensajeConsultaProducto("Cargador 20W", "https://t.co/producto/c"),
+    "¡Hola! Me interesa este producto: Cargador 20W\nhttps://t.co/producto/c",
+  );
+  const compartir = mensajeCompartirProducto("Cargador 20W", 42000, "https://t.co/producto/c");
+  assert.match(compartir, /Cargador 20W/);
+  assert.match(compartir, /42\.000/);
+  assert.match(compartir, /https:\/\/t\.co\/producto\/c$/);
+  assert.equal(enlaceCompartirWhatsApp("Hola & chao"), "https://wa.me/?text=Hola%20%26%20chao");
 });

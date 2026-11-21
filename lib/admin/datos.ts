@@ -297,3 +297,11 @@ export async function obtenerProductosParaPromocion(): Promise<ProductoParaPromo
   if (error) throw new Error(`No se pudieron cargar los productos: ${error.message}`);
   return data;
 }
+
+/** Cantidad de pedidos pendientes (para el aviso del menú). */
+export async function contarPedidosPendientes(): Promise<number> {
+  const supabase = await crearClienteServidor();
+  const { count, error } = await supabase.from("pedidos").select("id", { count: "exact", head: true }).eq("estado", "pendiente");
+  if (error) return 0; // es solo un aviso: no debe tumbar el panel
+  return count ?? 0;
+}

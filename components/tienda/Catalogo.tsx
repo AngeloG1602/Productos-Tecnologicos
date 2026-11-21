@@ -6,6 +6,7 @@ import { formatearCOP } from "@/lib/formato";
 import { filtrarPorPrecio, ORDENES, ordenarProductos, RANGOS_PRECIO, type Orden } from "@/lib/orden";
 import type { Tema } from "@/lib/temas";
 import { coincideBusqueda } from "@/lib/texto";
+import { enlaceWhatsApp } from "@/lib/whatsapp";
 import { IconoCategoria } from "./IconoCategoria";
 import { IconoTema } from "./IconoTema";
 import { TarjetaProducto } from "./TarjetaProducto";
@@ -16,13 +17,14 @@ type Props = {
   productos: ProductoResumen[];
   umbral: number;
   tema: Tema;
+  whatsappNumero: string | null;
 };
 
 /**
  * Catálogo con categorías, buscador, orden y filtro de precio. El catálogo es pequeño
  * (< 100 productos), así que se filtra en el navegador: respuesta instantánea en 4G.
  */
-export function Catalogo({ categorias, productos, umbral, tema }: Props) {
+export function Catalogo({ categorias, productos, umbral, tema, whatsappNumero }: Props) {
   const { categoria, busqueda, orden, min, max, actualizar } = useFiltrosURL();
   const [panelPrecio, setPanelPrecio] = useState(false);
 
@@ -215,6 +217,16 @@ export function Catalogo({ categorias, productos, umbral, tema }: Props) {
                 ? "Pronto tendremos productos disponibles."
                 : "No encontramos productos con esos filtros."}
             </p>
+            {busqueda.trim() && whatsappNumero && (
+              <a
+                href={enlaceWhatsApp(whatsappNumero, `¡Hola! Estoy buscando: ${busqueda.trim()}. ¿Lo tienen?`)}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="rounded-xl bg-[#25D366] px-4 py-2.5 text-sm font-bold text-[#052e16]"
+              >
+                ¿No lo encuentras? Pregúntanos por WhatsApp
+              </a>
+            )}
             {!sinFiltros && (
               <button type="button" onClick={limpiar} className="rounded-xl bg-marca px-4 py-2.5 text-sm font-bold text-sobre-marca">
                 Ver todos los productos

@@ -55,3 +55,18 @@ export function mensajePedido({ codigo, items, total, cliente, textoEnvio }: Dat
 
 /** Mensaje del botón flotante (consultas sin pedido, RF-08). */
 export const MENSAJE_CONSULTA = "¡Hola! Tengo una consulta sobre sus productos.";
+
+/** Consulta sobre un producto concreto: quien atiende ve de cuál se trata. */
+export function mensajeConsultaProducto(nombre: string, enlace: string): string {
+  return `¡Hola! Me interesa este producto: ${nombre}\n${enlace}`;
+}
+
+/** Mensaje para compartir un producto con un contacto (sin número: WhatsApp deja elegir a quién). */
+export function mensajeCompartirProducto(nombre: string, precio: number, enlace: string): string {
+  return `Mira este producto: ${nombre} — ${formatearCOP(precio)}\n${enlace}`;
+}
+
+/** Enlace "compartir": abre WhatsApp para elegir contacto, con el texto prellenado. */
+export function enlaceCompartirWhatsApp(mensaje: string): string {
+  return `https://wa.me/?text=${encodeURIComponent(mensaje)}`;
+}

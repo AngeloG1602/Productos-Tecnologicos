@@ -80,6 +80,12 @@ T14 (analítica), P4 (historial de cambios), reseñas y testimonios, paginación
 **Fuera del código (dependen de ustedes).**
 T5 (fotos buenas), T6 (datos legales), T3 (definir tiempo de entrega y medios de pago).
 
+## Ola 1: estado
+
+Hecho: T1 (consulta por WhatsApp con el producto), T2 (cómo comprar + preguntas frecuentes, debajo del catálogo), T3 (entrega y pago en el carrito, si están cargados), T4 (sitemap, robots y datos estructurados), T7 y T8 (recordar nombre y barrio; ejemplo de Ocaña), T9 (compartir), T10 (búsqueda sin resultados → WhatsApp), P2 (filtro "Por completar"), P3 (contador de pedidos pendientes).
+
+Pendiente de ustedes: cargar tiempo de entrega y medios de pago en Configuración (T3), y definir la URL del sitio con `NEXT_PUBLIC_SITE_URL` si usan dominio propio (si no, se toma la de Netlify).
+
 ## Corregido durante la auditoría
 
 - Los botones verdes de WhatsApp del carrito tenían el texto claro en el tema Black Friday (contraste 1,8:1). Ahora usan texto verde oscuro (7,5:1).

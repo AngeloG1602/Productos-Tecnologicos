@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useMemo, useState, useTransition } from "react";
 import type { CategoriaAdmin, DistribuidorAdmin, ProductoAdmin } from "@/lib/admin/datos";
+import { faltantes } from "@/lib/completitud";
 import { formatearCOP } from "@/lib/formato";
 import { margenReal, precioPorDebajoDelCosto } from "@/lib/precio";
 import { coincideBusqueda } from "@/lib/texto";
@@ -13,7 +14,7 @@ import { actualizarStock, alternarActivo, duplicarProducto, eliminarProducto } f
 
 type Props = { productos: ProductoAdmin[]; categorias: CategoriaAdmin[]; distribuidores: DistribuidorAdmin[] };
 
-type Filtro = "todos" | "activos" | "inactivos" | "agotados";
+type Filtro = "todos" | "activos" | "inactivos" | "agotados" | "completar";
 
 export function ListaProductos({ productos: iniciales, categorias, distribuidores }: Props) {
   const [productos, setProductos] = useState(iniciales);
@@ -30,6 +31,8 @@ export function ListaProductos({ productos: iniciales, categorias, distribuidore
   const [distribuidorId, setDistribuidorId] = useState("");
   const [filtro, setFiltro] = useState<Filtro>("todos");
 
+  const porCompletar = useMemo(() => productos.filter((p) => faltantes(p).length > 0).length, [productos]);
+
   const filtrados = useMemo(
     () =>
       productos
@@ -40,6 +43,7 @@ export function ListaProductos({ productos: iniciales, categorias, distribuidore
           if (filtro === "activos") return p.activo;
           if (filtro === "inactivos") return !p.activo;
           if (filtro === "agotados") return p.stock <= 0;
+          if (filtro === "completar") return faltantes(p).length > 0;
           return true;
         }),
     [productos, busqueda, categoriaId, distribuidorId, filtro],
@@ -84,7 +88,7 @@ export function ListaProductos({ productos: iniciales, categorias, distribuidore
       </div>
 
       <div className="flex gap-2 overflow-x-auto">
-        {(["todos", "activos", "agotados", "inactivos"] as const).map((f) => (
+        {(["todos", "activos", "agotados", "inactivos", "completar"] as const).map((f) => (
           <button
             key={f}
             type="button"
@@ -93,7 +97,15 @@ export function ListaProductos({ productos: iniciales, categorias, distribuidore
               filtro === f ? "border-neutral-900 bg-neutral-900 text-white" : "border-neutral-300"
             }`}
           >
-            {{ todos: "Todos", activos: "Activos", agotados: "Agotados", inactivos: "Inactivos" }[f]}
+            {
+              {
+                todos: "Todos",
+                activos: "Activos",
+                agotados: "Agotados",
+                inactivos: "Inactivos",
+                completar: `Por completar (${porCompletar})`,
+              }[f]
+            }
           </button>
         ))}
       </div>
@@ -134,6 +146,7 @@ function FilaProducto({
   const [stockTexto, setStockTexto] = useState(String(producto.stock));
   const [error, setError] = useState<string | null>(null);
 
+  const pendientes = faltantes(producto);
   const margen = producto.costo != null ? margenReal(producto.costo, producto.precio_venta) : null;
   const bajoCosto = producto.costo != null && precioPorDebajoDelCosto(producto.costo, producto.precio_venta);
 
@@ -203,6 +216,9 @@ function FilaProducto({
             {producto.categoria_nombre ?? "Sin categoría"}
             {producto.distribuidor_nombre && ` · ${producto.distribuidor_nombre}`}
           </p>
+          {pendientes.length > 0 && (
+            <p className="text-xs font-medium text-amber-800">Falta: {pendientes.join(", ")}</p>
+          )}
           <p className="text-sm">
             {formatearCOP(producto.precio_venta)}{" "}
             {margen != null && (

@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { AccionesProducto } from "@/components/tienda/AccionesProducto";
 import { CompraProducto } from "@/components/tienda/CompraProducto";
+import { DatosEstructurados } from "@/components/tienda/DatosEstructurados";
 import { DescripcionProducto } from "@/components/tienda/DescripcionProducto";
 import { IconoUbicacion } from "@/components/tienda/IconoUbicacion";
 import { EtiquetaStock } from "@/components/tienda/EtiquetaStock";
@@ -18,6 +20,8 @@ import { supabaseConfigurado } from "@/lib/env";
 import { formatearCOP } from "@/lib/formato";
 import { urlImagen } from "@/lib/imagenes";
 import { productosRelacionados } from "@/lib/relacionados";
+import { jsonLdProducto } from "@/lib/seo";
+import { urlSitio } from "@/lib/sitio";
 import { CIUDAD_TIENDA } from "@/lib/tienda";
 import { obtenerTema } from "@/lib/temas";
 
@@ -64,9 +68,21 @@ export default async function FichaProducto({ params }: PageProps<"/producto/[sl
   if (!producto) notFound();
   const relacionados = productosRelacionados(todos, producto);
   const tema = obtenerTema(configuracion.temaActivo);
+  const enlace = `${urlSitio()}/producto/${producto.slug}`;
+  const urlSupabase = process.env.NEXT_PUBLIC_SUPABASE_URL ?? "";
 
   return (
     <article className="flex flex-col gap-5 md:grid md:grid-cols-2 md:items-start md:gap-8">
+      <DatosEstructurados
+        datos={jsonLdProducto({
+          nombre: producto.nombre,
+          descripcion: producto.descripcion,
+          url: enlace,
+          imagenes: producto.imagenes.map((r) => urlImagen(r, urlSupabase)),
+          precio: producto.precio_venta,
+          disponible: producto.stock > 0,
+        })}
+      />
       <nav className="md:col-span-2">
         <Link href="/" className="inline-flex items-center gap-1 text-sm font-medium text-suave hover:text-texto">
           <span aria-hidden="true">←</span> Volver al catálogo
@@ -100,6 +116,13 @@ export default async function FichaProducto({ params }: PageProps<"/producto/[sl
               imagen: producto.imagenes[0] ?? null,
               stock: producto.stock,
             }}
+          />
+
+          <AccionesProducto
+            nombre={producto.nombre}
+            precio={producto.precio_venta}
+            enlace={enlace}
+            whatsappNumero={configuracion.whatsappNumero}
           />
 
           <p className="flex items-center gap-2 border-t border-borde pt-3 text-xs text-suave">

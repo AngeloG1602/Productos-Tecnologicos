@@ -11,11 +11,15 @@ import { ImagenProducto } from "@/components/tienda/ImagenProducto";
 import { SelectorCantidad } from "@/components/tienda/SelectorCantidad";
 import { IconoWhatsApp } from "@/components/tienda/IconoWhatsApp";
 import { useCarrito } from "./useCarrito";
+import { guardarDatosCliente, olvidarDatosCliente, useDatosCliente } from "./datosCliente";
 import { guardarUltimoPedido, olvidarUltimoPedido, useUltimoPedido } from "./ultimoPedido";
 
 type Props = {
   whatsappNumero: string | null;
   textoEnvio: string;
+  /** Datos de Configuración (pueden estar vacíos): se muestran junto al botón de enviar. */
+  tiempoEntrega: string;
+  metodosPago: string;
 };
 
 type Estado =
@@ -24,11 +28,12 @@ type Estado =
   | { tipo: "error"; mensaje: string }
   | { tipo: "cambios"; avisos: string[] };
 
-export function PaginaCarrito({ whatsappNumero, textoEnvio }: Props) {
+export function PaginaCarrito({ whatsappNumero, textoEnvio, tiempoEntrega, metodosPago }: Props) {
   const { items, cambiarCantidad, quitar, reemplazar, vaciar } = useCarrito();
   const [estado, setEstado] = useState<Estado>({ tipo: "editando" });
   const avisoRef = useRef<HTMLDivElement>(null);
   const ultimoPedido = useUltimoPedido();
+  const recordado = useDatosCliente();
 
   if (items.length === 0 && ultimoPedido) {
     return <PedidoListo codigo={ultimoPedido.codigo} enlace={ultimoPedido.enlace} />;
@@ -110,6 +115,7 @@ export function PaginaCarrito({ whatsappNumero, textoEnvio }: Props) {
       });
       const enlace = enlaceWhatsApp(whatsappNumero, mensaje);
 
+      guardarDatosCliente({ nombre: cliente.nombre, ciudad: cliente.ciudad });
       guardarUltimoPedido({ codigo: respuesta.codigo, enlace });
       vaciar();
       setEstado({ tipo: "editando" });
@@ -201,16 +207,50 @@ export function PaginaCarrito({ whatsappNumero, textoEnvio }: Props) {
           <span className="text-xl font-bold">{formatearCOP(total)}</span>
         </div>
         <p className="-mt-2 text-xs text-suave">El costo del envío se acuerda por WhatsApp.</p>
+        {(tiempoEntrega.trim() || metodosPago.trim()) && (
+          <dl className="flex flex-col gap-1.5 rounded-xl bg-marca-suave p-3 text-xs">
+            {tiempoEntrega.trim() && (
+              <div className="flex gap-1.5">
+                <dt className="font-bold">Entrega:</dt>
+                <dd className="text-suave">{tiempoEntrega.trim()}</dd>
+              </div>
+            )}
+            {metodosPago.trim() && (
+              <div className="flex gap-1.5">
+                <dt className="font-bold">Pago:</dt>
+                <dd className="text-suave">{metodosPago.trim()}</dd>
+              </div>
+            )}
+          </dl>
+        )}
 
-        <Campo etiqueta="Tu nombre" nombre="nombre" maxLength={80} autoComplete="name" requerido />
         <Campo
+          key={`nombre-${recordado.nombre}`}
+          etiqueta="Tu nombre"
+          nombre="nombre"
+          maxLength={80}
+          autoComplete="name"
+          valorInicial={recordado.nombre}
+          requerido
+        />
+        <Campo
+          key={`ciudad-${recordado.ciudad}`}
           etiqueta="Ciudad y barrio"
           nombre="ciudad"
           maxLength={120}
           autoComplete="address-level2"
-          placeholder="Ej: Bogotá - Chapinero"
+          placeholder="Ej: Ocaña - Barrio Centro"
+          valorInicial={recordado.ciudad}
           requerido
         />
+        {(recordado.nombre || recordado.ciudad) && (
+          <p className="-mt-2 text-xs text-suave">
+            Usamos los datos de tu pedido anterior.{" "}
+            <button type="button" onClick={olvidarDatosCliente} className="text-marca underline">
+              Borrar mis datos de este celular
+            </button>
+          </p>
+        )}
         <label className="flex flex-col gap-1">
           <span className="text-sm font-medium">
             Notas <span className="font-normal text-suave">(opcional)</span>
@@ -267,6 +307,7 @@ function Campo({
   maxLength,
   autoComplete,
   placeholder,
+  valorInicial = "",
   requerido = false,
 }: {
   etiqueta: string;
@@ -274,6 +315,7 @@ function Campo({
   maxLength: number;
   autoComplete?: string;
   placeholder?: string;
+  valorInicial?: string;
   requerido?: boolean;
 }) {
   return (
@@ -285,6 +327,7 @@ function Campo({
         maxLength={maxLength}
         autoComplete={autoComplete}
         placeholder={placeholder}
+        defaultValue={valorInicial}
         className="h-11 rounded-xl border border-borde px-3 text-base outline-none focus:border-marca focus:ring-2 focus:ring-marca/20"
       />
     </label>

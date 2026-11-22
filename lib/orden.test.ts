@@ -49,3 +49,11 @@ test("leerMonto y esOrden validan la entrada", () => {
   assert.equal(esOrden("precio-asc"), true);
   assert.equal(esOrden("otro"), false);
 });
+
+test("un bajo pedido sin stock no se manda al final como agotado", () => {
+  const l = [
+    { nombre: "agotado", precio_venta: 1, stock: 0, destacado: false, created_at: "2026-11-01T00:00:00Z" },
+    { nombre: "encargo", precio_venta: 2, stock: 0, destacado: false, created_at: "2026-11-01T00:00:00Z", bajo_pedido: true },
+  ];
+  assert.deepEqual(ordenarProductos(l, "precio-asc").map((x) => x.nombre), ["encargo", "agotado"]);
+});

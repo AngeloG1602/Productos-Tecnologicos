@@ -75,6 +75,11 @@ export default async function Terminos() {
 
       <Seccion titulo="3. Pago">
         <p>{legal.metodos_pago.trim() || "Contra entrega, cuando recibes tu pedido."}</p>
+        <p>
+          <strong>Productos bajo pedido:</strong> los productos marcados como &quot;bajo pedido&quot; se consiguen o se
+          hacen por encargo y pueden requerir un anticipo. En ese caso te lo informamos y lo acordamos por WhatsApp antes
+          de confirmar tu pedido.
+        </p>
         <p>Nunca te pediremos claves ni códigos de tus cuentas.</p>
       </Seccion>
 

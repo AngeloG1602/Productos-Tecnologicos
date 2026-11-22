@@ -19,6 +19,7 @@ export type ProductoAdmin = Pick<
   | "stock"
   | "activo"
   | "destacado"
+  | "bajo_pedido"
 > & {
   categoria_nombre: string | null;
   costo: number | null;
@@ -28,7 +29,7 @@ export type ProductoAdmin = Pick<
 };
 
 const CAMPOS_PRODUCTO_ADMIN =
-  "id, categoria_id, nombre, slug, descripcion, imagenes, precio_venta, precio_anterior, stock, activo, destacado, categoria:categorias(nombre), producto_costos(costo, margen_pct, distribuidor_id, distribuidor:distribuidores(nombre))";
+  "id, categoria_id, nombre, slug, descripcion, imagenes, precio_venta, precio_anterior, stock, activo, destacado, bajo_pedido, categoria:categorias(nombre), producto_costos(costo, margen_pct, distribuidor_id, distribuidor:distribuidores(nombre))";
 
 type FilaProductoConRelaciones = Omit<Fila<"productos">, "created_at" | "updated_at"> & {
   categoria: { nombre: string } | null;
@@ -48,6 +49,7 @@ function aplanar(fila: FilaProductoConRelaciones): ProductoAdmin {
     stock: fila.stock,
     activo: fila.activo,
     destacado: fila.destacado,
+    bajo_pedido: fila.bajo_pedido,
     categoria_nombre: fila.categoria?.nombre ?? null,
     costo: fila.producto_costos?.costo ?? null,
     margen_pct: fila.producto_costos?.margen_pct ?? null,
@@ -304,4 +306,60 @@ export async function contarPedidosPendientes(): Promise<number> {
   const { count, error } = await supabase.from("pedidos").select("id", { count: "exact", head: true }).eq("estado", "pendiente");
   if (error) return 0; // es solo un aviso: no debe tumbar el panel
   return count ?? 0;
+}
+
+// ─────────────────────────────────────────────────────────────
+// Historial de cambios y métricas de uso (Ola 3)
+// ─────────────────────────────────────────────────────────────
+
+export type CambioHistorial = Pick<
+  Fila<"historial_productos">,
+  "id" | "campo" | "anterior" | "nuevo" | "created_at"
+> & { quien: string | null };
+
+/** Últimos cambios de un producto (precio, costo, stock, estado, bajo pedido), con quién los hizo. */
+export async function obtenerHistorialProducto(productoId: string, limite = 30): Promise<CambioHistorial[]> {
+  const supabase = await crearClienteServidor();
+  const [{ data: cambios, error }, { data: admins }] = await Promise.all([
+    supabase
+      .from("historial_productos")
+      .select("id, campo, anterior, nuevo, usuario_id, created_at")
+      .eq("producto_id", productoId)
+      .order("created_at", { ascending: false })
+      .limit(limite),
+    supabase.from("administradores").select("user_id, nombre"),
+  ]);
+  if (error) return []; // el historial es un extra: no debe tumbar la pantalla del producto
+  const nombres = new Map((admins ?? []).map((a) => [a.user_id, a.nombre]));
+  return cambios.map(({ usuario_id, ...c }) => ({ ...c, quien: usuario_id ? (nombres.get(usuario_id) ?? null) : null }));
+}
+
+export type ResumenTrafico = {
+  totales: Record<string, number>;
+  topProductos: { producto_id: string; nombre: string; vistas: number; agregados: number }[];
+};
+
+export async function obtenerMetricas(desde: string, hasta: string): Promise<ResumenTrafico> {
+  const supabase = await crearClienteServidor();
+  const [resumen, top] = await Promise.all([
+    supabase.rpc("metricas_resumen", { p_desde: desde, p_hasta: hasta }),
+    supabase.rpc("metricas_top_productos", { p_desde: desde, p_hasta: hasta, p_limite: 5 }),
+  ]);
+  // Son cifras de apoyo: si la migración aún no está aplicada, el inicio sigue funcionando sin ellas.
+  return {
+    totales: Object.fromEntries((resumen.data ?? []).map((f) => [f.tipo, Number(f.total)])),
+    topProductos: (top.data ?? []).map((f) => ({ ...f, vistas: Number(f.vistas), agregados: Number(f.agregados) })),
+  };
+}
+
+/** Pedidos creados (cualquier estado) en el rango, hora de Colombia: para medir la conversión. */
+export async function contarPedidosCreados(desde: string, hasta: string): Promise<number> {
+  const { inicio, fin } = limitesRango(desde, hasta);
+  const supabase = await crearClienteServidor();
+  const { count, error } = await supabase
+    .from("pedidos")
+    .select("id", { count: "exact", head: true })
+    .gte("created_at", inicio)
+    .lt("created_at", fin);
+  return error ? 0 : (count ?? 0);
 }

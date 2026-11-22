@@ -52,6 +52,7 @@ export function FormularioProducto({ categorias, distribuidores, producto, marge
   const [stockTexto, setStockTexto] = useState(producto ? String(producto.stock) : "0");
   const [activo, setActivo] = useState(producto?.activo ?? true);
   const [destacado, setDestacado] = useState(producto?.destacado ?? false);
+  const [bajoPedido, setBajoPedido] = useState(producto?.bajo_pedido ?? false);
   const [distribuidorSel, setDistribuidorSel] = useState(producto?.distribuidor_id ?? "");
   const [distribuidorNuevoNombre, setDistribuidorNuevoNombre] = useState("");
 
@@ -120,6 +121,7 @@ export function FormularioProducto({ categorias, distribuidores, producto, marge
         activo,
         destacado,
         distribuidorId,
+        bajoPedido,
       });
       if (r.ok) router.push("/admin/productos");
       else setError(r.error);
@@ -341,6 +343,18 @@ export function FormularioProducto({ categorias, distribuidores, producto, marge
           Destacado
         </label>
       </div>
+
+      <label className="flex items-start gap-3 rounded-xl border border-neutral-300 p-3 text-sm">
+        <input type="checkbox" checked={bajoPedido} onChange={(e) => setBajoPedido(e.target.checked)} className="mt-0.5 h-4 w-4 shrink-0 accent-marca" />
+        <span className="flex flex-col gap-0.5">
+          <span className="font-semibold">Producto bajo pedido</span>
+          <span className="text-xs text-neutral-500">
+            Se consigue o se hace por encargo. Se puede pedir aunque no haya stock (hasta 20 unidades por pedido), no
+            descuenta ni devuelve stock, y en la tienda dice que puede requerir anticipo. Los demás productos se
+            pagan contra entrega.
+          </span>
+        </span>
+      </label>
 
       {error && (
         <p role="alert" className="rounded-lg bg-red-50 px-3 py-2 text-sm text-red-800">

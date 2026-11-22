@@ -6,6 +6,7 @@ import {
   cambiarCantidad,
   describirCambio,
   leerCarritoGuardado,
+  topeUnidades,
   quitarDelCarrito,
   totalCarrito,
   unidadesEnCarrito,
@@ -80,4 +81,17 @@ test("leer carrito guardado descarta datos corruptos", () => {
   assert.deepEqual(leerCarritoGuardado('{"a":1}'), []);
   const bueno = { ...cable, cantidad: 2 };
   assert.deepEqual(leerCarritoGuardado(JSON.stringify([bueno, { productoId: 1 }, { ...bueno, cantidad: 0 }])), [bueno]);
+});
+
+test("bajo pedido: no lo limita el stock, pero sí el máximo por pedido", () => {
+  const bp = { productoId: "x", slug: "x", nombre: "Encargo", precio: 50000, imagen: null, stock: 0, bajoPedido: true };
+  const r = agregarAlCarrito([], bp, 3);
+  assert.equal(r.agregadas, 3);
+  assert.equal(topeUnidades(bp), 20);
+  const lleno = agregarAlCarrito(r.items, bp, 100);
+  assert.equal(lleno.items[0]?.cantidad, 20);
+  assert.equal(cambiarCantidad(lleno.items, "x", 500)[0]?.cantidad, 20);
+  // un producto normal sigue limitado por su stock
+  assert.equal(topeUnidades({ stock: 4 }), 4);
+  assert.equal(agregarAlCarrito([], { ...bp, productoId: "n", stock: 2, bajoPedido: false }, 9).agregadas, 2);
 });

@@ -9,4 +9,9 @@ export const COLOR_MARCA = "#031c52";
 export const CIUDAD_TIENDA = "Ocaña";
 export const UBICACION_TIENDA = "Ocaña, Norte de Santander";
 
-export const DESCRIPCION_TIENDA = `Tecnología y accesorios en ${UBICACION_TIENDA}: cargadores, audífonos, relojes y más. Pide por WhatsApp.`;
+/** Pago contra entrega: se paga al recibir. No aplica a los productos bajo pedido. */
+export const TEXTO_CONTRA_ENTREGA = "Pago contra entrega";
+export const DETALLE_CONTRA_ENTREGA = "Pagas cuando recibes tu pedido";
+export const NOTA_BAJO_PEDIDO = "Los productos bajo pedido pueden requerir un anticipo, que acordamos por WhatsApp.";
+
+export const DESCRIPCION_TIENDA = `Tecnología y accesorios en ${UBICACION_TIENDA}: cargadores, audífonos, relojes y más. Pago contra entrega. Pide por WhatsApp.`;

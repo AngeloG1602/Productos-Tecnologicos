@@ -69,6 +69,14 @@ export default async function PoliticaDeDatos() {
             cierras la página. No usamos cookies de publicidad ni de seguimiento.
           </li>
           <li>
+            Si haces un pedido, recordamos tu nombre y barrio solo en tu navegador para rellenar el siguiente; puedes
+            borrarlos desde el carrito.
+          </li>
+          <li>
+            Contamos visitas y clics de forma anónima, como simples contadores por día. No guardamos tu IP, tu
+            dispositivo ni nada que te identifique.
+          </li>
+          <li>
             Para evitar pedidos falsos, al enviar un pedido guardamos durante un día un código calculado a partir de
             tu dirección IP (no la IP misma), que solo sirve para limitar pedidos seguidos.
           </li>

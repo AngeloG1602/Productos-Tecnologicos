@@ -1,12 +1,15 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import {
+  contarPedidosCreados,
   obtenerConfiguracionAdmin,
+  obtenerMetricas,
   obtenerProductosAdmin,
   obtenerResumenVentas,
   obtenerSocios,
   obtenerVentasDetalle,
 } from "@/lib/admin/datos";
+import { armarEmbudo, ETIQUETA_EVENTO } from "@/lib/metricas";
 import { esFechaValida, fechaLocal, rangoMesActual } from "@/lib/fechas";
 import { formatearCOP } from "@/lib/formato";
 import { necesitaRespaldo, textoUltimoRespaldo } from "@/lib/respaldo";
@@ -27,17 +30,20 @@ export default async function Dashboard({ searchParams }: PageProps<"/admin">) {
   const hoy = fechaLocal(ahora);
   const haceSeisDias = fechaLocal(new Date(ahora.getTime() - 6 * 24 * 60 * 60 * 1000));
 
-  const [resumen, configuracion, productos, ventas, socios] = await Promise.all([
+  const [resumen, configuracion, productos, ventas, socios, metricas, pedidosCreados] = await Promise.all([
     obtenerResumenVentas(desde, hasta),
     obtenerConfiguracionAdmin(),
     obtenerProductosAdmin(),
     obtenerVentasDetalle(desde, hasta),
     obtenerSocios(),
+    obtenerMetricas(desde, hasta),
+    contarPedidosCreados(desde, hasta),
   ]);
+  const embudo = armarEmbudo(metricas.totales, pedidosCreados);
   const reparto = repartoPorSocio(ventas, socios);
   const masVendidos = estadisticas(ventas, () => undefined).porProducto.slice(0, 5);
   const stockBajo = productos
-    .filter((p) => p.activo && p.stock <= configuracion.umbral_stock_bajo)
+    .filter((p) => p.activo && !p.bajo_pedido && p.stock <= configuracion.umbral_stock_bajo)
     .sort((a, b) => a.stock - b.stock);
 
   return (
@@ -140,6 +146,56 @@ export default async function Dashboard({ searchParams }: PageProps<"/admin">) {
         >
           Descargar reporte en Excel
         </a>
+      </section>
+
+      <section aria-labelledby="titulo-trafico" className="flex flex-col gap-3">
+        <h2 id="titulo-trafico" className="text-base font-semibold">
+          Visitas y conversión
+        </h2>
+        {embudo.visitas === 0 && embudo.productosVistos === 0 ? (
+          <p className="rounded-xl border border-dashed border-neutral-300 p-3 text-sm text-neutral-600">
+            Todavía no hay visitas registradas en estas fechas. Se empiezan a contar cuando se publica la versión con
+            métricas (son contadores anónimos: no guardan datos de las personas).
+          </p>
+        ) : (
+          <>
+            <dl className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+              <Cifra etiqueta="Visitas" valor={String(embudo.visitas)} />
+              <Cifra etiqueta="Productos vistos" valor={String(embudo.productosVistos)} />
+              <Cifra etiqueta="Al carrito" valor={String(embudo.agregados)} />
+              <Cifra
+                etiqueta={`Pedidos enviados${embudo.conversionPct !== null ? ` · ${embudo.conversionPct} %` : ""}`}
+                valor={String(embudo.pedidos)}
+                destacada
+              />
+            </dl>
+            <p className="text-xs text-neutral-500">
+              La conversión es pedidos enviados ÷ visitas a la portada. Son cifras orientativas: una persona que entra
+              varias veces puede contar más de una vez.
+            </p>
+            <ul className="flex flex-wrap gap-x-4 gap-y-1 text-xs text-neutral-600">
+              {["clic_whatsapp", "ver_promocion", "clic_promocion"].map((t) => (
+                <li key={t}>
+                  {ETIQUETA_EVENTO[t]}: <strong>{metricas.totales[t] ?? 0}</strong>
+                </li>
+              ))}
+            </ul>
+            {metricas.topProductos.length > 0 && (
+              <ol className="flex flex-col divide-y divide-neutral-200 rounded-xl border border-neutral-200">
+                {metricas.topProductos.map((p, i) => (
+                  <li key={p.producto_id} className="flex items-center justify-between gap-3 p-3 text-sm">
+                    <span className="min-w-0 truncate">
+                      <span className="text-neutral-500">{i + 1}.</span> {p.nombre}
+                    </span>
+                    <span className="shrink-0 text-right text-xs text-neutral-600">
+                      <strong className="text-sm text-neutral-900">{p.vistas}</strong> vistas · {p.agregados} al carrito
+                    </span>
+                  </li>
+                ))}
+              </ol>
+            )}
+          </>
+        )}
       </section>
 
       <section aria-labelledby="titulo-reparto" className="flex flex-col gap-3">

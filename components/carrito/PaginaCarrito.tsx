@@ -2,7 +2,8 @@
 
 import Link from "next/link";
 import { useRef, useState } from "react";
-import { aplicarRevision, describirCambio, totalCarrito, type ItemCarrito } from "@/lib/carrito";
+import { aplicarRevision, describirCambio, topeUnidades, totalCarrito, type ItemCarrito } from "@/lib/carrito";
+import { DETALLE_CONTRA_ENTREGA, NOTA_BAJO_PEDIDO, TEXTO_CONTRA_ENTREGA } from "@/lib/tienda";
 import { formatearCOP } from "@/lib/formato";
 import { interpretarRespuestaPedido } from "@/lib/pedido";
 import { crearClienteNavegador } from "@/lib/supabase/navegador";
@@ -107,6 +108,7 @@ export function PaginaCarrito({ whatsappNumero, textoEnvio, tiempoEntrega, metod
             cantidad: i.cantidad,
             subtotal: i.subtotal,
             enlace: slug ? `${window.location.origin}/producto/${slug}` : undefined,
+            bajoPedido: porId.get(i.producto_id)?.bajoPedido || i.bajo_pedido || false,
           };
         }),
         total: respuesta.total,
@@ -131,6 +133,8 @@ export function PaginaCarrito({ whatsappNumero, textoEnvio, tiempoEntrega, metod
   }
 
   const total = totalCarrito(items);
+  const hayBajoPedido = items.some((i) => i.bajoPedido);
+  const todoBajoPedido = items.every((i) => i.bajoPedido);
   const enviando = estado.tipo === "enviando";
 
   return (
@@ -169,6 +173,9 @@ export function PaginaCarrito({ whatsappNumero, textoEnvio, tiempoEntrega, metod
                 <div className="flex items-start justify-between gap-2">
                   <Link href={`/producto/${item.slug}`} className="line-clamp-2 text-sm leading-snug">
                     {item.nombre}
+                    {item.bajoPedido && (
+                      <span className="ml-1.5 rounded-md bg-marca-suave px-1.5 py-0.5 text-[11px] font-bold text-marca">Bajo pedido</span>
+                    )}
                   </Link>
                   <button
                     type="button"
@@ -185,7 +192,7 @@ export function PaginaCarrito({ whatsappNumero, textoEnvio, tiempoEntrega, metod
                   <SelectorCantidad
                     compacto
                     valor={item.cantidad}
-                    maximo={item.stock}
+                    maximo={topeUnidades(item)}
                     etiqueta={`Cantidad de ${item.nombre}`}
                     onCambiar={(c) => cambiarCantidad(item.productoId, c)}
                   />
@@ -207,6 +214,13 @@ export function PaginaCarrito({ whatsappNumero, textoEnvio, tiempoEntrega, metod
           <span className="text-xl font-bold">{formatearCOP(total)}</span>
         </div>
         <p className="-mt-2 text-xs text-suave">El costo del envío se acuerda por WhatsApp.</p>
+        {!todoBajoPedido && (
+          <p className="rounded-xl bg-exito-suave p-3 text-xs leading-snug text-exito">
+            <strong>{TEXTO_CONTRA_ENTREGA}:</strong> {DETALLE_CONTRA_ENTREGA.toLowerCase()}
+            {hayBajoPedido && " (excepto los productos bajo pedido)"}.
+          </p>
+        )}
+        {hayBajoPedido && <p className="rounded-xl bg-marca-suave p-3 text-xs leading-snug">{NOTA_BAJO_PEDIDO}</p>}
         {(tiempoEntrega.trim() || metodosPago.trim()) && (
           <dl className="flex flex-col gap-1.5 rounded-xl bg-marca-suave p-3 text-xs">
             {tiempoEntrega.trim() && (

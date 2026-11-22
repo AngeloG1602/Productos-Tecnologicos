@@ -53,6 +53,7 @@ export type Database = {
           stock: number;
           activo: boolean;
           destacado: boolean;
+          bajo_pedido: boolean;
           created_at: string;
           updated_at: string;
         };
@@ -68,6 +69,7 @@ export type Database = {
           stock?: number;
           activo?: boolean;
           destacado?: boolean;
+          bajo_pedido?: boolean;
           created_at?: string;
           updated_at?: string;
         };
@@ -83,6 +85,7 @@ export type Database = {
           stock?: number;
           activo?: boolean;
           destacado?: boolean;
+          bajo_pedido?: boolean;
           created_at?: string;
           updated_at?: string;
         };
@@ -204,6 +207,7 @@ export type Database = {
           cantidad: number;
           precio_unitario: number;
           costo_unitario: number;
+          bajo_pedido: boolean;
         };
         Insert: never;
         Update: never;
@@ -323,6 +327,32 @@ export type Database = {
           },
         ];
       };
+      historial_productos: {
+        Row: {
+          id: number;
+          producto_id: string | null;
+          producto_nombre: string;
+          campo: string;
+          anterior: string | null;
+          nuevo: string | null;
+          usuario_id: string | null;
+          created_at: string;
+        };
+        Insert: never;
+        Update: never;
+        Relationships: [];
+      };
+      metricas_dia: {
+        Row: {
+          dia: string;
+          tipo: string;
+          producto_id: string;
+          cantidad: number;
+        };
+        Insert: never;
+        Update: never;
+        Relationships: [];
+      };
       administradores: {
         Row: {
           user_id: string;
@@ -358,6 +388,18 @@ export type Database = {
           tiempo_entrega: string;
           tema_activo: string;
         }[];
+      };
+      registrar_evento: {
+        Args: { p_tipo: string; p_producto?: string | null };
+        Returns: undefined;
+      };
+      metricas_resumen: {
+        Args: { p_desde: string; p_hasta: string };
+        Returns: { tipo: string; total: number }[];
+      };
+      metricas_top_productos: {
+        Args: { p_desde: string; p_hasta: string; p_limite?: number };
+        Returns: { producto_id: string; nombre: string; vistas: number; agregados: number }[];
       };
       promocion_activa: {
         Args: Record<PropertyKey, never>;
@@ -406,6 +448,7 @@ export type Database = {
           p_activo: boolean;
           p_destacado: boolean;
           p_distribuidor_id?: string | null;
+          p_bajo_pedido?: boolean;
         };
         Returns: string;
       };

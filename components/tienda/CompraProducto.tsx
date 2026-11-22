@@ -2,12 +2,13 @@
 
 import { useEffect, useState } from "react";
 import { leerParametroAgregar } from "@/lib/anuncio";
-import type { ProductoParaCarrito } from "@/lib/carrito";
+import { topeUnidades, type ProductoParaCarrito } from "@/lib/carrito";
+import { NOTA_BAJO_PEDIDO } from "@/lib/tienda";
 import { notificar } from "@/components/carrito/notificacion";
 import { useCarrito } from "@/components/carrito/useCarrito";
 import { SelectorCantidad } from "./SelectorCantidad";
 
-/** Selector de cantidad + "Agregar al carrito", sin pasar del stock (RN-04). */
+/** Selector de cantidad + "Agregar al carrito", sin pasar del stock (RN-04) ni del máximo de un bajo pedido. */
 export function CompraProducto({ producto }: { producto: ProductoParaCarrito }) {
   const { items, agregar, agregarSiNoEsta } = useCarrito();
   const [cantidad, setCantidad] = useState(1);
@@ -18,13 +19,13 @@ export function CompraProducto({ producto }: { producto: ProductoParaCarrito }) 
     const { agregar: desdeAnuncio, busquedaLimpia } = leerParametroAgregar(window.location.search);
     if (!desdeAnuncio) return;
     window.history.replaceState(null, "", `${window.location.pathname}${busquedaLimpia}${window.location.hash}`);
-    if (producto.stock > 0 && agregarSiNoEsta(producto)) notificar("Agregado al carrito", true);
+    if ((producto.stock > 0 || producto.bajoPedido) && agregarSiNoEsta(producto)) notificar("Agregado al carrito", true);
   }, [producto, agregarSiNoEsta]);
 
   const enCarrito = items.find((i) => i.productoId === producto.productoId)?.cantidad ?? 0;
-  const disponible = Math.max(0, producto.stock - enCarrito);
+  const disponible = Math.max(0, topeUnidades(producto) - enCarrito);
 
-  if (producto.stock <= 0) {
+  if (producto.stock <= 0 && !producto.bajoPedido) {
     return (
       <button type="button" disabled className="h-12 w-full rounded-xl bg-borde text-base font-semibold text-suave">
         Agotado
@@ -57,6 +58,8 @@ export function CompraProducto({ producto }: { producto: ProductoParaCarrito }) 
       >
         {disponible === 0 ? "Ya tienes todas las unidades disponibles" : "Agregar al carrito"}
       </button>
+
+      {producto.bajoPedido && <p className="rounded-xl bg-marca-suave p-3 text-xs leading-snug">{NOTA_BAJO_PEDIDO}</p>}
 
       {enCarrito > 0 && (
         <p className="text-center text-sm text-suave">

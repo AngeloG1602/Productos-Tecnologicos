@@ -103,6 +103,7 @@ export function ListaProductos({ productos: iniciales, categorias, distribuidore
           return {
             ...p,
             ...(cambios.activo !== undefined ? { activo: cambios.activo } : {}),
+            ...(cambios.bajoPedido !== undefined ? { bajo_pedido: cambios.bajoPedido } : {}),
             ...(cambios.categoriaId !== undefined
               ? { categoria_id: cambios.categoriaId, categoria_nombre: categoria?.nombre ?? null }
               : {}),
@@ -249,6 +250,22 @@ export function ListaProductos({ productos: iniciales, categorias, distribuidore
             >
               Desactivar
             </button>
+            <button
+              type="button"
+              disabled={aplicando}
+              onClick={() => aplicarLote({ bajoPedido: true }, "Marcados bajo pedido")}
+              className="rounded-lg border border-neutral-300 px-3 py-2 text-sm font-semibold disabled:opacity-60"
+            >
+              Bajo pedido
+            </button>
+            <button
+              type="button"
+              disabled={aplicando}
+              onClick={() => aplicarLote({ bajoPedido: false }, "Quitada la marca bajo pedido")}
+              className="rounded-lg border border-neutral-300 px-3 py-2 text-sm font-semibold disabled:opacity-60"
+            >
+              Quitar bajo pedido
+            </button>
             <select
               value={categoriaLote}
               disabled={aplicando}
@@ -393,6 +410,7 @@ function FilaProducto({
         <div className="min-w-0">
           <p className="truncate text-sm font-medium">{producto.nombre}</p>
           <p className="truncate text-xs text-neutral-500">
+            {producto.bajo_pedido && <span className="mr-1.5 rounded bg-sky-100 px-1.5 py-0.5 font-bold text-sky-800">Bajo pedido</span>}
             {producto.categoria_nombre ?? "Sin categoría"}
             {producto.distribuidor_nombre && ` · ${producto.distribuidor_nombre}`}
           </p>

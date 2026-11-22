@@ -20,7 +20,7 @@ export function enlaceWhatsApp(numero: string, mensaje?: string): string {
 
 export type DatosMensajePedido = {
   codigo: string;
-  items: { nombre: string; cantidad: number; subtotal: number; enlace?: string }[];
+  items: { nombre: string; cantidad: number; subtotal: number; enlace?: string; bajoPedido?: boolean }[];
   total: number;
   cliente: { nombre: string; ciudad: string; notas?: string };
   textoEnvio?: string;
@@ -34,7 +34,7 @@ export function mensajePedido({ codigo, items, total, cliente, textoEnvio }: Dat
   const lineas: string[] = ["¡Hola! Quiero hacer este pedido 🛒", `Pedido: ${codigo}`, ""];
 
   for (const item of items) {
-    lineas.push(`• ${item.cantidad} x ${item.nombre} — ${formatearCOP(item.subtotal)}`);
+    lineas.push(`• ${item.cantidad} x ${item.nombre}${item.bajoPedido ? " (bajo pedido)" : ""} — ${formatearCOP(item.subtotal)}`);
     if (item.enlace) lineas.push(`  ${item.enlace}`);
   }
 
@@ -43,6 +43,7 @@ export function mensajePedido({ codigo, items, total, cliente, textoEnvio }: Dat
     `Total productos: ${formatearCOP(total)}`,
     `Nombre: ${cliente.nombre.trim()}`,
     `Ciudad/Barrio: ${cliente.ciudad.trim()}`,
+    textoPago(items),
   );
   const notas = cliente.notas?.trim();
   if (notas) lineas.push(`Notas: ${notas}`);
@@ -51,6 +52,17 @@ export function mensajePedido({ codigo, items, total, cliente, textoEnvio }: Dat
   if (envio) lineas.push("", envio);
 
   return lineas.join("\n");
+}
+
+/**
+ * Forma de pago que se anota en el pedido: contra entrega, salvo los productos bajo pedido,
+ * que pueden requerir anticipo y se acuerdan por WhatsApp.
+ */
+export function textoPago(items: { bajoPedido?: boolean }[]): string {
+  const bajoPedido = items.filter((i) => i.bajoPedido).length;
+  if (bajoPedido === 0) return "Pago: contra entrega";
+  if (bajoPedido === items.length) return "Pago: lo acordamos por este medio (productos bajo pedido, pueden requerir anticipo)";
+  return "Pago: contra entrega (los productos bajo pedido se acuerdan por este medio, pueden requerir anticipo)";
 }
 
 /** Mensaje del botón flotante (consultas sin pedido, RF-08). */

@@ -43,6 +43,9 @@ export default async function DetallePedido({ params }: PageProps<"/admin/pedido
             <li key={item.id} className="flex justify-between gap-3 p-3">
               <span>
                 {item.cantidad} × {item.nombre_snapshot}
+                {item.bajo_pedido && (
+                  <span className="ml-2 rounded-md bg-sky-100 px-1.5 py-0.5 text-[11px] font-bold text-sky-800">Bajo pedido</span>
+                )}
                 <span className="block text-xs text-neutral-500">
                   {formatearCOP(item.precio_unitario)} c/u · costo {formatearCOP(item.costo_unitario)}
                 </span>

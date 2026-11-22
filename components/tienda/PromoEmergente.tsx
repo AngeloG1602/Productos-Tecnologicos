@@ -3,6 +3,7 @@
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import type { PromocionPublica } from "@/lib/catalogo";
+import { registrarEvento } from "@/lib/analitica";
 import { ContenidoPromocion } from "./ContenidoPromocion";
 
 const ESPERA_MS = 5000; // no aparece de golpe: el cliente primero ve la tienda
@@ -47,6 +48,7 @@ export function PromoEmergente({ promo }: { promo: PromocionPublica }) {
     const id = window.setTimeout(() => {
       setAbierta(true);
       setYaMostrada(true);
+      registrarEvento("ver_promocion");
     }, ESPERA_MS);
     return () => window.clearTimeout(id);
   }, [promo.version, permitida, yaMostrada]);
@@ -96,7 +98,14 @@ export function PromoEmergente({ promo }: { promo: PromocionPublica }) {
             <path d="m6 6 12 12M18 6 6 18" />
           </svg>
         </button>
-        <ContenidoPromocion promo={promo} alAbrir={cerrar} alRechazar={cerrar} />
+        <ContenidoPromocion
+          promo={promo}
+          alAbrir={() => {
+            registrarEvento("clic_promocion");
+            cerrar();
+          }}
+          alRechazar={cerrar}
+        />
       </div>
     </div>
   );

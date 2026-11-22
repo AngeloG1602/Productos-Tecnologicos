@@ -1,6 +1,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import {
+  textoPago,
   enlaceCompartirWhatsApp,
   enlaceWhatsApp,
   formatearTelefono,
@@ -46,6 +47,7 @@ test("mensaje del pedido con el formato de RN-08 y enlaces", () => {
       "Total productos: $ 78.600",
       "Nombre: Laura Gómez",
       "Ciudad/Barrio: Bogotá - Chapinero",
+      "Pago: contra entrega",
       "Notas: Entregar en la tarde",
       "",
       "(El costo de envío se confirma por este medio)",
@@ -61,7 +63,7 @@ test("sin notas ni texto de envío, esas líneas no aparecen", () => {
     cliente: { nombre: "Ana", ciudad: "Cali", notas: "  " },
   });
   assert.ok(!mensaje.includes("Notas:"));
-  assert.ok(n(mensaje).endsWith("Ciudad/Barrio: Cali"));
+  assert.ok(n(mensaje).endsWith("Ciudad/Barrio: Cali\nPago: contra entrega"));
 });
 
 test("formatea el teléfono para mostrarlo", () => {
@@ -80,4 +82,18 @@ test("consulta y compartir de un producto llevan nombre y enlace", () => {
   assert.match(compartir, /42\.000/);
   assert.match(compartir, /https:\/\/t\.co\/producto\/c$/);
   assert.equal(enlaceCompartirWhatsApp("Hola & chao"), "https://wa.me/?text=Hola%20%26%20chao");
+});
+
+test("pago contra entrega, salvo productos bajo pedido", () => {
+  assert.equal(textoPago([{}, { bajoPedido: false }]), "Pago: contra entrega");
+  assert.match(textoPago([{ bajoPedido: true }]), /lo acordamos por este medio.*anticipo/);
+  assert.match(textoPago([{ bajoPedido: true }, {}]), /contra entrega.*bajo pedido.*anticipo/);
+  const m = mensajePedido({
+    codigo: "PED-9",
+    items: [{ nombre: "Encargo", cantidad: 1, subtotal: 50000, bajoPedido: true }],
+    total: 50000,
+    cliente: { nombre: "Ana", ciudad: "Ocaña" },
+  });
+  assert.match(m, /• 1 x Encargo \(bajo pedido\) — /);
+  assert.match(m, /Pago: lo acordamos por este medio/);
 });

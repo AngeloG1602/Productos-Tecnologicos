@@ -6,6 +6,8 @@ export type ItemPedido = {
   cantidad: number;
   precio_unitario: number;
   subtotal: number;
+  /** La base lo informa desde la migración de "bajo pedido"; antes no venía. */
+  bajo_pedido?: boolean;
 };
 
 export type TipoCambio = "no_disponible" | "stock" | "precio";
@@ -45,6 +47,7 @@ function leerItem(v: unknown): ItemPedido {
     cantidad: v.cantidad,
     precio_unitario: v.precio_unitario,
     subtotal: v.subtotal,
+    ...(typeof v.bajo_pedido === "boolean" ? { bajo_pedido: v.bajo_pedido } : {}),
   };
 }
 

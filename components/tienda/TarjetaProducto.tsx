@@ -1,6 +1,7 @@
 import Link from "next/link";
 import type { ProductoResumen } from "@/lib/catalogo";
 import type { Tema } from "@/lib/temas";
+import { hayExistencia } from "@/lib/disponibilidad";
 import { porcentajeDescuento } from "@/lib/precio";
 import { BotonAgregarRapido } from "./BotonAgregarRapido";
 import { EtiquetaStock } from "./EtiquetaStock";
@@ -23,7 +24,7 @@ export function TarjetaProducto({
   sizes = "(min-width: 1024px) 240px, (min-width: 640px) 33vw, 50vw",
   preload = false,
 }: Props) {
-  const agotado = producto.stock <= 0;
+  const agotado = !hayExistencia(producto);
   const descuento = porcentajeDescuento(producto.precio_anterior, producto.precio_venta);
   return (
     <div className="tarjeta-tematica relative flex w-full flex-col overflow-hidden bg-superficie">
@@ -63,7 +64,7 @@ export function TarjetaProducto({
           <h3 className="line-clamp-2 min-h-[2.5rem] text-sm leading-snug font-medium">{producto.nombre}</h3>
           <div className="mt-auto flex flex-col gap-1.5 pt-1">
             <PrecioProducto precio={producto.precio_venta} precioAnterior={producto.precio_anterior} />
-            <EtiquetaStock stock={producto.stock} umbral={umbral} />
+            <EtiquetaStock stock={producto.stock} umbral={umbral} bajoPedido={producto.bajo_pedido} />
           </div>
         </div>
       </Link>
@@ -79,6 +80,7 @@ export function TarjetaProducto({
                 precio: producto.precio_venta,
                 imagen: producto.imagenes[0] ?? null,
                 stock: producto.stock,
+                bajoPedido: producto.bajo_pedido,
               }}
             />
           </div>

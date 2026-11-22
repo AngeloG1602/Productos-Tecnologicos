@@ -1,14 +1,14 @@
 import type { ConfiguracionPublica } from "@/lib/catalogo";
-import { CIUDAD_TIENDA } from "@/lib/tienda";
+import { CIUDAD_TIENDA, TEXTO_CONTRA_ENTREGA } from "@/lib/tienda";
 import { IconoUbicacion } from "./IconoUbicacion";
 import { IconoWhatsApp } from "./IconoWhatsApp";
 
 /**
- * Razones para confiar, bajo la portada. Los datos de entrega y medios de pago salen de
- * Configuración (admin); si no están cargados, ese punto no se muestra en vez de inventar algo.
+ * Razones para confiar, bajo la portada. El tiempo de entrega sale de Configuración (admin);
+ * si no está cargado, se muestra "Compra sin registro" en vez de inventar un plazo.
  */
 export function FranjaConfianza({ configuracion }: { configuracion: ConfiguracionPublica }) {
-  const { metodos_pago, tiempo_entrega } = configuracion.legal;
+  const { tiempo_entrega } = configuracion.legal;
   const puntos: { icono: React.ReactNode; titulo: string; detalle: string }[] = [
     {
       icono: <IconoUbicacion className="h-5 w-5" />,
@@ -16,23 +16,24 @@ export function FranjaConfianza({ configuracion }: { configuracion: Configuracio
       detalle: "Un negocio de tu ciudad",
     },
     {
+      icono: <Billete />,
+      titulo: TEXTO_CONTRA_ENTREGA,
+      detalle: "Pagas al recibir*",
+    },
+    {
       icono: <IconoWhatsApp className="h-5 w-5" />,
       titulo: "Pide por WhatsApp",
       detalle: "Atención directa y personal",
     },
   ];
-  puntos.push({
-    icono: <Check />,
-    titulo: "Compra sin registro",
-    detalle: "Arma tu pedido y envíalo",
-  });
   if (tiempo_entrega.trim()) {
     puntos.push({ icono: <Camion />, titulo: "Entrega", detalle: tiempo_entrega.trim() });
-  } else if (metodos_pago.trim()) {
-    puntos.push({ icono: <Billete />, titulo: "Medios de pago", detalle: metodos_pago.trim() });
+  } else {
+    puntos.push({ icono: <Check />, titulo: "Compra sin registro", detalle: "Arma tu pedido y envíalo" });
   }
 
   return (
+    <div className="flex flex-col gap-2">
     <ul className="grid grid-cols-2 gap-2.5 lg:grid-cols-4 [&>li:last-child:nth-child(odd)]:col-span-2 lg:[&>li:last-child:nth-child(odd)]:col-span-1">
       {puntos.map((p) => (
         <li key={p.titulo} className="flex items-center gap-3 rounded-2xl border border-borde bg-superficie p-3">
@@ -44,6 +45,8 @@ export function FranjaConfianza({ configuracion }: { configuracion: Configuracio
         </li>
       ))}
     </ul>
+    <p className="px-1 text-[11px] leading-snug text-suave">*No aplica a productos bajo pedido: pueden requerir anticipo.</p>
+    </div>
   );
 }
 

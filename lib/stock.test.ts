@@ -23,3 +23,9 @@ test("stock 0 → Agotado y no se puede comprar", () => {
 test("umbral 0 → todo lo que tenga stock está Disponible", () => {
   assert.equal(estadoStock(1, 0).tipo, "disponible");
 });
+
+test("bajo pedido se muestra como tal aunque no haya stock", () => {
+  assert.deepEqual(estadoStock(0, 5, true), { tipo: "bajo_pedido", texto: "Bajo pedido", puedeComprar: true });
+  assert.equal(estadoStock(50, 5, true).tipo, "bajo_pedido");
+  assert.equal(estadoStock(0, 5).tipo, "agotado");
+});

@@ -22,7 +22,7 @@ export function Pie({ configuracion }: { configuracion: ConfiguracionPublica | n
               {direccion && <span className="block font-normal text-suave">{direccion}</span>}
             </span>
           </p>
-          <p>Pedidos y consultas por WhatsApp. El envío y el pago se acuerdan por ese medio.</p>
+          <p>Pedidos y consultas por WhatsApp. <strong className="text-texto">Pago contra entrega</strong> (excepto productos bajo pedido). El costo del envío se acuerda por ese medio.</p>
           {whatsappNumero && (
             <a
               href={enlaceWhatsApp(whatsappNumero, MENSAJE_CONSULTA)}

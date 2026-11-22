@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { RegistrarVistaProducto } from "@/components/tienda/Analitica";
 import { AccionesProducto } from "@/components/tienda/AccionesProducto";
 import { CompraProducto } from "@/components/tienda/CompraProducto";
 import { DatosEstructurados } from "@/components/tienda/DatosEstructurados";
@@ -22,7 +23,7 @@ import { urlImagen } from "@/lib/imagenes";
 import { productosRelacionados } from "@/lib/relacionados";
 import { jsonLdProducto } from "@/lib/seo";
 import { urlSitio } from "@/lib/sitio";
-import { CIUDAD_TIENDA } from "@/lib/tienda";
+import { CIUDAD_TIENDA, DETALLE_CONTRA_ENTREGA, TEXTO_CONTRA_ENTREGA } from "@/lib/tienda";
 import { obtenerTema } from "@/lib/temas";
 
 export const revalidate = 60;
@@ -73,6 +74,7 @@ export default async function FichaProducto({ params }: PageProps<"/producto/[sl
 
   return (
     <article className="flex flex-col gap-5 md:grid md:grid-cols-2 md:items-start md:gap-8">
+      <RegistrarVistaProducto productoId={producto.id} />
       <DatosEstructurados
         datos={jsonLdProducto({
           nombre: producto.nombre,
@@ -80,7 +82,7 @@ export default async function FichaProducto({ params }: PageProps<"/producto/[sl
           url: enlace,
           imagenes: producto.imagenes.map((r) => urlImagen(r, urlSupabase)),
           precio: producto.precio_venta,
-          disponible: producto.stock > 0,
+          disponibilidad: producto.bajo_pedido ? "bajo_pedido" : producto.stock > 0 ? "en_stock" : "agotado",
         })}
       />
       <nav className="md:col-span-2">
@@ -104,7 +106,7 @@ export default async function FichaProducto({ params }: PageProps<"/producto/[sl
           <h1 className="text-2xl leading-tight font-extrabold tracking-tight text-balance">{producto.nombre}</h1>
           <PrecioProducto precio={producto.precio_venta} precioAnterior={producto.precio_anterior} tamano="grande" />
           <div>
-            <EtiquetaStock stock={producto.stock} umbral={configuracion.umbralStockBajo} />
+            <EtiquetaStock stock={producto.stock} umbral={configuracion.umbralStockBajo} bajoPedido={producto.bajo_pedido} />
           </div>
 
           <CompraProducto
@@ -115,8 +117,19 @@ export default async function FichaProducto({ params }: PageProps<"/producto/[sl
               precio: producto.precio_venta,
               imagen: producto.imagenes[0] ?? null,
               stock: producto.stock,
+              bajoPedido: producto.bajo_pedido,
             }}
           />
+
+          {!producto.bajo_pedido && (
+            <p className="flex items-center gap-2 rounded-xl bg-exito-suave px-3 py-2 text-xs font-semibold text-exito">
+              <svg viewBox="0 0 24 24" className="h-4 w-4 shrink-0" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                <rect x="3" y="6" width="18" height="12" rx="2" />
+                <circle cx="12" cy="12" r="2.500" />
+              </svg>
+              {TEXTO_CONTRA_ENTREGA}: {DETALLE_CONTRA_ENTREGA.toLowerCase()}
+            </p>
+          )}
 
           <AccionesProducto
             nombre={producto.nombre}

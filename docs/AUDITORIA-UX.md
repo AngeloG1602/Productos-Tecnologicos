@@ -92,6 +92,36 @@ Hecho: P1 (cambios en lote en Productos: activar, desactivar, categoría y distr
 
 Pendiente: trampa de foco en la ventana emergente.
 
+## Ola 3 y pedidos del dueño: estado
+
+Hecho:
+- **Pago contra entrega** visible en portada, franja de confianza, ficha, carrito, preguntas frecuentes, pie, términos y mensaje de WhatsApp, con la excepción de los productos bajo pedido.
+- **Productos bajo pedido:** casilla en el formulario del producto y en el lote. Se pueden pedir sin stock (máximo 20 por pedido), no descuentan ni devuelven stock, el pedido congela la marca por ítem, y la tienda avisa que pueden requerir anticipo. Migración `20261123000100_bajo_pedido.sql`.
+- **Historial de cambios** de precio, costo, stock, estado y bajo pedido (con quién y cuándo) en la edición de cada producto. El stock que mueven los pedidos no se anota.
+- **Métricas de uso anónimas** (contadores por día, sin IP ni cookies): visitas, productos vistos, agregados al carrito, clics en WhatsApp y en la promoción, más conversión a pedidos y productos más vistos, en el inicio del panel. Migración `20261123000200_historial_metricas.sql`. Solo cuentan en producción.
+
+Pendiente: reseñas (calificaciones, comentarios con fotos, filtro por estrellas): requieren decidir moderación y compradores verificados; ver "Reseñas" abajo. Y la trampa de foco de la ventana emergente.
+
+## Cómo ser competitivo en Ocaña (ideas, de mayor a menor retorno)
+
+Las comparaciones son de criterio general, no de una revisión de la competencia en Ocaña.
+
+| # | Idea | Impacto | Esfuerzo | Notas |
+|---|---|---|---|---|
+| C1 | **Perfil de empresa en Google** (gratis) | Alto | Bajo | Hace que aparezcan al buscar "tecnología en Ocaña", con dirección, horario, WhatsApp, fotos y **reseñas de Google**: prueba social real sin construir reseñas propias. Es lo primero. |
+| C2 | **WhatsApp Business bien configurado** | Alto | Bajo | Catálogo nativo, respuestas rápidas, mensaje de bienvenida y de ausencia, etiquetas por estado de pedido. |
+| C3 | **Enlaces de anuncio que agregan al carrito** | Alto | Ya existe | `/producto/<slug>?agregar=1` agrega el producto al abrir la página. Úsenlo en estados de WhatsApp, Instagram y Facebook. |
+| C4 | **Mostrar quiénes son** | Alto | Bajo | Foto del equipo o del local, punto de entrega y horario. Con "pago contra entrega" es lo que más baja la desconfianza. |
+| C5 | **Plazo de entrega real y destacado** | Alto | Bajo | Si en Ocaña entregan el mismo día o al siguiente, decirlo en la portada: es la ventaja sobre los envíos nacionales que tardan días. Cargarlo en Configuración → tiempo de entrega. |
+| C6 | **Pagos digitales como opción** (Nequi, Daviplata, transferencia) | Medio | Bajo | Sirve sobre todo para el anticipo de los bajo pedido. Se acuerda por WhatsApp; no requiere pasarela. |
+| C7 | **Combos y "se compra junto"** (cargador + cable, audífonos + estuche) | Medio | Medio | Sube el valor de cada pedido. |
+| C8 | **Código de descuento de primera compra y "trae a un amigo"** | Medio | Medio | Aprovecha el boca a boca local. |
+| C9 | **Consulta de pedido por código** | Medio | Medio | Cuidado: los códigos son consecutivos (PED-0001…); si se consulta solo con el código, alguien podría contar los pedidos del negocio. Hay que pedir código + nombre. |
+| C10 | **Garantía real por categoría** | Medio | Bajo | Definirla (qué cubre y por cuánto) y publicarla solo cuando sea cierta. |
+| C11 | **Estándar de fotos y videos cortos** | Alto | Bajo | Fondo claro, 1:1, y un video corto por producto estrella. Es lo que más pesa al comparar con Mercado Libre. |
+
+**Reseñas (cuando haya compras).** Diseño recomendado: solo compradores verificados (código de pedido + nombre), aprobación previa desde el panel, calificación de 1 a 5 y comentario; fotos en una segunda etapa. Con eso salen "Mejor valorados" en el orden y el filtro por estrellas, y las estrellas aparecen en Google (datos estructurados). Mientras tanto, C1 (reseñas de Google) cubre lo mismo sin construir nada.
+
 ## Corregido durante la auditoría
 
 - Los botones verdes de WhatsApp del carrito tenían el texto claro en el tema Black Friday (contraste 1,8:1). Ahora usan texto verde oscuro (7,5:1).

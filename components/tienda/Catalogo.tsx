@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from "react";
 import type { Categoria, ProductoResumen } from "@/lib/catalogo";
+import { hayExistencia } from "@/lib/disponibilidad";
 import { formatearCOP } from "@/lib/formato";
 import { filtrarPorPrecio, ORDENES, ordenarProductos, RANGOS_PRECIO, type Orden } from "@/lib/orden";
 import type { Tema } from "@/lib/temas";
@@ -45,7 +46,7 @@ export function Catalogo({ categorias, productos, umbral, tema, whatsappNumero }
   }, [productos, categoriaActual, busqueda, min, max, orden]);
 
   const sinFiltros = !categoriaActual && !busqueda.trim() && !hayPrecio;
-  const destacados = sinFiltros ? productos.filter((p) => p.destacado && p.stock > 0) : [];
+  const destacados = sinFiltros ? productos.filter((p) => p.destacado && hayExistencia(p)) : [];
   const limpiar = () => actualizar({ categoria: null, busqueda: "", min: null, max: null, orden: "relevancia" });
 
   return (

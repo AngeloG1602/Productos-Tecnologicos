@@ -1,9 +1,10 @@
 import type { ConfiguracionPublica } from "@/lib/catalogo";
+import { DETALLE_CONTRA_ENTREGA, NOTA_BAJO_PEDIDO, TEXTO_CONTRA_ENTREGA } from "@/lib/tienda";
 
 const PASOS = [
   { titulo: "Elige", texto: "Agrega al carrito lo que te guste." },
   { titulo: "Envía tu pedido", texto: "Pon tu nombre y barrio. Se abre WhatsApp con todo escrito." },
-  { titulo: "Acordamos", texto: "Te confirmamos y acordamos entrega y pago contigo." },
+  { titulo: "Recibe y paga", texto: "Te confirmamos y acordamos la entrega. Pagas cuando recibes (excepto bajo pedido)." },
 ];
 
 /** Tres pasos para quien nunca ha comprado por WhatsApp. */
@@ -37,7 +38,11 @@ export function PreguntasFrecuentes({ configuracion }: { configuracion: Configur
   const preguntas = [
     {
       p: "¿Cómo pago?",
-      r: metodos_pago.trim() || "Lo acordamos contigo por WhatsApp cuando confirmemos tu pedido.",
+      r: `${TEXTO_CONTRA_ENTREGA}: ${DETALLE_CONTRA_ENTREGA.toLowerCase()}. ${NOTA_BAJO_PEDIDO}${metodos_pago.trim() ? ` Medios de pago: ${metodos_pago.trim()}` : ""}`,
+    },
+    {
+      p: "¿Qué es un producto bajo pedido?",
+      r: "Es un producto que conseguimos o hacemos por encargo: no está en stock. Al pedirlo acordamos contigo el tiempo de entrega y si requiere anticipo.",
     },
     {
       p: "¿Cuánto tarda la entrega?",

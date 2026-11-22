@@ -1,3 +1,4 @@
+import { MAXIMO_BAJO_PEDIDO } from "./disponibilidad.ts";
 import { formatearCOP } from "./formato.ts";
 import type { CambioPedido, ItemPedido } from "./pedido.ts";
 
@@ -11,6 +12,8 @@ export type ItemCarrito = {
   cantidad: number;
   /** Stock conocido al agregar; limita la cantidad (RN-04). La BD lo revalida al enviar. */
   stock: number;
+  /** Producto bajo pedido: no lo limita el stock (sí un máximo por pedido). Ausente = no. */
+  bajoPedido?: boolean;
 };
 
 export type ProductoParaCarrito = Omit<ItemCarrito, "cantidad">;
@@ -18,7 +21,13 @@ export type ProductoParaCarrito = Omit<ItemCarrito, "cantidad">;
 /** Tope de unidades por producto que acepta crear_pedido. */
 export const MAXIMO_POR_PRODUCTO = 999;
 
-const tope = (stock: number) => Math.max(0, Math.min(stock, MAXIMO_POR_PRODUCTO));
+const tope = (stock: number, bajoPedido = false) =>
+  Math.max(0, Math.min(bajoPedido ? MAXIMO_BAJO_PEDIDO : stock, MAXIMO_POR_PRODUCTO));
+
+/** Unidades máximas que se pueden pedir de este producto (stock, o el máximo si es bajo pedido). */
+export function topeUnidades(p: { stock: number; bajoPedido?: boolean }): number {
+  return tope(p.stock, p.bajoPedido);
+}
 
 /**
  * Agrega unidades sin superar el stock. Devuelve el carrito nuevo y cuántas
@@ -31,7 +40,7 @@ export function agregarAlCarrito(
 ): { items: ItemCarrito[]; agregadas: number } {
   const existente = items.find((i) => i.productoId === producto.productoId);
   const actual = existente?.cantidad ?? 0;
-  const nueva = Math.min(actual + Math.max(0, Math.floor(cantidad)), tope(producto.stock));
+  const nueva = Math.min(actual + Math.max(0, Math.floor(cantidad)), tope(producto.stock, producto.bajoPedido));
   const agregadas = Math.max(0, nueva - actual);
   if (agregadas === 0) return { items, agregadas: 0 };
 
@@ -48,7 +57,7 @@ export function agregarAlCarrito(
 export function cambiarCantidad(items: ItemCarrito[], productoId: string, cantidad: number): ItemCarrito[] {
   return items.map((i) =>
     i.productoId === productoId
-      ? { ...i, cantidad: Math.max(1, Math.min(Math.floor(cantidad), tope(i.stock))) }
+      ? { ...i, cantidad: Math.max(1, Math.min(Math.floor(cantidad), tope(i.stock, i.bajoPedido))) }
       : i,
   );
 }
@@ -85,6 +94,7 @@ export function aplicarRevision(
         precio: revisado.precio_unitario,
         cantidad: revisado.cantidad,
         stock: cambioStock ? cambioStock.cantidad : item.stock,
+        ...(revisado.bajo_pedido !== undefined ? { bajoPedido: revisado.bajo_pedido } : {}),
       },
     ];
   });

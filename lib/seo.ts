@@ -3,6 +3,12 @@
 
 import { CIUDAD_TIENDA, DESCRIPCION_TIENDA, NOMBRE_TIENDA } from "./tienda.ts";
 
+const DISPONIBILIDAD = {
+  en_stock: "https://schema.org/InStock",
+  bajo_pedido: "https://schema.org/MadeToOrder",
+  agotado: "https://schema.org/OutOfStock",
+} as const;
+
 export function jsonLdNegocio(url: string, telefono: string | null) {
   return {
     "@context": "https://schema.org",
@@ -19,6 +25,7 @@ export function jsonLdNegocio(url: string, telefono: string | null) {
     },
     areaServed: { "@type": "City", name: CIUDAD_TIENDA },
     currenciesAccepted: "COP",
+    paymentAccepted: "Pago contra entrega",
   };
 }
 
@@ -28,7 +35,7 @@ export function jsonLdProducto(p: {
   url: string;
   imagenes: string[];
   precio: number;
-  disponible: boolean;
+  disponibilidad: "en_stock" | "bajo_pedido" | "agotado";
 }) {
   return {
     "@context": "https://schema.org",
@@ -41,7 +48,7 @@ export function jsonLdProducto(p: {
       url: p.url,
       priceCurrency: "COP",
       price: p.precio,
-      availability: p.disponible ? "https://schema.org/InStock" : "https://schema.org/OutOfStock",
+      availability: DISPONIBILIDAD[p.disponibilidad],
       areaServed: CIUDAD_TIENDA,
     },
   };

@@ -1,6 +1,7 @@
 "use client";
 
 import { useSyncExternalStore } from "react";
+import { registrarEvento } from "@/lib/analitica";
 import {
   agregarAlCarrito,
   cambiarCantidad,
@@ -66,7 +67,10 @@ const acciones = {
   agregar(producto: ProductoParaCarrito, cantidad: number): number {
     cargar();
     const r = agregarAlCarrito(items, producto, cantidad);
-    if (r.agregadas > 0) guardar(r.items);
+    if (r.agregadas > 0) {
+      guardar(r.items);
+      registrarEvento("agregar_carrito", producto.productoId);
+    }
     return r.agregadas;
   },
   /** Para los enlaces de anuncios: agrega 1 unidad solo si el producto aún no está en el carrito. */

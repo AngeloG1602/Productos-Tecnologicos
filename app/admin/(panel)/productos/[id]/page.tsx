@@ -1,10 +1,12 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { FormularioProducto } from "@/components/admin/FormularioProducto";
+import { HistorialProducto } from "@/components/admin/HistorialProducto";
 import {
   obtenerCategoriasAdmin,
   obtenerConfiguracionAdmin,
   obtenerDistribuidoresAdmin,
+  obtenerHistorialProducto,
   obtenerProductoAdmin,
 } from "@/lib/admin/datos";
 
@@ -12,11 +14,12 @@ export const metadata: Metadata = { title: "Editar producto", robots: { index: f
 
 export default async function EditarProducto({ params }: PageProps<"/admin/productos/[id]">) {
   const { id } = await params;
-  const [producto, categorias, configuracion, distribuidores] = await Promise.all([
+  const [producto, categorias, configuracion, distribuidores, historial] = await Promise.all([
     obtenerProductoAdmin(id),
     obtenerCategoriasAdmin(),
     obtenerConfiguracionAdmin(),
     obtenerDistribuidoresAdmin(),
+    obtenerHistorialProducto(id),
   ]);
   if (!producto) notFound();
 
@@ -30,6 +33,7 @@ export default async function EditarProducto({ params }: PageProps<"/admin/produ
         margenDefault={configuracion.margen_default}
         redondeo={configuracion.redondeo}
       />
+      <HistorialProducto cambios={historial} />
     </div>
   );
 }

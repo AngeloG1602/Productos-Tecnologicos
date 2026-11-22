@@ -31,6 +31,7 @@ export type DatosProducto = {
   activo: boolean;
   destacado: boolean;
   distribuidorId: string | null;
+  bajoPedido: boolean;
 };
 
 /** Crea o actualiza un producto (guardar_producto es una sola transacción, ver migración 4). */
@@ -51,6 +52,7 @@ export async function guardarProducto(datos: DatosProducto): Promise<ResultadoCo
     p_activo: datos.activo,
     p_destacado: datos.destacado,
     p_distribuidor_id: datos.distribuidorId,
+    p_bajo_pedido: datos.bajoPedido,
   };
   const { data, error } = await supabase.rpc("guardar_producto", args);
   if (error) return { ok: false, error: error.code === "22023" ? error.message : MENSAJE_GENERICO };
@@ -109,6 +111,8 @@ export type CambiosLote = {
   categoriaId?: string | null;
   /** uuid del distribuidor, o null para quitarlo. */
   distribuidorId?: string | null;
+  /** Marcar o quitar "bajo pedido" (no mueve stock; ver crear_pedido). */
+  bajoPedido?: boolean;
 };
 
 export type ResultadoLote =
@@ -143,6 +147,10 @@ export async function actualizarEnLote(ids: string[], cambios: CambiosLote): Pro
 
   if (cambios.activo !== undefined && activables.length > 0) {
     const { error } = await supabase.from("productos").update({ activo: cambios.activo }).in("id", activables);
+    if (error) return { ok: false, error: MENSAJE_GENERICO };
+  }
+  if (cambios.bajoPedido !== undefined) {
+    const { error } = await supabase.from("productos").update({ bajo_pedido: cambios.bajoPedido }).in("id", ids);
     if (error) return { ok: false, error: MENSAJE_GENERICO };
   }
   if (cambios.categoriaId !== undefined) {
